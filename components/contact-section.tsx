@@ -17,17 +17,40 @@ export function ContactSection() {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [submitError, setSubmitError] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setSubmitError("");
     setIsSubmitting(true);
 
-    // Simulate form submission
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
 
-    setSubmitted(true);
-    setIsSubmitting(false);
-    setFormData({ name: "", email: "", message: "" });
+      if (!response.ok) {
+        const result = (await response.json().catch(() => null)) as
+          | { error?: string }
+          | null;
+        throw new Error(result?.error || "Failed to send message. Please try again.");
+      }
+
+      setSubmitted(true);
+      setFormData({ name: "", email: "", message: "" });
+    } catch (error) {
+      setSubmitError(
+        error instanceof Error
+          ? error.message
+          : "Something went wrong. Please try again.",
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -129,6 +152,9 @@ export function ContactSection() {
                   </>
                 )}
               </Button>
+              {submitError ? (
+                <p className="text-sm text-destructive">{submitError}</p>
+              ) : null}
             </form>
           )}
         </div>

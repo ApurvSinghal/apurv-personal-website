@@ -28,3 +28,34 @@ Continue building your app on:
 2. Deploy your chats from the v0 interface
 3. Changes are automatically pushed to this repository
 4. Vercel deploys the latest version from this repository
+
+## Contact form (free Supabase setup)
+
+This project supports a free contact form backend using [Supabase](https://supabase.com/).
+
+1. Create a free Supabase project.
+2. In SQL Editor, run:
+
+```sql
+create table if not exists public.contact_messages (
+	id bigint generated always as identity primary key,
+	name text not null,
+	email text not null,
+	message text not null,
+	created_at timestamptz not null default now()
+);
+```
+
+3. In Project Settings → API, copy:
+	 - Project URL
+	 - service_role secret key
+4. In `.env.local`, add:
+
+```bash
+SUPABASE_URL=https://your-project-ref.supabase.co
+SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
+```
+
+5. Restart your dev server (`npm run dev`).
+
+Now the "Send Message" button submits to `/api/contact`, and messages are stored in `contact_messages`.
