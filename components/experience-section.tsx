@@ -5,30 +5,48 @@ import { Badge } from "@/components/ui/badge";
 const experiences = [
   {
     period: "2023 — Present",
-    title: "Senior Software Engineer",
-    company: "Tech Company",
-    companyUrl: "#",
+    title: "Lead Consultant",
+    company: "Capgemini",
+    companyUrl: "https://www.capgemini.com",
     description:
-      "Build and maintain critical components used to construct the company's frontend, across the whole product. Work closely with cross-functional teams, including developers, designers, and product managers, to implement and advocate for best practices in web development.",
-    technologies: ["React", "TypeScript", "Next.js", "Node.js", "AWS"],
+      "Leading Azure cloud initiatives, optimizing resource utilization and performance across multiple projects. Enhanced CI/CD pipelines, significantly reducing deployment time and improving system stability. Actively mentoring junior developers and facilitating knowledge-sharing sessions to foster team growth and collaboration.",
+    technologies: ["Azure", "Azure DevOps", "CI/CD", ".NET", "Cloud Architecture"],
   },
   {
     period: "2021 — 2023",
-    title: "Software Engineer",
-    company: "Startup Inc",
-    companyUrl: "#",
+    title: "Consultant",
+    company: "Capgemini",
+    companyUrl: "https://www.capgemini.com",
     description:
-      "Developed and shipped highly interactive web applications for various clients. Led the technical design and implementation of a customer-facing dashboard that improved user engagement by 40%.",
-    technologies: ["JavaScript", "React", "Python", "PostgreSQL", "Docker"],
+      "Implemented Azure DevOps strategies to enhance platform stability and reliability. Led platform migration initiatives, system upgrades, and continuous improvements to ensure optimal performance and scalability.",
+    technologies: ["Azure DevOps", "Platform Migration", "System Architecture", ".NET"],
   },
   {
-    period: "2019 — 2021",
-    title: "Frontend Developer",
-    company: "Digital Agency",
-    companyUrl: "#",
+    period: "2021",
+    title: "Contractor",
+    company: "Capgemini",
+    companyUrl: "https://www.capgemini.com",
     description:
-      "Collaborated with designers and other developers to build responsive, accessible websites for diverse clients. Implemented pixel-perfect designs while ensuring optimal performance and cross-browser compatibility.",
-    technologies: ["HTML", "CSS", "JavaScript", "Vue.js", "SASS"],
+      "Contributed to Azure cloud and DevOps initiatives during a 6-month contract period, supporting the team in delivering reliable and scalable solutions.",
+    technologies: ["Azure", "DevOps", ".NET"],
+  },
+  {
+    period: "2020 — 2021",
+    title: "Software Developer",
+    company: "Willow.ai",
+    companyUrl: "https://www.willow.ai",
+    description:
+      "Developed responsive mobile applications with a focus on performance optimization. Streamlined back-end processes to enhance data processing efficiency and improve overall application responsiveness.",
+    technologies: ["Mobile Development", "Backend Optimization", "Data Processing"],
+  },
+  {
+    period: "2018 — 2020",
+    title: "Software Developer",
+    company: "TechCompiler Data Systems",
+    companyUrl: "https://www.techcompiler.com",
+    description:
+      "Developed and maintained reliable and scalable .NET applications. Collaborated with cross-functional teams to deliver high-quality software solutions that met business requirements and user needs.",
+    technologies: [".NET", "C#", "SQL Server", "Web Applications"],
   },
 ];
 
@@ -91,7 +109,7 @@ export function ExperienceSection() {
         {/* Resume Link */}
         <div className="mt-16">
           <Link
-            href="/resume.pdf"
+            href="documents/resume.pdf"
             target="_blank"
             className="group inline-flex items-center gap-2 text-foreground font-medium hover:text-primary transition-colors"
           >
