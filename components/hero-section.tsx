@@ -1,10 +1,10 @@
 import Link from "next/link";
-import { Github, Linkedin, Mail, Link as LinkIcon } from "lucide-react";
+import { Github, Linkedin, Mail, Twitter } from "lucide-react";
 
 const socialLinks = [
   { icon: Github, href: "https://github.com/ApurvSinghal", label: "GitHub" },
   { icon: Linkedin, href: "https://www.linkedin.com/in/apurvsinghal28", label: "LinkedIn" },
-  { icon: LinkIcon, href: "https://linktr.ee/apurvsinghal", label: "Linktree" },
+  { icon: Twitter, href: "https://x.com/apurvsinghal28", label: "X (Twitter)" },
   { icon: Mail, href: "mailto:apurv.singhal28@gmail.com", label: "Email" },
 ];
 

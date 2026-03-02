@@ -18,11 +18,11 @@
       "name": "Next.js: debug full stack",
       "type": "node-terminal",
       "request": "launch",
-      "command": "pnpm dev",
+      "command": "if lsof -ti:3000 > /dev/null 2>&1; then echo 'Port 3000 in use, cleaning up...'; lsof -ti:3000 | xargs kill -9 2>/dev/null; rm -rf .next/dev/lock 2>/dev/null; sleep 1; fi; pnpm dev",
       "serverReadyAction": {
-        "pattern": "- Local:.+(https?://.+)",
-        "uriFormat": "%s",
-        "action": "debugWithChrome"
+        "pattern": "Ready in",
+        "uriFormat": "http://localhost:3000",
+        "action": "openExternally"
       }
     }
   ]
