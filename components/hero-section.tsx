@@ -1,11 +1,11 @@
 import Link from "next/link";
-import { Github, Linkedin, Mail, Twitter } from "lucide-react";
+import { Github, Linkedin, Mail, Link as LinkIcon } from "lucide-react";
 
 const socialLinks = [
-  { icon: Github, href: "https://github.com", label: "GitHub" },
+  { icon: Github, href: "https://github.com/ApurvSinghal", label: "GitHub" },
   { icon: Linkedin, href: "https://www.linkedin.com/in/apurvsinghal28", label: "LinkedIn" },
-  { icon: Twitter, href: "https://twitter.com", label: "Twitter" },
-  { icon: Mail, href: "mailto:hello@apurvsinghal.com", label: "Email" },
+  { icon: LinkIcon, href: "https://linktr.ee/apurvsinghal", label: "Linktree" },
+  { icon: Mail, href: "mailto:apurv.singhal28@gmail.com", label: "Email" },
 ];
 
 export function HeroSection() {
@@ -19,16 +19,16 @@ export function HeroSection() {
               Apurv Singhal
             </h1>
             <p className="mt-3 text-xl text-primary font-medium">
-              Software Engineer
+              Software Developer at Capgemini
             </p>
             <p className="mt-4 text-muted-foreground leading-relaxed max-w-xs">
-              I build accessible, pixel-perfect digital experiences for the web.
+              Cloud & DevOps Specialist | .NET & Mobile App Developer | Japanese Language N5 Proficient
             </p>
 
             {/* Navigation Links */}
             <nav className="mt-12 hidden md:block">
               <ul className="space-y-4">
-                {["About", "Experience", "Projects", "Contact"].map((item) => (
+                {["About", "Experience", "Contact"].map((item) => (
                   <li key={item}>
                     <Link
                       href={`#${item.toLowerCase()}`}
@@ -62,39 +62,33 @@ export function HeroSection() {
           {/* Right Column - About Content */}
           <div id="about" className="scroll-mt-28">
             <p className="text-muted-foreground leading-relaxed text-lg">
-              I&apos;m a developer passionate about crafting accessible,
-              pixel-perfect user interfaces that blend thoughtful design with
-              robust engineering. My favorite work lies at the intersection of
-              design and development, creating experiences that not only look
-              great but are meticulously built for performance and usability.
+              I&apos;m a passionate technology professional with a strong focus on{" "}
+              <span className="text-foreground font-medium">Azure Cloud</span>,{" "}
+              <span className="text-foreground font-medium">Azure DevOps</span>,{" "}
+              <span className="text-foreground font-medium">.NET</span> software development,
+              and mobile application creation. My goal is to build scalable, high-performing
+              solutions that deliver measurable results for clients and teams alike.
             </p>
             <p className="mt-6 text-muted-foreground leading-relaxed text-lg">
-              Currently, I&apos;m focused on building scalable web applications
-              and contributing to open-source projects. I specialize in{" "}
-              <span className="text-foreground font-medium">React</span>,{" "}
-              <span className="text-foreground font-medium">TypeScript</span>,
-              and <span className="text-foreground font-medium">Node.js</span>,
-              with a strong foundation in system design and cloud
-              infrastructure.
+              Currently based in{" "}
+              <span className="text-foreground font-medium">Melbourne, Australia</span>,
+              I lead Azure cloud initiatives at Capgemini, optimizing resource utilization
+              and performance while enhancing CI/CD pipelines to reduce deployment time.
+              I&apos;m committed to mentoring junior developers and fostering knowledge-sharing
+              within my teams.
             </p>
             <p className="mt-6 text-muted-foreground leading-relaxed text-lg">
-              In the past, I&apos;ve had the opportunity to develop software
-              across a variety of settings — from{" "}
-              <span className="text-foreground font-medium">startups</span> and{" "}
-              <span className="text-foreground font-medium">
-                large corporations
-              </span>{" "}
-              to{" "}
-              <span className="text-foreground font-medium">
-                freelance projects
-              </span>
-              . Each experience has shaped my approach to building software that
-              truly serves its users.
+              My expertise includes designing and optimizing{" "}
+              <span className="text-foreground font-medium">cloud architecture</span> for
+              performance, security, and cost efficiency, crafting robust{" "}
+              <span className="text-foreground font-medium">CI/CD pipelines</span>, and
+              building secure, maintainable applications. I also develop responsive,
+              user-centric mobile apps for diverse platforms.
             </p>
             <p className="mt-6 text-muted-foreground leading-relaxed text-lg">
-              When I&apos;m not coding, you&apos;ll find me exploring new
-              technologies, reading about system architecture, or contributing
-              to developer communities.
+              I believe that combining technical expertise with a proactive mindset is the
+              key to delivering exceptional outcomes. I&apos;m committed to staying ahead of
+              emerging tech trends and fostering collaboration and innovation within my teams.
             </p>
           </div>
         </div>
