@@ -67,11 +67,11 @@ export function ContactSection() {
 
           {/* Email Link */}
           <a
-            href="mailto:apurv.singhal28@gmail.com"
+            href="mailto:admin@apurvsinghal.com"
             className="inline-flex items-center gap-2 text-primary hover:text-primary/80 transition-colors mb-12"
           >
             <Mail size={20} />
-            apurv.singhal28@gmail.com
+            admin@apurvsinghal.com
           </a>
 
           {/* Contact Form */}
