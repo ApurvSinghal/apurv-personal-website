@@ -1,12 +1,5 @@
 import Link from "next/link";
-import { Github, Linkedin, Mail, Twitter } from "lucide-react";
-
-const socialLinks = [
-  { icon: Github, href: "https://github.com/ApurvSinghal", label: "GitHub" },
-  { icon: Linkedin, href: "https://www.linkedin.com/in/apurvsinghal28", label: "LinkedIn" },
-  { icon: Twitter, href: "https://x.com/apurvsinghal28", label: "X (Twitter)" },
-  { icon: Mail, href: "mailto:apurv.singhal28@gmail.com", label: "Email" },
-];
+import { socialLinks } from "@/lib/constants";
 
 export function Footer() {
   return (
