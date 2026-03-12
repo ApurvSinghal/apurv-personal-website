@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { GoogleAnalytics } from '@next/third-parties/google'
+import { SpeedInsights } from '@vercel/speed-insights/next'
 import './globals.css'
 
 export const metadata: Metadata = {
@@ -23,6 +24,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`font-sans antialiased`}>
         {children}
+        <SpeedInsights />
         {gaId ? <GoogleAnalytics gaId={gaId} /> : null}
       </body>
     </html>
