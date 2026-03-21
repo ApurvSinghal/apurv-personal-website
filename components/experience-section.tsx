@@ -58,14 +58,14 @@ export function ExperienceSection() {
           Experience
         </h2>
 
-        <div className="space-y-12">
+        <div className="space-y-2">
           {experiences.map((exp, index) => (
             <div
               key={index}
-              className="group relative grid md:grid-cols-[140px_1fr] gap-4 md:gap-8"
+              className="group relative grid md:grid-cols-[140px_1fr] gap-4 md:gap-8 rounded-lg p-4 -mx-4 hover:bg-muted/40 transition-colors duration-200"
             >
               {/* Period */}
-              <div className="text-sm text-muted-foreground font-mono">
+              <div className="text-xs text-muted-foreground font-mono pt-1 tabular-nums">
                 {exp.period}
               </div>
 
@@ -80,22 +80,22 @@ export function ExperienceSection() {
                   <h3 className="text-foreground font-medium group-hover/link:text-primary transition-colors inline-flex items-center gap-1">
                     {exp.title} · {exp.company}
                     <ArrowUpRight
-                      size={16}
+                      size={14}
                       className="opacity-0 -translate-y-1 translate-x-1 group-hover/link:opacity-100 group-hover/link:translate-y-0 group-hover/link:translate-x-0 transition-all"
                     />
                   </h3>
                 </Link>
 
-                <p className="mt-3 text-muted-foreground leading-relaxed">
+                <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
                   {exp.description}
                 </p>
 
-                <div className="mt-4 flex flex-wrap gap-2">
+                <div className="mt-3 flex flex-wrap gap-1.5">
                   {exp.technologies.map((tech) => (
                     <Badge
                       key={tech}
                       variant="secondary"
-                      className="bg-primary/10 text-primary hover:bg-primary/20 border-0"
+                      className="bg-primary/10 text-primary hover:bg-primary/20 border-0 text-xs"
                     >
                       {tech}
                     </Badge>
@@ -107,15 +107,15 @@ export function ExperienceSection() {
         </div>
 
         {/* Resume Link */}
-        <div className="mt-16">
+        <div className="mt-12 ml-4">
           <Link
             href="documents/resume.pdf"
             target="_blank"
-            className="group inline-flex items-center gap-2 text-foreground font-medium hover:text-primary transition-colors"
+            className="group inline-flex items-center gap-2 text-sm text-foreground font-medium hover:text-primary transition-colors"
           >
             View Full Resume
             <ArrowUpRight
-              size={18}
+              size={16}
               className="group-hover:-translate-y-0.5 group-hover:translate-x-0.5 transition-transform"
             />
           </Link>

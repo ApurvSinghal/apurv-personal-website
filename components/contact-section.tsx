@@ -63,8 +63,11 @@ export function ContactSection() {
     <section id="contact" className="py-24 scroll-mt-20">
       <div className="mx-auto max-w-5xl px-6">
         <div className="max-w-2xl">
-          <h2 className="text-sm font-semibold text-primary uppercase tracking-wider mb-4">
+          <h2 className="text-sm font-semibold text-primary uppercase tracking-wider mb-4 flex items-center gap-3">
             Contact
+            <span className="text-xs font-mono text-muted-foreground border border-border rounded px-1.5 py-0.5 normal-case tracking-normal">
+              press C
+            </span>
           </h2>
           <p className="text-3xl md:text-4xl font-bold text-foreground mb-4 text-balance">
             {"Let's work together"}
@@ -94,7 +97,7 @@ export function ContactSection() {
 
           {/* Contact Form */}
           {submitted ? (
-            <div className="p-6 bg-card rounded-lg border border-border">
+            <div className="p-6 rounded-xl border border-black/[0.08] dark:border-white/[0.08] bg-white/60 dark:bg-white/[0.04] backdrop-blur-md">
               <p className="text-foreground font-medium">
                 Thanks for reaching out!
               </p>
