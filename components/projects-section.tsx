@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 const projects = [
   {
     title: "Apurv Singhal · Personal Website",
-    status: "Live",
+    status: "Live" as "Live" | "WIP",
     summary:
       "A responsive personal website showcasing experience, contact workflow, and technical background with a performance-focused, minimal UI.",
     technicalDetails:

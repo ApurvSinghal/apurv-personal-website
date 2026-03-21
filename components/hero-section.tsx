@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { socialLinks } from "@/lib/constants";
+import { socialLinks, navItems } from "@/lib/constants";
 
 export function HeroSection() {
   return (
@@ -21,17 +21,28 @@ export function HeroSection() {
             {/* Navigation Links */}
             <nav className="mt-12 hidden md:block">
               <ul className="space-y-4">
-                {["About", "Experience", "Projects", "Contact"].map((item) => (
-                  <li key={item}>
+                {navItems.map((item) => (
+                  <li key={item.href}>
                     <Link
-                      href={`#${item.toLowerCase()}`}
+                      href={item.href}
                       className="group flex items-center text-sm text-muted-foreground hover:text-foreground transition-colors"
                     >
                       <span className="w-8 h-px bg-muted-foreground group-hover:w-16 group-hover:bg-foreground transition-all mr-4" />
-                      {item.toUpperCase()}
+                      {item.label.toUpperCase()}
                     </Link>
                   </li>
                 ))}
+                <li>
+                  <Link
+                    href="/documents/resume.pdf"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center text-sm text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    <span className="w-8 h-px bg-muted-foreground group-hover:w-16 group-hover:bg-foreground transition-all mr-4" />
+                    RESUME
+                  </Link>
+                </li>
               </ul>
             </nav>
 
