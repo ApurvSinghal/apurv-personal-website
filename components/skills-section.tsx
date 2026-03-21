@@ -61,18 +61,21 @@ export function SkillsSection() {
           infrastructure, backend systems, mobile, and frontend development.
         </p>
 
-        <div className="grid sm:grid-cols-2 gap-10">
+        <div className="grid sm:grid-cols-2 gap-4">
           {skillGroups.map((group) => (
-            <div key={group.category}>
-              <h3 className="text-sm font-semibold text-foreground uppercase tracking-wider mb-4">
+            <div
+              key={group.category}
+              className="rounded-xl border border-black/[0.08] dark:border-white/[0.08] bg-white/60 dark:bg-white/[0.04] backdrop-blur-md p-5 hover:border-primary/40 dark:hover:border-primary/30 hover:shadow-lg hover:shadow-primary/8 transition-all duration-300"
+            >
+              <h3 className="text-xs font-semibold text-primary uppercase tracking-wider mb-3">
                 {group.category}
               </h3>
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-1.5">
                 {group.skills.map((skill) => (
                   <Badge
                     key={skill}
                     variant="secondary"
-                    className="bg-primary/10 text-primary hover:bg-primary/20 border-0"
+                    className="bg-primary/10 text-primary hover:bg-primary/20 border-0 text-xs"
                   >
                     {skill}
                   </Badge>

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { MapPin } from "lucide-react";
 import { socialLinks, navItems } from "@/lib/constants";
 
 export function HeroSection() {
@@ -7,27 +8,34 @@ export function HeroSection() {
       <div className="mx-auto max-w-5xl px-6">
         <div className="grid md:grid-cols-[1fr_1.5fr] gap-12 md:gap-16 items-start">
           {/* Left Column */}
-          <div className="md:sticky md:top-28">
-            <h1 className="text-4xl md:text-5xl font-bold text-foreground tracking-tight">
+          <div className="md:sticky md:top-28 relative">
+            {/* Glow orb behind name */}
+            <div className="absolute -top-10 -left-10 w-64 h-64 rounded-full bg-primary/25 dark:bg-primary/20 blur-[80px] pointer-events-none" aria-hidden />
+            <h1 className="relative text-4xl md:text-5xl font-bold tracking-tight bg-gradient-to-br from-foreground via-foreground to-primary bg-clip-text text-transparent">
               Apurv Singhal
             </h1>
             <p className="mt-3 text-xl text-primary font-medium">
-              Software Developer at Capgemini
+              Lead Consultant at Capgemini
             </p>
-            <p className="mt-4 text-muted-foreground leading-relaxed max-w-xs">
-              Cloud & DevOps Specialist | .NET & Mobile App Developer | Japanese Language N5 Proficient
+            <p className="mt-3 text-sm text-muted-foreground leading-relaxed max-w-xs">
+              Cloud & DevOps · .NET · Mobile · Japanese N5
             </p>
+
+            <div className="mt-4 inline-flex items-center gap-1.5 text-xs text-muted-foreground">
+              <MapPin size={12} />
+              Melbourne, Australia
+            </div>
 
             {/* Navigation Links */}
             <nav className="mt-12 hidden md:block">
-              <ul className="space-y-4">
+              <ul className="space-y-3">
                 {navItems.map((item) => (
                   <li key={item.href}>
                     <Link
                       href={item.href}
                       className="group flex items-center text-sm text-muted-foreground hover:text-foreground transition-colors"
                     >
-                      <span className="w-8 h-px bg-muted-foreground group-hover:w-16 group-hover:bg-foreground transition-all mr-4" />
+                      <span className="w-8 h-px bg-muted-foreground group-hover:w-16 group-hover:bg-foreground transition-all duration-300 mr-4" />
                       {item.label.toUpperCase()}
                     </Link>
                   </li>
@@ -39,7 +47,7 @@ export function HeroSection() {
                     rel="noopener noreferrer"
                     className="group flex items-center text-sm text-muted-foreground hover:text-foreground transition-colors"
                   >
-                    <span className="w-8 h-px bg-muted-foreground group-hover:w-16 group-hover:bg-foreground transition-all mr-4" />
+                    <span className="w-8 h-px bg-muted-foreground group-hover:w-16 group-hover:bg-foreground transition-all duration-300 mr-4" />
                     RESUME
                   </Link>
                 </li>
@@ -54,10 +62,10 @@ export function HeroSection() {
                   href={social.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-muted-foreground hover:text-primary transition-colors"
+                  className="text-muted-foreground hover:text-primary hover:scale-110 transition-all duration-200"
                   aria-label={social.label}
                 >
-                  <social.icon size={22} />
+                  <social.icon size={20} />
                 </Link>
               ))}
             </div>

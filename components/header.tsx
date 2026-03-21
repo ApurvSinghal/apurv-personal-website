@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Menu, Moon, Sun, X } from "lucide-react";
 import { useTheme } from "next-themes";
 import { navItems } from "@/lib/constants";
@@ -13,11 +13,22 @@ const sectionIds = navItems
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const { theme, setTheme } = useTheme();
   const activeSection = useActiveSection(sectionIds);
 
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 10);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
+    <header
+      className={`fixed top-0 left-0 right-0 z-50 bg-background/60 dark:bg-background/50 backdrop-blur-xl border-b border-black/[0.06] dark:border-white/[0.06] transition-shadow duration-300 ${
+        scrolled ? "shadow-lg shadow-black/5 dark:shadow-black/20" : ""
+      }`}
+    >
       <nav className="mx-auto max-w-5xl px-6 py-4 flex items-center justify-between">
         <Link
           href="/"
