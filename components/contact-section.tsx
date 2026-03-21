@@ -5,7 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Mail, Send } from "lucide-react";
+import { Mail, Send, Check, Copy } from "lucide-react";
+import { CONTACT_EMAIL } from "@/lib/constants";
 
 export function ContactSection() {
   const [formData, setFormData] = useState({
@@ -16,6 +17,13 @@ export function ContactSection() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [submitError, setSubmitError] = useState("");
+  const [copied, setCopied] = useState(false);
+
+  const copyEmail = async () => {
+    await navigator.clipboard.writeText(CONTACT_EMAIL);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -66,13 +74,23 @@ export function ContactSection() {
           </p>
 
           {/* Email Link */}
-          <a
-            href="mailto:admin@apurvsinghal.com"
-            className="inline-flex items-center gap-2 text-primary hover:text-primary/80 transition-colors mb-12"
-          >
-            <Mail size={20} />
-            admin@apurvsinghal.com
-          </a>
+          <div className="inline-flex items-center gap-3 mb-12">
+            <a
+              href={`mailto:${CONTACT_EMAIL}`}
+              className="inline-flex items-center gap-2 text-primary hover:text-primary/80 transition-colors"
+            >
+              <Mail size={20} />
+              {CONTACT_EMAIL}
+            </a>
+            <button
+              type="button"
+              onClick={copyEmail}
+              className="text-muted-foreground hover:text-primary transition-colors"
+              aria-label="Copy email address"
+            >
+              {copied ? <Check size={16} /> : <Copy size={16} />}
+            </button>
+          </div>
 
           {/* Contact Form */}
           {submitted ? (

@@ -1,6 +1,6 @@
-import { createClient } from "@supabase/supabase-js";
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
+import { insertContactMessage } from "@/lib/supabase";
 
 type ContactPayload = {
   name: string;
@@ -10,24 +10,30 @@ type ContactPayload = {
 
 export async function POST(request: NextRequest) {
   try {
-    const { name, email, message } = await request.json();
+    const payload = (await request.json()) as Partial<ContactPayload>;
+    const name = payload.name?.trim();
+    const email = payload.email?.trim();
+    const message = payload.message?.trim();
 
     if (!name || !email || !message) {
       return NextResponse.json({ error: "All fields are required" }, { status: 400 });
     }
 
-    const supabase = createClient(
-      process.env.SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
-    );
-
-    const { error: dbError } = await supabase
-      .from("contact_messages")
-      .insert([{ name, email, message }]);
-
-    if (dbError) {
-      console.error("Database error:", dbError);
-      return NextResponse.json({ error: "Failed to save message" }, { status: 500 });
+    try {
+      await insertContactMessage({
+        name,
+        email,
+        message,
+      });
+    } catch (databaseError) {
+      console.error("Supabase error:", databaseError);
+      return NextResponse.json(
+        {
+          error:
+            "Contact service is temporarily unavailable. Please try again in a minute or email admin@apurvsinghal.com.",
+        },
+        { status: 503 },
+      );
     }
 
     // Resend email notifications
