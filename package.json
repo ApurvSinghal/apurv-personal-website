@@ -13,9 +13,9 @@
     "test:integration": "vitest run tests/integration",
     "test:api": "vitest run tests/api",
     "test:component": "vitest run tests/components",
-    "test:smoke": "playwright test e2e/smoke.spec.ts",
-    "test:e2e": "playwright test e2e/navigation.spec.ts e2e/contact.spec.ts",
-    "test:a11y": "playwright test e2e/a11y.spec.ts"
+    "test:smoke": "playwright test tests/e2e/smoke.spec.ts",
+    "test:e2e": "playwright test tests/e2e/navigation.spec.ts tests/e2e/contact.spec.ts",
+    "test:a11y": "playwright test tests/e2e/a11y.spec.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
