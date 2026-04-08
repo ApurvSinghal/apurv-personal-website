@@ -10,6 +10,7 @@ Personal portfolio built with Next.js 16, React 19, TypeScript, and Tailwind CSS
 - Tailwind CSS 4
 - Supabase for contact message storage
 - Resend for contact email notifications
+- New Relic for server-side monitoring
 - Vercel Analytics and Vercel Speed Insights
 
 ## Features
@@ -89,10 +90,21 @@ CONTACT_NOTIFICATION_EMAIL=admin@apurvsinghal.com
 NEXT_PUBLIC_GA_ID=G-XXXXXXXXXX
 ```
 
+### Optional for New Relic monitoring
+
+```bash
+NEW_RELIC_APP_NAME=apurv-personal-website
+NEW_RELIC_LICENSE_KEY=your_new_relic_license_key
+NEW_RELIC_LOG=stdout
+NEW_RELIC_ENABLED=true
+NODE_OPTIONS=-r newrelic
+```
+
 Notes:
 
 - If `RESEND_API_KEY` or `RESEND_FROM_EMAIL` is missing, the contact form still stores messages in Supabase, but email notifications are skipped.
 - Vercel Speed Insights is already wired into the app shell and does not need an additional code-side environment variable for basic usage.
+- Set `NODE_OPTIONS=-r newrelic` in Vercel so the Node.js agent loads before Next.js.
 
 ### Optional for Supabase keep-alive cron protection
 
@@ -128,6 +140,8 @@ If you set `CRON_SECRET`, Vercel will send it automatically as a bearer token an
 ## Deployment
 
 This project is designed for deployment on Vercel. For production deploys, configure the same environment variables in the Vercel project settings.
+
+New Relic is configured through `newrelic.cjs` and runtime environment variables.
 
 ## Notes
 
