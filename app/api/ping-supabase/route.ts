@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { flushNewRelic } from "@/lib/newrelic";
 import { pingSupabase } from "@/lib/supabase";
 
 function isAuthorized(request: NextRequest) {
@@ -24,9 +25,11 @@ export async function GET(request: NextRequest) {
   try {
     await pingSupabase();
     console.info("Supabase ping succeeded", { checkedAt, userAgent });
+    await flushNewRelic();
     return NextResponse.json({ ok: true, checkedAt }, { status: 200 });
   } catch (error) {
     console.error("Supabase ping failed", { checkedAt, userAgent, error });
+    await flushNewRelic();
     return NextResponse.json({ ok: false, checkedAt }, { status: 503 });
   }
 }
