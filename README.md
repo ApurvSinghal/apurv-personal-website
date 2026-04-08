@@ -113,7 +113,7 @@ If Resend is configured as well, the API also:
 
 ## Supabase Keep-Alive
 
-The project includes a protected keep-alive endpoint at `/api/ping-supabase` plus a Vercel cron entry in `vercel.json` that hits it every 6 hours.
+The project includes a protected keep-alive endpoint at `/api/ping-supabase` plus a Vercel cron entry in `vercel.json` that hits it once per day.
 
 If you set `CRON_SECRET`, Vercel will send it automatically as a bearer token and the route will reject unauthorized requests.
 
@@ -122,7 +122,7 @@ If you set `CRON_SECRET`, Vercel will send it automatically as a bearer token an
 1. Deploy the latest code to Vercel.
 2. Open Vercel Dashboard -> Project -> Settings -> Cron Jobs and confirm `/api/ping-supabase` is enabled.
 3. Open Vercel Dashboard -> Project -> Logs and filter for `Supabase ping succeeded`.
-4. Confirm log entries appear roughly every 6 hours and include a recent `checkedAt` timestamp.
+4. Confirm log entries appear daily and include a recent `checkedAt` timestamp.
 5. (Optional) Manually test once by calling `/api/ping-supabase` with `Authorization: Bearer <CRON_SECRET>` and verify a `200` response with `{ "ok": true, "checkedAt": "..." }`.
 
 ## Deployment
