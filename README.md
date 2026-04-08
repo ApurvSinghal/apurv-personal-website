@@ -97,14 +97,13 @@ NEW_RELIC_APP_NAME=apurv-personal-website
 NEW_RELIC_LICENSE_KEY=your_new_relic_license_key
 NEW_RELIC_LOG=stdout
 NEW_RELIC_ENABLED=true
-NODE_OPTIONS=-r newrelic
 ```
 
 Notes:
 
 - If `RESEND_API_KEY` or `RESEND_FROM_EMAIL` is missing, the contact form still stores messages in Supabase, but email notifications are skipped.
 - Vercel Speed Insights is already wired into the app shell and does not need an additional code-side environment variable for basic usage.
-- Set `NODE_OPTIONS=-r ./newrelic-bootstrap.cjs` in Vercel so the Node.js agent loads before Next.js without breaking the build bootstrap.
+- Set the New Relic environment variables in Vercel and let Next.js load the agent through `instrumentation.ts`.
 
 ### Optional for Supabase keep-alive cron protection
 
@@ -141,7 +140,7 @@ If you set `CRON_SECRET`, Vercel will send it automatically as a bearer token an
 
 This project is designed for deployment on Vercel. For production deploys, configure the same environment variables in the Vercel project settings.
 
-New Relic is configured through `newrelic.cjs`, `newrelic-bootstrap.cjs`, and runtime environment variables.
+New Relic is configured through `newrelic.cjs`, `instrumentation.ts`, and runtime environment variables.
 
 ## Notes
 
