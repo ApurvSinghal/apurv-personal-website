@@ -7,7 +7,7 @@
     "dev": "next dev",
     "lint": "eslint .",
     "start": "next start",
-    "start:newrelic": "NODE_OPTIONS='-r newrelic' next start",
+    "start:newrelic": "NODE_OPTIONS='-r ./newrelic-bootstrap.cjs' next start",
     "test": "pnpm test:all",
     "test:all": "pnpm test:unit && pnpm test:integration && pnpm test:api && pnpm test:component && pnpm test:smoke && pnpm test:e2e && pnpm test:a11y",
     "test:unit": "vitest run tests/unit",
