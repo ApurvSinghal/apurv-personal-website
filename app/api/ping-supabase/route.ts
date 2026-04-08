@@ -13,15 +13,20 @@ function isAuthorized(request: NextRequest) {
 }
 
 export async function GET(request: NextRequest) {
+  const checkedAt = new Date().toISOString();
+  const userAgent = request.headers.get("user-agent") ?? "unknown";
+
   if (!isAuthorized(request)) {
+    console.warn("Supabase ping unauthorized", { checkedAt, userAgent });
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   try {
     await pingSupabase();
-    return NextResponse.json({ ok: true }, { status: 200 });
+    console.info("Supabase ping succeeded", { checkedAt, userAgent });
+    return NextResponse.json({ ok: true, checkedAt }, { status: 200 });
   } catch (error) {
-    console.error("Supabase ping failed:", error);
-    return NextResponse.json({ ok: false }, { status: 503 });
+    console.error("Supabase ping failed", { checkedAt, userAgent, error });
+    return NextResponse.json({ ok: false, checkedAt }, { status: 503 });
   }
 }
