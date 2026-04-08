@@ -140,7 +140,7 @@ If you set `CRON_SECRET`, Vercel will send it automatically as a bearer token an
 
 This project is designed for deployment on Vercel. For production deploys, configure the same environment variables in the Vercel project settings.
 
-New Relic is configured through `newrelic.cjs`, `instrumentation.ts`, and runtime environment variables.
+New Relic is configured through `newrelic.js`, `instrumentation.ts`, and runtime environment variables.
 
 ## Notes
 
