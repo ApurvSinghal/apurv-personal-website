@@ -6,7 +6,7 @@ function isAuthorized(request: NextRequest) {
   const configuredSecret = process.env.CRON_SECRET;
 
   if (!configuredSecret) {
-    return true;
+    return process.env.NODE_ENV !== "production";
   }
 
   const authHeader = request.headers.get("authorization");

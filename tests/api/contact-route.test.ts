@@ -22,7 +22,7 @@ describe("POST /api/contact", () => {
     delete process.env.RESEND_FROM_EMAIL;
   });
 
-  it("returns 400 when required fields are missing", async () => {
+  it("returns 400 when required fields are invalid", async () => {
     const request = new NextRequest("http://localhost:3000/api/contact", {
       method: "POST",
       body: JSON.stringify({ name: "", email: "", message: "" }),
@@ -33,7 +33,51 @@ describe("POST /api/contact", () => {
     const json = await response.json();
 
     expect(response.status).toBe(400);
-    expect(json.error).toBe("All fields are required");
+    expect(json.error).toMatch(/valid name, email, and message/i);
+  });
+
+  it("returns 400 when email format is invalid", async () => {
+    const request = new NextRequest("http://localhost:3000/api/contact", {
+      method: "POST",
+      body: JSON.stringify({
+        name: "Test",
+        email: "not-an-email",
+        message: "hello",
+      }),
+      headers: { "Content-Type": "application/json" },
+    });
+
+    const response = await POST(request);
+
+    expect(response.status).toBe(400);
+  });
+
+  it("returns 429 when rate limit is exceeded", async () => {
+    vi.mocked(insertContactMessage).mockResolvedValue();
+
+    const makeRequest = () =>
+      POST(
+        new NextRequest("http://localhost:3000/api/contact", {
+          method: "POST",
+          body: JSON.stringify({
+            name: "Test",
+            email: "test@example.com",
+            message: "hello",
+          }),
+          headers: {
+            "Content-Type": "application/json",
+            "x-forwarded-for": "198.51.100.10",
+          },
+        }),
+      );
+
+    for (let attempt = 0; attempt < 5; attempt += 1) {
+      const response = await makeRequest();
+      expect(response.status).toBe(200);
+    }
+
+    const limitedResponse = await makeRequest();
+    expect(limitedResponse.status).toBe(429);
   });
 
   it("returns 503 when Supabase write fails", async () => {
