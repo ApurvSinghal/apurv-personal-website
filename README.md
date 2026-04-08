@@ -142,6 +142,46 @@ This project is designed for deployment on Vercel. For production deploys, confi
 
 New Relic is configured through `newrelic.js`, `instrumentation.ts`, and runtime environment variables.
 
+## New Relic Custom Events
+
+The API layer emits custom events to New Relic for business and reliability analytics:
+
+- `ContactFlowEvent` from `/api/contact` for submit, validation, database, email, and response lifecycle stages.
+- `PingHealthEvent` from `/api/ping-supabase` for success, failure, and unauthorized ping outcomes.
+
+These events are recorded in:
+
+- `app/api/contact/route.ts`
+- `app/api/ping-supabase/route.ts`
+- `lib/newrelic.ts`
+
+## New Relic Dashboard
+
+Dashboard created in account `7920207`:
+
+- Name: `apurv-personal-website Ops`
+- Link: `https://one.eu.newrelic.com/redirect/entity/NzkyMDIwN3xWSVp8REFTSEJPQVJEfGRhOjI2OTc4ODk`
+
+Widgets included:
+
+- API latency p95
+- API error rate
+- Ping job success trend
+- Contact submissions per day
+
+## Release Markers On Deploy
+
+A GitHub Actions workflow posts a New Relic deployment marker on every push to `main`:
+
+- Workflow: `.github/workflows/newrelic-release-marker.yml`
+
+Required GitHub repository secrets:
+
+- `NEW_RELIC_USER_API_KEY`
+- `NEW_RELIC_APP_ID`
+
+Current New Relic APM application id for this project: `491407208`.
+
 ## Notes
 
 - The site metadata, analytics hooks, and Speed Insights are configured in `app/layout.tsx`.

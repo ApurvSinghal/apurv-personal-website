@@ -1,0 +1,31 @@
+name: New Relic Release Marker
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  publish-release-marker:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Publish New Relic change tracking marker
+        env:
+          NEW_RELIC_USER_API_KEY: ${{ secrets.NEW_RELIC_USER_API_KEY }}
+          NEW_RELIC_APP_ID: ${{ secrets.NEW_RELIC_APP_ID }}
+          GIT_SHA: ${{ github.sha }}
+          COMMIT_AUTHOR: ${{ github.actor }}
+          COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
+          REPO_NAME: ${{ github.repository }}
+        run: |
+          if [ -z "$NEW_RELIC_USER_API_KEY" ] || [ -z "$NEW_RELIC_APP_ID" ]; then
+            echo "Skipping release marker: missing NEW_RELIC_USER_API_KEY or NEW_RELIC_APP_ID secret."
+            exit 0
+          fi
+
+          escaped_message=$(printf '%s' "$COMMIT_MESSAGE" | sed 's/"/\\"/g' | head -c 500)
+
+          curl -sS -X POST "https://api.eu.newrelic.com/v2/applications/$NEW_RELIC_APP_ID/deployments.json" \
+            -H "API-Key: $NEW_RELIC_USER_API_KEY" \
+            -H "Content-Type: application/json" \
+            -d "{\"deployment\":{\"revision\":\"$GIT_SHA\",\"description\":\"$escaped_message\",\"changelog\":\"https://github.com/$REPO_NAME/commit/$GIT_SHA\",\"user\":\"$COMMIT_AUTHOR\"}}" | cat
