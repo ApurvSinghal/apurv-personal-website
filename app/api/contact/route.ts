@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
+import { z } from "zod";
 import { flushNewRelic, recordNewRelicEvent } from "@/lib/newrelic";
 import { insertContactMessage } from "@/lib/supabase";
 
@@ -9,9 +10,59 @@ type ContactPayload = {
   message: string;
 };
 
+const CONTACT_RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000;
+const CONTACT_RATE_LIMIT_MAX_REQUESTS = 5;
+const contactRequestCounts = new Map<string, { count: number; windowStart: number }>();
+
+const contactSchema = z.object({
+  name: z.string().trim().min(1).max(100),
+  email: z.string().trim().email().max(320),
+  message: z.string().trim().min(1).max(5000),
+});
+
 function getEmailDomain(email: string) {
   const parts = email.toLowerCase().split("@");
   return parts.length === 2 ? parts[1] : "unknown";
+}
+
+function getClientIp(request: NextRequest) {
+  const forwardedFor = request.headers.get("x-forwarded-for");
+  if (forwardedFor) {
+    return forwardedFor.split(",")[0]?.trim() || "unknown";
+  }
+
+  return request.headers.get("x-real-ip") ?? "unknown";
+}
+
+function isRateLimited(ip: string) {
+  const now = Date.now();
+  const entry = contactRequestCounts.get(ip);
+
+  if (!entry || now - entry.windowStart >= CONTACT_RATE_LIMIT_WINDOW_MS) {
+    contactRequestCounts.set(ip, { count: 1, windowStart: now });
+    return false;
+  }
+
+  entry.count += 1;
+
+  if (contactRequestCounts.size > 1000) {
+    for (const [trackedIp, trackedEntry] of contactRequestCounts.entries()) {
+      if (now - trackedEntry.windowStart >= CONTACT_RATE_LIMIT_WINDOW_MS) {
+        contactRequestCounts.delete(trackedIp);
+      }
+    }
+  }
+
+  return entry.count > CONTACT_RATE_LIMIT_MAX_REQUESTS;
+}
+
+function escapeHtml(value: string) {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/\"/g, "&quot;")
+    .replace(/'/g, "&#39;");
 }
 
 export async function POST(request: NextRequest) {
@@ -19,11 +70,24 @@ export async function POST(request: NextRequest) {
 
   try {
     const payload = (await request.json()) as Partial<ContactPayload>;
-    const name = payload.name?.trim();
-    const email = payload.email?.trim();
-    const message = payload.message?.trim();
+    const validationResult = contactSchema.safeParse(payload);
+
+    if (!validationResult.success) {
+      await recordNewRelicEvent("ContactFlowEvent", {
+        stage: "validation_failed",
+        receivedAt,
+      });
+      await flushNewRelic();
+      return NextResponse.json(
+        { error: "Please provide a valid name, email, and message." },
+        { status: 400 },
+      );
+    }
+
+    const { name, email, message } = validationResult.data;
     const messageLength = message?.length ?? 0;
     const emailDomain = email ? getEmailDomain(email) : "unknown";
+    const clientIp = getClientIp(request);
 
     await recordNewRelicEvent("ContactFlowEvent", {
       stage: "submit_received",
@@ -32,13 +96,16 @@ export async function POST(request: NextRequest) {
       messageLength,
     });
 
-    if (!name || !email || !message) {
+    if (isRateLimited(clientIp)) {
       await recordNewRelicEvent("ContactFlowEvent", {
-        stage: "validation_failed",
+        stage: "rate_limited",
         receivedAt,
       });
       await flushNewRelic();
-      return NextResponse.json({ error: "All fields are required" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Too many requests. Please try again later." },
+        { status: 429 },
+      );
     }
 
     try {
@@ -82,18 +149,22 @@ export async function POST(request: NextRequest) {
         const submittedAt = new Date().toLocaleString("en-US", {
           timeZone: "Asia/Kolkata",
         });
+        const escapedName = escapeHtml(name);
+        const escapedEmail = escapeHtml(email);
+        const escapedMessageWithBreaks = escapeHtml(message).replace(/\n/g, "<br/>");
+        const safeNameForSubject = name.replace(/[\r\n]+/g, " ").trim();
 
         await resend.emails.send({
           from: fromEmail,
           to: adminEmail,
-          subject: `New contact form submission: ${name}`,
+          subject: `New contact form submission: ${safeNameForSubject}`,
           replyTo: email,
           text: `Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}\n\nSubmitted at: ${submittedAt}`,
           html: `
             <h2>New contact form submission</h2>
-            <p><strong>Name:</strong> ${name}</p>
-            <p><strong>Email:</strong> ${email}</p>
-            <p><strong>Message:</strong><br/>${String(message).replace(/\n/g, "<br/>")}</p>
+            <p><strong>Name:</strong> ${escapedName}</p>
+            <p><strong>Email:</strong> ${escapedEmail}</p>
+            <p><strong>Message:</strong><br/>${escapedMessageWithBreaks}</p>
             <p><strong>Submitted at:</strong> ${submittedAt}</p>
           `,
         });
@@ -101,14 +172,14 @@ export async function POST(request: NextRequest) {
         await resend.emails.send({
           from: fromEmail,
           to: email,
-          subject: `Thanks for reaching out, ${name}`,
+          subject: `Thanks for reaching out, ${safeNameForSubject}`,
           replyTo: adminEmail,
           text: `Hi ${name},\n\nThanks for reaching out! I have received your message and will get back to you within 24-48 hours.\n\nFor your reference, here is a copy of your message:\n\n${message}\n\nBest,\nApurv Singhal`,
           html: `
-            <p>Hi ${name},</p>
+            <p>Hi ${escapedName},</p>
             <p>Thanks for reaching out! I have received your message and will get back to you within 24-48 hours.</p>
             <p><strong>Your message:</strong></p>
-            <p>${String(message).replace(/\n/g, "<br/>")}</p>
+            <p>${escapedMessageWithBreaks}</p>
             <p>Best,<br/>Apurv Singhal</p>
           `,
         });
