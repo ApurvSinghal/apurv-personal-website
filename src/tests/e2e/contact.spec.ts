@@ -16,5 +16,6 @@ test("contact form shows success when API succeeds", async ({ page }) => {
   await page.locator("#message").fill("Hello from e2e test");
   await page.getByRole("button", { name: /send message/i }).click();
 
+  await expect(page.getByRole("status")).toBeVisible();
   await expect(page.getByText("Thanks for reaching out!")).toBeVisible();
 });

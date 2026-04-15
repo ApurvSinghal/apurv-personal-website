@@ -126,6 +126,15 @@ Notes:
 CRON_SECRET=replace-with-a-random-secret
 ```
 
+### Optional for distributed contact rate limiting
+
+If configured, `/api/contact` uses Upstash Redis for cross-instance rate limiting. If not configured, the API falls back to in-memory limiting.
+
+```bash
+UPSTASH_REDIS_REST_URL=https://<your-instance>.upstash.io
+UPSTASH_REDIS_REST_TOKEN=<your_upstash_token>
+```
+
 ## Contact Form Setup
 
 Create a `contact_messages` table in Supabase with `name`, `email`, `message`, and `created_at` columns.

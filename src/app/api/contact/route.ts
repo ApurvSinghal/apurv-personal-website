@@ -7,11 +7,8 @@ import {
   getErrorAttributes,
   recordNewRelicEvent,
 } from "@/lib/newrelic";
+import { getContactRateLimitDecision } from "@/lib/rate-limit";
 import { insertContactMessage } from "@/lib/supabase";
-
-const CONTACT_RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000;
-const CONTACT_RATE_LIMIT_MAX_REQUESTS = 5;
-const contactRequestCounts = new Map<string, { count: number; windowStart: number }>();
 
 const contactSchema = z.object({
   name: z.string().trim().min(1).max(100),
@@ -31,28 +28,6 @@ function getClientIp(request: NextRequest) {
   }
 
   return request.headers.get("x-real-ip") ?? "unknown";
-}
-
-function isRateLimited(ip: string) {
-  const now = Date.now();
-  const entry = contactRequestCounts.get(ip);
-
-  if (!entry || now - entry.windowStart >= CONTACT_RATE_LIMIT_WINDOW_MS) {
-    contactRequestCounts.set(ip, { count: 1, windowStart: now });
-    return false;
-  }
-
-  entry.count += 1;
-
-  if (contactRequestCounts.size > 1000) {
-    for (const [trackedIp, trackedEntry] of contactRequestCounts.entries()) {
-      if (now - trackedEntry.windowStart >= CONTACT_RATE_LIMIT_WINDOW_MS) {
-        contactRequestCounts.delete(trackedIp);
-      }
-    }
-  }
-
-  return entry.count > CONTACT_RATE_LIMIT_MAX_REQUESTS;
 }
 
 function escapeHtml(value: string) {
@@ -114,14 +89,18 @@ export async function POST(request: NextRequest) {
       userAgent,
     });
 
-    if (isRateLimited(clientIp)) {
+    const rateLimitDecision = await getContactRateLimitDecision(clientIp);
+
+    if (rateLimitDecision.limited) {
       await recordNewRelicEvent("ContactFlowEvent", {
         stage: "rate_limited",
         clientIpKnown,
+        currentRequestCount: rateLimitDecision.currentCount,
         receivedAt,
         emailDomain,
         messageLength,
         requestPath,
+        rateLimitSource: rateLimitDecision.source,
         totalDurationMs: getDurationMs(requestStartedAtMs),
       });
       await flushNewRelic();
@@ -130,6 +109,15 @@ export async function POST(request: NextRequest) {
         { status: 429 },
       );
     }
+
+    await recordNewRelicEvent("ContactFlowEvent", {
+      stage: "rate_limit_checked",
+      clientIpKnown,
+      currentRequestCount: rateLimitDecision.currentCount,
+      receivedAt,
+      requestPath,
+      rateLimitSource: rateLimitDecision.source,
+    });
 
     try {
       const supabaseStartedAtMs = Date.now();
