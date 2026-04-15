@@ -32,7 +32,7 @@ describe("GET /api/ping-supabase", () => {
 
   it("returns 401 in production when cron secret is missing", async () => {
     delete process.env.CRON_SECRET;
-    process.env.NODE_ENV = "production";
+    process.env = { ...process.env, NODE_ENV: "production" };
 
     const request = new NextRequest("http://localhost:3000/api/ping-supabase");
     const response = await GET(request);
