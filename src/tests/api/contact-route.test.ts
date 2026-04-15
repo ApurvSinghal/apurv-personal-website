@@ -80,6 +80,30 @@ describe("POST /api/contact", () => {
     expect(limitedResponse.status).toBe(429);
   });
 
+  it("does not rate limit when client IP is unavailable", async () => {
+    vi.mocked(insertContactMessage).mockResolvedValue();
+
+    const makeRequest = () =>
+      POST(
+        new NextRequest("http://localhost:3000/api/contact", {
+          method: "POST",
+          body: JSON.stringify({
+            name: "Test",
+            email: "test@example.com",
+            message: "hello",
+          }),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }),
+      );
+
+    for (let attempt = 0; attempt < 7; attempt += 1) {
+      const response = await makeRequest();
+      expect(response.status).toBe(200);
+    }
+  });
+
   it("returns 503 when Supabase write fails", async () => {
     vi.mocked(insertContactMessage).mockRejectedValueOnce(
       new Error("Unauthorized"),

@@ -21,6 +21,7 @@ describe("ContactSection", () => {
 
     await waitFor(() => {
       expect(screen.getByText("Thanks for reaching out!")).toBeInTheDocument();
+      expect(screen.getByRole("status")).toBeInTheDocument();
     });
   });
 
@@ -38,6 +39,11 @@ describe("ContactSection", () => {
 
     await waitFor(() => {
       expect(screen.getByText("Unauthorized")).toBeInTheDocument();
+      expect(screen.getByRole("alert")).toBeInTheDocument();
     });
+
+    expect(screen.getByLabelText("Name")).toHaveAttribute("aria-invalid", "true");
+    expect(screen.getByLabelText("Email")).toHaveAttribute("aria-invalid", "true");
+    expect(screen.getByLabelText("Message")).toHaveAttribute("aria-invalid", "true");
   });
 });

@@ -24,6 +24,7 @@ export function ContactSection() {
   const [submitted, setSubmitted] = useState(false);
   const [submitError, setSubmitError] = useState("");
   const [copied, setCopied] = useState(false);
+  const errorMessageId = "contact-submit-error";
 
   const copyEmail = async () => {
     try {
@@ -145,7 +146,12 @@ export function ContactSection() {
 
           {/* Contact Form */}
           {submitted ? (
-            <div className="p-6 rounded-xl border border-black/[0.08] dark:border-white/[0.08] bg-white/60 dark:bg-white/[0.04] backdrop-blur-md">
+            <div
+              role="status"
+              aria-live="polite"
+              aria-atomic="true"
+              className="p-6 rounded-xl border border-black/[0.08] dark:border-white/[0.08] bg-white/60 dark:bg-white/[0.04] backdrop-blur-md"
+            >
               <p className="text-foreground font-medium">
                 Thanks for reaching out!
               </p>
@@ -168,6 +174,8 @@ export function ContactSection() {
                     onChange={(e) =>
                       setFormData({ ...formData, name: e.target.value })
                     }
+                    aria-describedby={submitError ? errorMessageId : undefined}
+                    aria-invalid={submitError ? true : undefined}
                     required
                     className="bg-card border-border focus:border-primary"
                   />
@@ -184,6 +192,8 @@ export function ContactSection() {
                     onChange={(e) =>
                       setFormData({ ...formData, email: e.target.value })
                     }
+                    aria-describedby={submitError ? errorMessageId : undefined}
+                    aria-invalid={submitError ? true : undefined}
                     required
                     className="bg-card border-border focus:border-primary"
                   />
@@ -201,6 +211,8 @@ export function ContactSection() {
                   onChange={(e) =>
                     setFormData({ ...formData, message: e.target.value })
                   }
+                  aria-describedby={submitError ? errorMessageId : undefined}
+                  aria-invalid={submitError ? true : undefined}
                   required
                   className="bg-card border-border focus:border-primary resize-none"
                 />
@@ -220,7 +232,14 @@ export function ContactSection() {
                 )}
               </Button>
               {submitError ? (
-                <p className="text-sm text-destructive">{submitError}</p>
+                <p
+                  id={errorMessageId}
+                  role="alert"
+                  aria-live="assertive"
+                  className="text-sm text-destructive"
+                >
+                  {submitError}
+                </p>
               ) : null}
             </form>
           )}
