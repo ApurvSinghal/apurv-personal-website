@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import { socialLinks } from "@/lib/constants";
 import { addBrowserPageAction } from "@/lib/newrelic-browser";
