@@ -75,3 +75,40 @@ export async function recordNewRelicEvent(
     console.warn("New Relic custom event skipped", { eventType, error });
   }
 }
+
+export async function addTransactionAttributes(
+  attributes: CustomEventAttributes,
+) {
+  if (process.env.NEW_RELIC_ENABLED !== "true") {
+    return;
+  }
+
+  try {
+    const newrelic = await import("newrelic");
+
+    for (const [key, value] of Object.entries(attributes)) {
+      if (value !== null && value !== undefined) {
+        newrelic.addCustomAttribute?.(key, value);
+      }
+    }
+  } catch {
+    // Silently skip — transaction attribute enrichment is best-effort
+  }
+}
+
+export async function noticeServerError(
+  error: unknown,
+  attributes: CustomEventAttributes = {},
+) {
+  if (process.env.NEW_RELIC_ENABLED !== "true") {
+    return;
+  }
+
+  try {
+    const newrelic = await import("newrelic");
+    const err = error instanceof Error ? error : new Error(String(error));
+    newrelic.noticeError?.(err, { ...getBaseEventAttributes(), ...attributes });
+  } catch {
+    // Silently skip
+  }
+}

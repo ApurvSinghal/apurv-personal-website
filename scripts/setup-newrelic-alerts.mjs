@@ -1,7 +1,8 @@
 const accountId = Number(process.env.NEW_RELIC_ACCOUNT_ID || 0);
 const apiKey = process.env.NEW_RELIC_USER_API_KEY;
 const appName = process.env.NEW_RELIC_APP_NAME || "apurv-personal-website";
-const policyName = process.env.NEW_RELIC_ALERT_POLICY_NAME || `${appName} Ops`;
+const browserAppName =
+  process.env.NEXT_PUBLIC_NEW_RELIC_BROWSER_APP_NAME || `${appName}-browser`;
 const region = process.env.NEW_RELIC_REGION || "eu";
 const runbookUrl =
   process.env.NEW_RELIC_ALERT_RUNBOOK_URL ||
@@ -160,7 +161,10 @@ async function upsertStaticCondition(policyId, existingCondition, condition) {
   return data[mutationName];
 }
 
-const conditions = [
+// ---------------------------------------------------------------------------
+// Policy: Ops — custom event alerts (contact flow, ping, rate limiting, browser)
+// ---------------------------------------------------------------------------
+const opsConditions = [
   {
     name: "Contact API failures",
     nrql: {
@@ -254,9 +258,205 @@ const conditions = [
     violationTimeLimitSeconds: 86400,
   },
   {
+    name: "Browser JS error rate spike",
+    nrql: {
+      query: `SELECT count(*) FROM JavaScriptError WHERE appName = '${browserAppName}'`,
+    },
+    signal: {
+      aggregationDelay: 120,
+      aggregationMethod: enumValue("EVENT_FLOW"),
+      aggregationWindow: 300,
+    },
+    terms: [
+      {
+        operator: enumValue("ABOVE"),
+        priority: enumValue("CRITICAL"),
+        threshold: 10,
+        thresholdDuration: 300,
+        thresholdOccurrences: enumValue("AT_LEAST_ONCE"),
+      },
+    ],
+    runbookUrl,
+    valueFunction: enumValue("SINGLE_VALUE"),
+    violationTimeLimitSeconds: 86400,
+  },
+  {
+    name: "Synthetic homepage failure",
+    nrql: {
+      query: `SELECT filter(count(*), WHERE result = 'FAILED') FROM SyntheticCheck WHERE monitorName = 'apurv-personal-website Homepage Ping'`,
+    },
+    signal: {
+      aggregationDelay: 120,
+      aggregationMethod: enumValue("EVENT_FLOW"),
+      aggregationWindow: 300,
+    },
+    terms: [
+      {
+        operator: enumValue("ABOVE"),
+        priority: enumValue("CRITICAL"),
+        threshold: 0,
+        thresholdDuration: 300,
+        thresholdOccurrences: enumValue("AT_LEAST_ONCE"),
+      },
+    ],
+    runbookUrl,
+    valueFunction: enumValue("SINGLE_VALUE"),
+    violationTimeLimitSeconds: 86400,
+  },
+];
+
+// ---------------------------------------------------------------------------
+// Policy: Alerts — high-level APM alerts
+// ---------------------------------------------------------------------------
+const alertsConditions = [
+  {
+    name: "Ping Endpoint Failures > 0 (5m)",
+    nrql: {
+      query: `SELECT filter(count(*), WHERE status IN ('failure', 'unauthorized')) FROM PingHealthEvent WHERE applicationName = '${appName}'`,
+    },
+    signal: {
+      aggregationDelay: 120,
+      aggregationMethod: enumValue("EVENT_FLOW"),
+      aggregationWindow: 300,
+    },
+    terms: [
+      {
+        operator: enumValue("ABOVE"),
+        priority: enumValue("CRITICAL"),
+        threshold: 0,
+        thresholdDuration: 300,
+        thresholdOccurrences: enumValue("AT_LEAST_ONCE"),
+      },
+    ],
+    runbookUrl,
+    valueFunction: enumValue("SINGLE_VALUE"),
+    violationTimeLimitSeconds: 86400,
+  },
+  {
+    name: "High Error Count > 5 (5m)",
+    nrql: {
+      query: `SELECT count(apm.service.error.count) FROM Metric WHERE appName = '${appName}'`,
+    },
+    signal: {
+      aggregationDelay: 120,
+      aggregationMethod: enumValue("EVENT_FLOW"),
+      aggregationWindow: 300,
+    },
+    terms: [
+      {
+        operator: enumValue("ABOVE"),
+        priority: enumValue("CRITICAL"),
+        threshold: 5,
+        thresholdDuration: 300,
+        thresholdOccurrences: enumValue("AT_LEAST_ONCE"),
+      },
+    ],
+    runbookUrl,
+    valueFunction: enumValue("SINGLE_VALUE"),
+    violationTimeLimitSeconds: 86400,
+  },
+  {
+    name: "APM Apdex drop",
+    nrql: {
+      query: `SELECT apdex(apm.service.apdex) FROM Metric WHERE appName = '${appName}'`,
+    },
+    signal: {
+      aggregationDelay: 120,
+      aggregationMethod: enumValue("EVENT_FLOW"),
+      aggregationWindow: 300,
+    },
+    terms: [
+      {
+        operator: enumValue("BELOW"),
+        priority: enumValue("CRITICAL"),
+        threshold: 0.7,
+        thresholdDuration: 600,
+        thresholdOccurrences: enumValue("ALL"),
+      },
+    ],
+    runbookUrl,
+    valueFunction: enumValue("SINGLE_VALUE"),
+    violationTimeLimitSeconds: 86400,
+  },
+];
+
+// ---------------------------------------------------------------------------
+// Policy: Performance Coverage — web vitals + throughput + server perf
+// ---------------------------------------------------------------------------
+const performanceConditions = [
+  {
+    name: "High Error Rate (>5%)",
+    nrql: {
+      query: `SELECT percentage(count(*), WHERE error IS true) FROM Transaction WHERE appName = '${appName}'`,
+    },
+    signal: {
+      aggregationDelay: 120,
+      aggregationMethod: enumValue("EVENT_FLOW"),
+      aggregationWindow: 300,
+    },
+    terms: [
+      {
+        operator: enumValue("ABOVE"),
+        priority: enumValue("CRITICAL"),
+        threshold: 5,
+        thresholdDuration: 300,
+        thresholdOccurrences: enumValue("ALL"),
+      },
+    ],
+    runbookUrl,
+    valueFunction: enumValue("SINGLE_VALUE"),
+    violationTimeLimitSeconds: 86400,
+  },
+  {
+    name: "High p95 Response Time (>800ms)",
+    nrql: {
+      query: `SELECT percentile(duration, 95) FROM Transaction WHERE appName = '${appName}'`,
+    },
+    signal: {
+      aggregationDelay: 120,
+      aggregationMethod: enumValue("EVENT_FLOW"),
+      aggregationWindow: 300,
+    },
+    terms: [
+      {
+        operator: enumValue("ABOVE"),
+        priority: enumValue("CRITICAL"),
+        threshold: 0.8,
+        thresholdDuration: 300,
+        thresholdOccurrences: enumValue("ALL"),
+      },
+    ],
+    runbookUrl,
+    valueFunction: enumValue("SINGLE_VALUE"),
+    violationTimeLimitSeconds: 86400,
+  },
+  {
+    name: "Low Throughput (<10 rpm)",
+    nrql: {
+      query: `SELECT rate(count(*), 1 minute) FROM Transaction WHERE appName = '${appName}'`,
+    },
+    signal: {
+      aggregationDelay: 120,
+      aggregationMethod: enumValue("EVENT_FLOW"),
+      aggregationWindow: 900,
+    },
+    terms: [
+      {
+        operator: enumValue("BELOW"),
+        priority: enumValue("WARNING"),
+        threshold: 10,
+        thresholdDuration: 900,
+        thresholdOccurrences: enumValue("ALL"),
+      },
+    ],
+    runbookUrl,
+    valueFunction: enumValue("SINGLE_VALUE"),
+    violationTimeLimitSeconds: 86400,
+  },
+  {
     name: "Browser LCP degradation",
     nrql: {
-      query: `SELECT percentile(metricValue, 75) FROM WebVitalEvent WHERE applicationName = '${process.env.NEXT_PUBLIC_NEW_RELIC_BROWSER_APP_NAME || `${appName}-browser`}' AND metricName = 'LCP'`,
+      query: `SELECT percentile(metricValue, 75) FROM WebVitalEvent WHERE applicationName = '${browserAppName}' AND metricName = 'LCP'`,
     },
     signal: {
       aggregationDelay: 120,
@@ -276,22 +476,81 @@ const conditions = [
     valueFunction: enumValue("SINGLE_VALUE"),
     violationTimeLimitSeconds: 86400,
   },
+  {
+    name: "Browser INP degradation",
+    nrql: {
+      query: `SELECT percentile(metricValue, 75) FROM WebVitalEvent WHERE applicationName = '${browserAppName}' AND metricName = 'INP'`,
+    },
+    signal: {
+      aggregationDelay: 120,
+      aggregationMethod: enumValue("EVENT_FLOW"),
+      aggregationWindow: 900,
+    },
+    terms: [
+      {
+        operator: enumValue("ABOVE"),
+        priority: enumValue("CRITICAL"),
+        threshold: 200,
+        thresholdDuration: 900,
+        thresholdOccurrences: enumValue("ALL"),
+      },
+    ],
+    runbookUrl,
+    valueFunction: enumValue("SINGLE_VALUE"),
+    violationTimeLimitSeconds: 86400,
+  },
+  {
+    name: "Browser CLS degradation",
+    nrql: {
+      query: `SELECT percentile(metricValue, 75) FROM WebVitalEvent WHERE applicationName = '${browserAppName}' AND metricName = 'CLS'`,
+    },
+    signal: {
+      aggregationDelay: 120,
+      aggregationMethod: enumValue("EVENT_FLOW"),
+      aggregationWindow: 900,
+    },
+    terms: [
+      {
+        operator: enumValue("ABOVE"),
+        priority: enumValue("CRITICAL"),
+        threshold: 0.1,
+        thresholdDuration: 900,
+        thresholdOccurrences: enumValue("ALL"),
+      },
+    ],
+    runbookUrl,
+    valueFunction: enumValue("SINGLE_VALUE"),
+    violationTimeLimitSeconds: 86400,
+  },
 ];
 
-const policy = await ensurePolicy(policyName);
-const existingConditions = await getExistingConditions(policy.id);
+// ---------------------------------------------------------------------------
+// Sync all policies
+// ---------------------------------------------------------------------------
+const policies = [
+  { name: `${appName} Ops`, conditions: opsConditions },
+  { name: `${appName} Alerts`, conditions: alertsConditions },
+  { name: `${appName} Performance Coverage`, conditions: performanceConditions },
+];
 
-for (const condition of conditions) {
-  const existingCondition = existingConditions.find(
-    (item) => item.name === condition.name,
-  );
+for (const { name: policyName, conditions } of policies) {
+  const policy = await ensurePolicy(policyName);
+  const existingConditions = await getExistingConditions(policy.id);
 
-  const result = await upsertStaticCondition(policy.id, existingCondition, {
-    ...condition,
-    enabled: true,
-  });
+  for (const condition of conditions) {
+    const existingCondition = existingConditions.find(
+      (item) => item.name === condition.name,
+    );
 
-  console.log(`${existingCondition ? "Updated" : "Created"} alert condition: ${result.name}`);
+    const result = await upsertStaticCondition(policy.id, existingCondition, {
+      ...condition,
+      enabled: true,
+    });
+
+    console.log(
+      `  ${existingCondition ? "Updated" : "Created"} condition: ${result.name}`,
+    );
+  }
+
+  console.log(`Alert policy ready: ${policyName} (${policy.id})`);
 }
-
-console.log(`Alert policy ready: ${policy.name} (${policy.id})`);

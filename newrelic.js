@@ -21,4 +21,21 @@ exports.config = {
   distributed_tracing: {
     enabled: true,
   },
+  labels: {
+    environment: process.env.VERCEL_ENV || process.env.NODE_ENV || "development",
+    project: "apurv-personal-website",
+    owner: "apurv",
+  },
+  error_collector: {
+    enabled: true,
+    ignore_status_codes: [404],
+  },
+  transaction_tracer: {
+    enabled: true,
+    transaction_threshold: 0.5,
+    record_sql: "obfuscated",
+  },
+  slow_sql: {
+    enabled: true,
+  },
 };

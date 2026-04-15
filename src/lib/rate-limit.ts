@@ -91,6 +91,7 @@ async function runUpstashRateLimit(ip: string): Promise<RateLimitDecision> {
 
 export async function getContactRateLimitDecision(ip: string): Promise<RateLimitDecision> {
   if (ip === "unknown") {
+    console.info("Rate limit skipped: unknown client IP");
     return {
       currentCount: 0,
       limited: false,
@@ -103,7 +104,7 @@ export async function getContactRateLimitDecision(ip: string): Promise<RateLimit
       return await runUpstashRateLimit(ip);
     } catch (error) {
       console.warn("Upstash rate limiting failed, falling back to memory", {
-        error,
+        error: error instanceof Error ? error.message : String(error),
       });
     }
   }
