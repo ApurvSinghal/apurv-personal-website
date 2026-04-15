@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { addBrowserPageAction, recordBrowserEvent } from "@/lib/newrelic-browser";
+import { addBrowserPageAction, recordBrowserEvent, noticeBrowserError } from "@/lib/newrelic-browser";
 import { Mail, Send, Check, Copy } from "lucide-react";
 import { CONTACT_EMAIL } from "@/lib/constants";
 
@@ -24,6 +24,7 @@ export function ContactSection() {
   const [submitted, setSubmitted] = useState(false);
   const [submitError, setSubmitError] = useState("");
   const [copied, setCopied] = useState(false);
+  const [formInteracted, setFormInteracted] = useState(false);
   const errorMessageId = "contact-submit-error";
 
   const copyEmail = async () => {
@@ -35,9 +36,22 @@ export function ContactSection() {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch (error) {
+      noticeBrowserError(
+        error instanceof Error ? error : new Error("Clipboard write failed"),
+        { stage: "copy_email_failed" },
+      );
       recordBrowserEvent("ContactClientEvent", {
         errorMessage: error instanceof Error ? error.message : "Clipboard write failed",
         stage: "copy_email_failed",
+      });
+    }
+  };
+
+  const handleFieldFocus = (fieldName: string) => {
+    if (!formInteracted) {
+      setFormInteracted(true);
+      addBrowserPageAction("ContactFormInteractionStarted", {
+        firstField: fieldName,
       });
     }
   };
@@ -84,6 +98,11 @@ export function ContactSection() {
       setSubmitted(true);
       setFormData({ name: "", email: "", message: "" });
     } catch (error) {
+      const errorObj = error instanceof Error ? error : new Error("Unknown submit error");
+      noticeBrowserError(errorObj, {
+        stage: "submit_failed",
+        emailDomain,
+      });
       recordBrowserEvent("ContactClientEvent", {
         durationMs: Number((performance.now() - submitStartedAt).toFixed(2)),
         emailDomain,
@@ -171,6 +190,7 @@ export function ContactSection() {
                     type="text"
                     placeholder="Your name"
                     value={formData.name}
+                    onFocus={() => handleFieldFocus("name")}
                     onChange={(e) =>
                       setFormData({ ...formData, name: e.target.value })
                     }
@@ -189,6 +209,7 @@ export function ContactSection() {
                     type="email"
                     placeholder="your@email.com"
                     value={formData.email}
+                    onFocus={() => handleFieldFocus("email")}
                     onChange={(e) =>
                       setFormData({ ...formData, email: e.target.value })
                     }
@@ -208,6 +229,7 @@ export function ContactSection() {
                   placeholder="Your message..."
                   rows={5}
                   value={formData.message}
+                  onFocus={() => handleFieldFocus("message")}
                   onChange={(e) =>
                     setFormData({ ...formData, message: e.target.value })
                   }

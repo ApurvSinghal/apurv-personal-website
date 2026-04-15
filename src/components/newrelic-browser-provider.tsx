@@ -7,6 +7,7 @@ import {
   initializeBrowserMonitoring,
   noticeBrowserError,
   recordBrowserEvent,
+  setBrowserCustomAttribute,
 } from "@/lib/newrelic-browser";
 
 const trackedSectionIds = ["about", "experience", "skills", "projects", "contact"];
@@ -29,10 +30,27 @@ export function NewRelicBrowserProvider() {
     initializeBrowserMonitoring();
     observedSectionsRef.current = new Set();
 
+    // Set session-level custom attributes
+    const connectionType = (navigator as Navigator & { connection?: { effectiveType?: string } })
+      .connection?.effectiveType;
+    if (connectionType) {
+      setBrowserCustomAttribute("connectionType", connectionType);
+    }
+    setBrowserCustomAttribute("screenWidth", window.screen.width);
+    setBrowserCustomAttribute("screenHeight", window.screen.height);
+    setBrowserCustomAttribute("devicePixelRatio", window.devicePixelRatio);
+    setBrowserCustomAttribute("language", navigator.language);
+
     recordBrowserEvent("PortfolioPageView", {
       pathname,
       referrer: document.referrer || "direct",
       title: document.title,
+      screenWidth: window.screen.width,
+      screenHeight: window.screen.height,
+      viewportWidth: window.innerWidth,
+      viewportHeight: window.innerHeight,
+      connectionType: connectionType || "unknown",
+      language: navigator.language,
     });
 
     const observer = new IntersectionObserver(

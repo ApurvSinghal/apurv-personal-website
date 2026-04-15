@@ -47,7 +47,8 @@ function getBrowserAgentOptions() {
       sa: 1,
     },
     init: {
-      ajax: { enabled: true },
+      ajax: { enabled: true, deny_list: ["bam.eu01.nr-data.net"] },
+      distributed_tracing: { enabled: true, cors_use_newrelic_header: true, cors_use_tracecontext_headers: true },
       generic_events: { enabled: true },
       jserrors: { enabled: true },
       metrics: { enabled: true },
@@ -95,6 +96,13 @@ async function getBrowserAgent() {
     .then(({ BrowserAgent }) => {
       const browserAgent = new BrowserAgent(options);
       window.newrelic = window.newrelic || browserAgent;
+
+      // Set persistent custom attributes on every browser event
+      const env = process.env.NEXT_PUBLIC_VERCEL_ENV || process.env.NODE_ENV || "development";
+      window.newrelic.setCustomAttribute?.("environment", env);
+      window.newrelic.setCustomAttribute?.("deploymentSha", process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA || "local");
+      window.newrelic.setCustomAttribute?.("appVersion", process.env.NEXT_PUBLIC_APP_VERSION || "0.0.0");
+
       return window.newrelic;
     })
     .catch((error) => {
@@ -153,5 +161,14 @@ export function noticeBrowserError(
       ...getBrowserDefaults(),
       ...attributes,
     });
+  });
+}
+
+export function setBrowserCustomAttribute(
+  name: string,
+  value: string | number | boolean,
+) {
+  withBrowserAgent((agent) => {
+    agent.setCustomAttribute?.(name, value);
   });
 }

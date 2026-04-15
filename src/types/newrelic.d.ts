@@ -15,6 +15,10 @@ interface NewRelicBrowserApi {
 		eventType: string,
 		attributes?: NewRelicBrowserAttributes,
 	) => void;
+	setCustomAttribute?: (
+		name: string,
+		value: string | number | boolean,
+	) => void;
 }
 
 interface Window {

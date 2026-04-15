@@ -1,5 +1,8 @@
+"use client";
+
 import Link from "next/link";
 import { socialLinks } from "@/lib/constants";
+import { addBrowserPageAction } from "@/lib/newrelic-browser";
 
 export function Footer() {
   return (
@@ -17,6 +20,13 @@ export function Footer() {
                 href={social.href}
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={() =>
+                  addBrowserPageAction("SocialLinkClicked", {
+                    label: social.label,
+                    location: "footer",
+                    target: social.href,
+                  })
+                }
                 className="text-muted-foreground hover:text-primary transition-colors"
                 aria-label={social.label}
               >

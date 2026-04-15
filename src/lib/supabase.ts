@@ -49,6 +49,10 @@ export async function insertContactMessage(message: ContactMessage) {
 
   if (!response.ok) {
     const responseText = await response.text().catch(() => "");
+    console.error("Supabase insert response error", {
+      status: response.status,
+      responseText: responseText.slice(0, 200),
+    });
     throw new Error(
       `Supabase insert failed with status ${response.status}${responseText ? `: ${responseText}` : ""}`,
     );
@@ -68,6 +72,10 @@ export async function pingSupabase() {
 
   if (!response.ok) {
     const responseText = await response.text().catch(() => "");
+    console.error("Supabase ping response error", {
+      status: response.status,
+      responseText: responseText.slice(0, 200),
+    });
     throw new Error(
       `Supabase ping failed with status ${response.status}${responseText ? `: ${responseText}` : ""}`,
     );

@@ -6,6 +6,8 @@ import {
   getDurationMs,
   getErrorAttributes,
   recordNewRelicEvent,
+  addTransactionAttributes,
+  noticeServerError,
 } from "@/lib/newrelic";
 import { getContactRateLimitDecision } from "@/lib/rate-limit";
 import { insertContactMessage } from "@/lib/supabase";
@@ -51,9 +53,20 @@ export async function POST(request: NextRequest) {
     const payload = await request.json();
     const validationResult = contactSchema.safeParse(payload);
 
+    await addTransactionAttributes({
+      contactRequestHost: requestHost,
+      contactReferrer: referrer,
+      contactRequestPath: requestPath,
+    });
+
     if (!validationResult.success) {
+      const fieldErrors = validationResult.error.issues
+        .map((issue) => `${issue.path.join(".")}: ${issue.message}`)
+        .join("; ");
+      console.warn("Contact validation failed", { receivedAt, fieldErrors, referrer, userAgent });
       await recordNewRelicEvent("ContactFlowEvent", {
         stage: "validation_failed",
+        fieldErrors,
         receivedAt,
         requestHost,
         requestPath,
@@ -77,6 +90,20 @@ export async function POST(request: NextRequest) {
     let emailDurationMs = 0;
     let supabaseDurationMs = 0;
 
+    console.info("Contact form submission received", {
+      receivedAt,
+      emailDomain,
+      messageLength,
+      clientIpKnown,
+      referrer,
+    });
+
+    await addTransactionAttributes({
+      contactEmailDomain: emailDomain,
+      contactMessageLength: messageLength,
+      contactClientIpKnown: clientIpKnown,
+    });
+
     await recordNewRelicEvent("ContactFlowEvent", {
       stage: "submit_received",
       clientIpKnown,
@@ -92,6 +119,12 @@ export async function POST(request: NextRequest) {
     const rateLimitDecision = await getContactRateLimitDecision(clientIp);
 
     if (rateLimitDecision.limited) {
+      console.warn("Contact request rate limited", {
+        receivedAt,
+        clientIpKnown,
+        currentRequestCount: rateLimitDecision.currentCount,
+        rateLimitSource: rateLimitDecision.source,
+      });
       await recordNewRelicEvent("ContactFlowEvent", {
         stage: "rate_limited",
         clientIpKnown,
@@ -127,6 +160,11 @@ export async function POST(request: NextRequest) {
         message,
       });
       supabaseDurationMs = getDurationMs(supabaseStartedAtMs);
+      console.info("Supabase insert succeeded", {
+        receivedAt,
+        emailDomain,
+        supabaseDurationMs,
+      });
       await recordNewRelicEvent("ContactFlowEvent", {
         stage: "supabase_insert_success",
         receivedAt,
@@ -136,7 +174,15 @@ export async function POST(request: NextRequest) {
         supabaseDurationMs,
       });
     } catch (databaseError) {
-      console.error("Supabase error:", databaseError);
+      console.error("Supabase insert failed", {
+        receivedAt,
+        emailDomain,
+        error: databaseError instanceof Error ? databaseError.message : String(databaseError),
+      });
+      await noticeServerError(databaseError, {
+        stage: "supabase_insert_failed",
+        requestPath,
+      });
       supabaseDurationMs = getDurationMs(requestStartedAtMs);
       await recordNewRelicEvent("ContactFlowEvent", {
         stage: "supabase_insert_failed",
@@ -208,6 +254,12 @@ export async function POST(request: NextRequest) {
         emailDurationMs = getDurationMs(emailStartedAtMs);
         emailOutcome = "sent";
 
+        console.info("Email notifications sent", {
+          receivedAt,
+          emailDomain,
+          emailDurationMs,
+        });
+
         await recordNewRelicEvent("ContactFlowEvent", {
           stage: "email_notifications_sent",
           receivedAt,
@@ -216,7 +268,15 @@ export async function POST(request: NextRequest) {
           requestPath,
         });
       } catch (emailError) {
-        console.error("Resend error:", emailError);
+        console.error("Resend email notification failed", {
+          receivedAt,
+          emailDomain,
+          error: emailError instanceof Error ? emailError.message : String(emailError),
+        });
+        await noticeServerError(emailError, {
+          stage: "email_notifications_failed",
+          requestPath,
+        });
         emailDurationMs = getDurationMs(requestStartedAtMs);
         emailOutcome = "failed";
         await recordNewRelicEvent("ContactFlowEvent", {
@@ -256,7 +316,15 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ message: "Message sent successfully" }, { status: 200 });
   } catch (error) {
-    console.error("Contact API error:", error);
+    console.error("Contact API unhandled error", {
+      receivedAt,
+      error: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined,
+    });
+    await noticeServerError(error, {
+      stage: "response_error",
+      requestPath,
+    });
     await recordNewRelicEvent("ContactFlowEvent", {
       stage: "response_error",
       receivedAt,

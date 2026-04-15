@@ -4,6 +4,8 @@ import {
   getDurationMs,
   getErrorAttributes,
   recordNewRelicEvent,
+  addTransactionAttributes,
+  noticeServerError,
 } from "@/lib/newrelic";
 import { pingSupabase } from "@/lib/supabase";
 
@@ -26,6 +28,7 @@ export async function GET(request: NextRequest) {
 
   if (!isAuthorized(request)) {
     console.warn("Supabase ping unauthorized", { checkedAt, userAgent });
+    await addTransactionAttributes({ pingStatus: "unauthorized" });
     await recordNewRelicEvent("PingHealthEvent", {
       checkedAt,
       requestPath,
@@ -41,7 +44,8 @@ export async function GET(request: NextRequest) {
     const supabaseStartedAtMs = Date.now();
     await pingSupabase();
     const supabaseDurationMs = getDurationMs(supabaseStartedAtMs);
-    console.info("Supabase ping succeeded", { checkedAt, userAgent });
+    console.info("Supabase ping succeeded", { checkedAt, supabaseDurationMs, userAgent });
+    await addTransactionAttributes({ pingStatus: "success", supabaseDurationMs });
     await recordNewRelicEvent("PingHealthEvent", {
       checkedAt,
       requestPath,
@@ -53,7 +57,13 @@ export async function GET(request: NextRequest) {
     await flushNewRelic();
     return NextResponse.json({ ok: true, checkedAt }, { status: 200 });
   } catch (error) {
-    console.error("Supabase ping failed", { checkedAt, userAgent, error });
+    console.error("Supabase ping failed", {
+      checkedAt,
+      userAgent,
+      error: error instanceof Error ? error.message : String(error),
+    });
+    await addTransactionAttributes({ pingStatus: "failure" });
+    await noticeServerError(error, { stage: "ping_supabase_failed", requestPath });
     await recordNewRelicEvent("PingHealthEvent", {
       checkedAt,
       requestPath,

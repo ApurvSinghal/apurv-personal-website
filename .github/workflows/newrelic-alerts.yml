@@ -16,8 +16,8 @@ jobs:
       - name: Sync New Relic alert conditions
         env:
           NEW_RELIC_ACCOUNT_ID: ${{ secrets.NEW_RELIC_ACCOUNT_ID }}
-          NEW_RELIC_ALERT_POLICY_NAME: apurv-personal-website Ops
           NEW_RELIC_APP_NAME: apurv-personal-website
           NEW_RELIC_REGION: eu
           NEW_RELIC_USER_API_KEY: ${{ secrets.NEW_RELIC_USER_API_KEY }}
+          NEXT_PUBLIC_NEW_RELIC_BROWSER_APP_NAME: apurv-personal-website-browser
         run: node scripts/setup-newrelic-alerts.mjs
