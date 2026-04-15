@@ -5,8 +5,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { addBrowserPageAction, recordBrowserEvent } from "@/lib/newrelic-browser";
 import { Mail, Send, Check, Copy } from "lucide-react";
 import { CONTACT_EMAIL } from "@/lib/constants";
+
+function getEmailDomain(email: string) {
+  const parts = email.toLowerCase().split("@");
+  return parts.length === 2 ? parts[1] : "unknown";
+}
 
 export function ContactSection() {
   const [formData, setFormData] = useState({
@@ -20,15 +26,35 @@ export function ContactSection() {
   const [copied, setCopied] = useState(false);
 
   const copyEmail = async () => {
-    await navigator.clipboard.writeText(CONTACT_EMAIL);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    try {
+      await navigator.clipboard.writeText(CONTACT_EMAIL);
+      addBrowserPageAction("ContactEmailCopied", {
+        contactMethod: "clipboard",
+      });
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (error) {
+      recordBrowserEvent("ContactClientEvent", {
+        errorMessage: error instanceof Error ? error.message : "Clipboard write failed",
+        stage: "copy_email_failed",
+      });
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitError("");
     setIsSubmitting(true);
+
+    const submitStartedAt = performance.now();
+    const emailDomain = getEmailDomain(formData.email);
+    const messageLength = formData.message.length;
+
+    addBrowserPageAction("ContactSubmitAttempted", {
+      emailDomain,
+      messageLength,
+      pathname: window.location.pathname,
+    });
 
     try {
       const response = await fetch("/api/contact", {
@@ -46,9 +72,26 @@ export function ContactSection() {
         throw new Error(result?.error || "Failed to send message. Please try again.");
       }
 
+      recordBrowserEvent("ContactClientEvent", {
+        durationMs: Number((performance.now() - submitStartedAt).toFixed(2)),
+        emailDomain,
+        messageLength,
+        responseStatus: response.status,
+        stage: "submit_success",
+      });
+
       setSubmitted(true);
       setFormData({ name: "", email: "", message: "" });
     } catch (error) {
+      recordBrowserEvent("ContactClientEvent", {
+        durationMs: Number((performance.now() - submitStartedAt).toFixed(2)),
+        emailDomain,
+        errorMessage:
+          error instanceof Error ? error.message.slice(0, 500) : "Unknown submit error",
+        messageLength,
+        stage: "submit_failed",
+      });
+
       setSubmitError(
         error instanceof Error
           ? error.message
@@ -80,6 +123,11 @@ export function ContactSection() {
           <div className="inline-flex items-center gap-3 mb-12">
             <a
               href={`mailto:${CONTACT_EMAIL}`}
+              onClick={() =>
+                addBrowserPageAction("ContactEmailClicked", {
+                  contactMethod: "mailto",
+                })
+              }
               className="inline-flex items-center gap-2 text-primary hover:text-primary/80 transition-colors"
             >
               <Mail size={20} />

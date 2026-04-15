@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { GoogleAnalytics } from '@next/third-parties/google'
 import { SpeedInsights } from '@vercel/speed-insights/next'
+import { NewRelicBrowserProvider } from '@/components/newrelic-browser-provider'
 import { ThemeProvider } from '@/components/theme-provider'
 import './globals.css'
 
@@ -39,6 +40,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={`font-sans antialiased`}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <NewRelicBrowserProvider />
           {children}
         </ThemeProvider>
         <SpeedInsights />

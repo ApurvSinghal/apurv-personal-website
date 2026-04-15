@@ -6,6 +6,7 @@ import { Menu, Moon, Sun, X } from "lucide-react";
 import { useTheme } from "next-themes";
 import { navItems } from "@/lib/constants";
 import { useActiveSection } from "@/hooks/use-active-section";
+import { addBrowserPageAction } from "@/lib/newrelic-browser";
 
 const sectionIds = navItems
   .map((item) => item.href.replace("#", ""))
@@ -23,6 +24,24 @@ export function Header() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  const toggleTheme = () => {
+    const nextTheme = theme === "dark" ? "light" : "dark";
+    addBrowserPageAction("ThemeToggled", {
+      nextTheme,
+      pathname: window.location.pathname,
+    });
+    setTheme(nextTheme);
+  };
+
+  const toggleMobileMenu = () => {
+    const nextState = !mobileMenuOpen;
+    addBrowserPageAction("MobileMenuToggled", {
+      nextState,
+      pathname: window.location.pathname,
+    });
+    setMobileMenuOpen(nextState);
+  };
+
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 bg-background/60 dark:bg-background/50 backdrop-blur-xl border-b border-black/[0.06] dark:border-white/[0.06] transition-shadow duration-300 ${
@@ -32,6 +51,7 @@ export function Header() {
       <nav className="mx-auto max-w-5xl px-6 py-4 flex items-center justify-between">
         <Link
           href="/"
+          onClick={() => addBrowserPageAction("BrandClicked", { location: "header" })}
           className="text-lg font-semibold text-foreground hover:text-primary transition-colors"
         >
           Apurv Singhal
@@ -46,6 +66,13 @@ export function Header() {
               <li key={item.href}>
                 <Link
                   href={item.href}
+                  onClick={() =>
+                    addBrowserPageAction("NavigationClicked", {
+                      label: item.label,
+                      location: "header_desktop",
+                      target: item.href,
+                    })
+                  }
                   className={`text-sm transition-colors ${
                     isActive
                       ? "text-primary font-medium"
@@ -62,6 +89,11 @@ export function Header() {
               href="/documents/resume.pdf"
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() =>
+                addBrowserPageAction("ResumeOpened", {
+                  location: "header_desktop",
+                })
+              }
               className="text-sm text-muted-foreground hover:text-primary transition-colors"
             >
               Resume
@@ -73,7 +105,7 @@ export function Header() {
           {/* Theme Toggle */}
           <button
             type="button"
-            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+            onClick={toggleTheme}
             className="text-muted-foreground hover:text-primary transition-colors"
             aria-label="Toggle theme"
           >
@@ -85,7 +117,7 @@ export function Header() {
           <button
             type="button"
             className="md:hidden text-foreground"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            onClick={toggleMobileMenu}
             aria-label="Toggle menu"
             aria-expanded={mobileMenuOpen}
           >
@@ -103,7 +135,14 @@ export function Header() {
                 <Link
                   href={item.href}
                   className="text-sm text-muted-foreground hover:text-primary transition-colors"
-                  onClick={() => setMobileMenuOpen(false)}
+                  onClick={() => {
+                    addBrowserPageAction("NavigationClicked", {
+                      label: item.label,
+                      location: "header_mobile",
+                      target: item.href,
+                    });
+                    setMobileMenuOpen(false);
+                  }}
                 >
                   {item.label}
                 </Link>
@@ -115,7 +154,12 @@ export function Header() {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-sm text-muted-foreground hover:text-primary transition-colors"
-                onClick={() => setMobileMenuOpen(false)}
+                onClick={() => {
+                  addBrowserPageAction("ResumeOpened", {
+                    location: "header_mobile",
+                  });
+                  setMobileMenuOpen(false);
+                }}
               >
                 Resume
               </Link>

@@ -1,14 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 import { z } from "zod";
-import { flushNewRelic, recordNewRelicEvent } from "@/lib/newrelic";
+import {
+  flushNewRelic,
+  getDurationMs,
+  getErrorAttributes,
+  recordNewRelicEvent,
+} from "@/lib/newrelic";
 import { insertContactMessage } from "@/lib/supabase";
-
-type ContactPayload = {
-  name: string;
-  email: string;
-  message: string;
-};
 
 const CONTACT_RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000;
 const CONTACT_RATE_LIMIT_MAX_REQUESTS = 5;
@@ -66,16 +65,26 @@ function escapeHtml(value: string) {
 }
 
 export async function POST(request: NextRequest) {
+  const requestStartedAtMs = Date.now();
   const receivedAt = new Date().toISOString();
+  const requestPath = request.nextUrl.pathname;
+  const requestHost = request.headers.get("host") ?? "unknown";
+  const referrer = request.headers.get("referer") ?? "direct";
+  const userAgent = request.headers.get("user-agent") ?? "unknown";
 
   try {
-    const payload = (await request.json()) as Partial<ContactPayload>;
+    const payload = await request.json();
     const validationResult = contactSchema.safeParse(payload);
 
     if (!validationResult.success) {
       await recordNewRelicEvent("ContactFlowEvent", {
         stage: "validation_failed",
         receivedAt,
+        requestHost,
+        requestPath,
+        referrer,
+        totalDurationMs: getDurationMs(requestStartedAtMs),
+        userAgent,
       });
       await flushNewRelic();
       return NextResponse.json(
@@ -88,18 +97,32 @@ export async function POST(request: NextRequest) {
     const messageLength = message?.length ?? 0;
     const emailDomain = email ? getEmailDomain(email) : "unknown";
     const clientIp = getClientIp(request);
+    const clientIpKnown = clientIp !== "unknown";
+    let emailOutcome = "not_attempted";
+    let emailDurationMs = 0;
+    let supabaseDurationMs = 0;
 
     await recordNewRelicEvent("ContactFlowEvent", {
       stage: "submit_received",
+      clientIpKnown,
       receivedAt,
       emailDomain,
       messageLength,
+      referrer,
+      requestHost,
+      requestPath,
+      userAgent,
     });
 
     if (isRateLimited(clientIp)) {
       await recordNewRelicEvent("ContactFlowEvent", {
         stage: "rate_limited",
+        clientIpKnown,
         receivedAt,
+        emailDomain,
+        messageLength,
+        requestPath,
+        totalDurationMs: getDurationMs(requestStartedAtMs),
       });
       await flushNewRelic();
       return NextResponse.json(
@@ -109,23 +132,32 @@ export async function POST(request: NextRequest) {
     }
 
     try {
+      const supabaseStartedAtMs = Date.now();
       await insertContactMessage({
         name,
         email,
         message,
       });
+      supabaseDurationMs = getDurationMs(supabaseStartedAtMs);
       await recordNewRelicEvent("ContactFlowEvent", {
         stage: "supabase_insert_success",
         receivedAt,
         emailDomain,
         messageLength,
+        requestPath,
+        supabaseDurationMs,
       });
     } catch (databaseError) {
       console.error("Supabase error:", databaseError);
+      supabaseDurationMs = getDurationMs(requestStartedAtMs);
       await recordNewRelicEvent("ContactFlowEvent", {
         stage: "supabase_insert_failed",
         receivedAt,
         emailDomain,
+        requestPath,
+        supabaseDurationMs,
+        totalDurationMs: getDurationMs(requestStartedAtMs),
+        ...getErrorAttributes(databaseError),
       });
       await flushNewRelic();
       return NextResponse.json(
@@ -145,6 +177,7 @@ export async function POST(request: NextRequest) {
 
     if (resendApiKey && fromEmail) {
       try {
+        const emailStartedAtMs = Date.now();
         const resend = new Resend(resendApiKey);
         const submittedAt = new Date().toLocaleString("en-US", {
           timeZone: "Asia/Kolkata",
@@ -184,34 +217,52 @@ export async function POST(request: NextRequest) {
           `,
         });
 
+        emailDurationMs = getDurationMs(emailStartedAtMs);
+        emailOutcome = "sent";
+
         await recordNewRelicEvent("ContactFlowEvent", {
           stage: "email_notifications_sent",
           receivedAt,
           emailDomain,
+          emailDurationMs,
+          requestPath,
         });
       } catch (emailError) {
         console.error("Resend error:", emailError);
+        emailDurationMs = getDurationMs(requestStartedAtMs);
+        emailOutcome = "failed";
         await recordNewRelicEvent("ContactFlowEvent", {
           stage: "email_notifications_failed",
           receivedAt,
           emailDomain,
+          emailDurationMs,
+          requestPath,
+          ...getErrorAttributes(emailError),
         });
       }
     } else {
       console.warn(
         "Resend not configured: missing RESEND_API_KEY or RESEND_FROM_EMAIL"
       );
+      emailOutcome = "skipped";
       await recordNewRelicEvent("ContactFlowEvent", {
         stage: "email_notifications_skipped",
         receivedAt,
+        requestPath,
       });
     }
 
     await recordNewRelicEvent("ContactFlowEvent", {
       stage: "response_success",
+      emailDurationMs,
+      emailOutcome,
       receivedAt,
       emailDomain,
       messageLength,
+      requestPath,
+      responseStatus: 200,
+      supabaseDurationMs,
+      totalDurationMs: getDurationMs(requestStartedAtMs),
     });
     await flushNewRelic();
 
@@ -221,6 +272,11 @@ export async function POST(request: NextRequest) {
     await recordNewRelicEvent("ContactFlowEvent", {
       stage: "response_error",
       receivedAt,
+      requestPath,
+      responseStatus: 500,
+      totalDurationMs: getDurationMs(requestStartedAtMs),
+      userAgent,
+      ...getErrorAttributes(error),
     });
     await flushNewRelic();
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
