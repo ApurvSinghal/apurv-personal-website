@@ -1,0 +1,23 @@
+name: New Relic Alerts Sync
+
+on:
+  workflow_dispatch:
+
+jobs:
+  sync-alerts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Sync New Relic alert conditions
+        env:
+          NEW_RELIC_ACCOUNT_ID: ${{ secrets.NEW_RELIC_ACCOUNT_ID }}
+          NEW_RELIC_ALERT_POLICY_NAME: apurv-personal-website Ops
+          NEW_RELIC_APP_NAME: apurv-personal-website
+          NEW_RELIC_REGION: eu
+          NEW_RELIC_USER_API_KEY: ${{ secrets.NEW_RELIC_USER_API_KEY }}
+        run: node scripts/setup-newrelic-alerts.mjs

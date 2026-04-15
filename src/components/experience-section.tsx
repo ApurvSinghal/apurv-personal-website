@@ -109,7 +109,7 @@ export function ExperienceSection() {
         {/* Resume Link */}
         <div className="mt-12 ml-4">
           <Link
-            href="documents/resume.pdf"
+            href="/documents/resume.pdf"
             target="_blank"
             className="group inline-flex items-center gap-2 text-sm text-foreground font-medium hover:text-primary transition-colors"
           >

@@ -46,7 +46,9 @@ pnpm dev
 pnpm dev      # Start local development server
 pnpm build    # Create production build
 pnpm start    # Start production server
+pnpm clean    # Remove generated local artifacts
 pnpm lint     # Run ESLint
+pnpm newrelic:alerts # Create/update New Relic alert conditions
 pnpm test     # Run all test categories
 pnpm test:unit
 pnpm test:integration
@@ -99,11 +101,24 @@ NEW_RELIC_LOG=stdout
 NEW_RELIC_ENABLED=true
 ```
 
+### Optional for New Relic browser monitoring
+
+```bash
+NEXT_PUBLIC_NEW_RELIC_BROWSER_ENABLED=true
+NEXT_PUBLIC_NEW_RELIC_BROWSER_ACCOUNT_ID=your_new_relic_account_id
+NEXT_PUBLIC_NEW_RELIC_BROWSER_AGENT_ID=your_browser_agent_id
+NEXT_PUBLIC_NEW_RELIC_BROWSER_APPLICATION_ID=your_browser_application_id
+NEXT_PUBLIC_NEW_RELIC_BROWSER_KEY=your_browser_key
+NEXT_PUBLIC_NEW_RELIC_BROWSER_TRUST_KEY=your_browser_trust_key
+NEXT_PUBLIC_NEW_RELIC_BROWSER_REGION=eu
+NEXT_PUBLIC_NEW_RELIC_BROWSER_APP_NAME=apurv-personal-website-browser
+```
+
 Notes:
 
 - If `RESEND_API_KEY` or `RESEND_FROM_EMAIL` is missing, the contact form still stores messages in Supabase, but email notifications are skipped.
 - Vercel Speed Insights is already wired into the app shell and does not need an additional code-side environment variable for basic usage.
-- Set the New Relic environment variables in Vercel and let Next.js load the agent through `instrumentation.ts`.
+- Set the New Relic environment variables in Vercel and let Next.js load the agent through `src/instrumentation.ts`.
 
 ### Optional for Supabase keep-alive cron protection
 
@@ -140,7 +155,9 @@ If you set `CRON_SECRET`, Vercel will send it automatically as a bearer token an
 
 This project is designed for deployment on Vercel. For production deploys, configure the same environment variables in the Vercel project settings.
 
-New Relic is configured through `newrelic.js`, `instrumentation.ts`, and runtime environment variables.
+New Relic is configured through `newrelic.js`, `src/instrumentation.ts`, and runtime environment variables.
+
+Browser monitoring is configured through `src/components/newrelic-browser-provider.tsx` and `src/lib/newrelic-browser.ts` using `NEXT_PUBLIC_NEW_RELIC_BROWSER_*` environment variables.
 
 ## New Relic Custom Events
 
@@ -151,9 +168,24 @@ The API layer emits custom events to New Relic for business and reliability anal
 
 These events are recorded in:
 
-- `app/api/contact/route.ts`
-- `app/api/ping-supabase/route.ts`
-- `lib/newrelic.ts`
+- `src/app/api/contact/route.ts`
+- `src/app/api/ping-supabase/route.ts`
+- `src/lib/newrelic.ts`
+- `src/components/newrelic-browser-provider.tsx`
+- `src/lib/newrelic-browser.ts`
+
+## New Relic Alerts Automation
+
+The repo includes an alert provisioning script plus a GitHub Actions workflow for keeping alert conditions in sync:
+
+- Script: `scripts/setup-newrelic-alerts.mjs`
+- Workflow: `.github/workflows/newrelic-alerts.yml`
+
+Required secrets or environment variables for alert provisioning:
+
+- `NEW_RELIC_USER_API_KEY`
+- `NEW_RELIC_ACCOUNT_ID`
+- `NEW_RELIC_REGION` (`eu` or `us`)
 
 ## New Relic Dashboard
 
@@ -184,5 +216,5 @@ Current New Relic APM application id for this project: `491407208`.
 
 ## Notes
 
-- The site metadata, analytics hooks, and Speed Insights are configured in `app/layout.tsx`.
-- The contact API implementation lives in `app/api/contact/route.ts`.
+- The site metadata, analytics hooks, and Speed Insights are configured in `src/app/layout.tsx`.
+- The contact API implementation lives in `src/app/api/contact/route.ts`.
