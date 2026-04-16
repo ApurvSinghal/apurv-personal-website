@@ -197,7 +197,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         {
           error:
-            "Contact service is temporarily unavailable. Please try again in a minute or email admin@apurvsinghal.com.",
+            "Contact service is temporarily unavailable. Please try again in a minute or email me@apurvsinghal.com.",
         },
         { status: 503 },
       );
@@ -207,7 +207,7 @@ export async function POST(request: NextRequest) {
     const resendApiKey = process.env.RESEND_API_KEY;
     const fromEmail = process.env.RESEND_FROM_EMAIL;
     const adminEmail =
-      process.env.CONTACT_NOTIFICATION_EMAIL || "admin@apurvsinghal.com";
+      process.env.CONTACT_NOTIFICATION_EMAIL || "me@apurvsinghal.com";
 
     if (resendApiKey && fromEmail) {
       try {
