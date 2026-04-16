@@ -83,7 +83,7 @@ SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
 ```bash
 RESEND_API_KEY=your_resend_api_key
 RESEND_FROM_EMAIL=Portfolio <noreply@your-domain.com>
-CONTACT_NOTIFICATION_EMAIL=admin@apurvsinghal.com
+CONTACT_NOTIFICATION_EMAIL=me@apurvsinghal.com
 ```
 
 ### Optional for analytics

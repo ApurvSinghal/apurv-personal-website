@@ -1,6 +1,6 @@
 import { Github, Linkedin, Mail, Twitter } from "lucide-react";
 
-export const CONTACT_EMAIL = "admin@apurvsinghal.com";
+export const CONTACT_EMAIL = "me@apurvsinghal.com";
 
 export const navItems = [
   { label: "About", href: "#about" },
