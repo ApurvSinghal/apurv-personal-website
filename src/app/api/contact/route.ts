@@ -16,6 +16,8 @@ const contactSchema = z.object({
   name: z.string().trim().min(1).max(100),
   email: z.string().trim().email().max(320),
   message: z.string().trim().min(1).max(5000),
+  website: z.string().trim().max(200).optional(),
+  formStartedAt: z.number().int().positive().optional(),
 });
 
 function getEmailDomain(email: string) {
@@ -81,7 +83,35 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { name, email, message } = validationResult.data;
+    const { name, email, message, website, formStartedAt } = validationResult.data;
+
+    // Bots often fill hidden fields or submit unrealistically fast.
+    if (website) {
+      await recordNewRelicEvent("ContactFlowEvent", {
+        stage: "honeypot_triggered",
+        requestPath,
+        receivedAt,
+      });
+      await flushNewRelic();
+      return NextResponse.json(
+        { error: "Invalid submission." },
+        { status: 400 },
+      );
+    }
+
+    if (formStartedAt && Date.now() - formStartedAt < 1200) {
+      await recordNewRelicEvent("ContactFlowEvent", {
+        stage: "submitted_too_fast",
+        requestPath,
+        receivedAt,
+      });
+      await flushNewRelic();
+      return NextResponse.json(
+        { error: "Please take a moment and try again." },
+        { status: 400 },
+      );
+    }
+
     const messageLength = message?.length ?? 0;
     const emailDomain = email ? getEmailDomain(email) : "unknown";
     const clientIp = getClientIp(request);

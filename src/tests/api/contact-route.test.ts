@@ -145,4 +145,40 @@ describe("POST /api/contact", () => {
     expect(response.status).toBe(200);
     expect(json.message).toBe("Message sent successfully");
   });
+
+  it("returns 400 when honeypot field is populated", async () => {
+    const request = new NextRequest("http://localhost:3000/api/contact", {
+      method: "POST",
+      body: JSON.stringify({
+        name: "Test",
+        email: "test@example.com",
+        message: "hello",
+        website: "https://spam.example",
+      }),
+      headers: { "Content-Type": "application/json" },
+    });
+
+    const response = await POST(request);
+
+    expect(response.status).toBe(400);
+    expect(insertContactMessage).not.toHaveBeenCalled();
+  });
+
+  it("returns 400 when form is submitted too quickly", async () => {
+    const request = new NextRequest("http://localhost:3000/api/contact", {
+      method: "POST",
+      body: JSON.stringify({
+        name: "Test",
+        email: "test@example.com",
+        message: "hello",
+        formStartedAt: Date.now(),
+      }),
+      headers: { "Content-Type": "application/json" },
+    });
+
+    const response = await POST(request);
+
+    expect(response.status).toBe(400);
+    expect(insertContactMessage).not.toHaveBeenCalled();
+  });
 });

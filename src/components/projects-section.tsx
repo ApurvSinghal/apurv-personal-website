@@ -1,30 +1,17 @@
+"use client";
+
 import Link from "next/link";
+import { useMemo, useState } from "react";
 import { ArrowUpRight, Github } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-
-const projects = [
-  {
-    title: "Apurv Singhal · Personal Website",
-    status: "Live" as "Live" | "WIP",
-    summary:
-      "A responsive personal website showcasing experience, contact workflow, and technical background with a performance-focused, minimal UI.",
-    technicalDetails:
-      "Built on Next.js App Router with TypeScript and Tailwind CSS, using a modular component system and lightweight UI primitives. Includes a serverless contact API wired to Supabase for message persistence, and ships with optimized fonts, metadata, and accessible navigation.",
-    technologies: ["Next.js", "TypeScript", "Tailwind CSS", "Supabase", "Vercel"],
-    liveUrl: "https://apurvsinghal.com",
-    githubUrl: "https://github.com/ApurvSinghal/apurv-personal-website",
-  },
-] as const;
-
-const liveProjects = projects.filter((project) => project.status === "Live");
-const wipProjects = projects.filter((project) => project.status === "WIP");
+import { projectCategories, projects, type Project, type ProjectStatus } from "@/lib/projects";
 
 function ProjectGroup({
   title,
   items,
 }: {
-  title: "Live" | "WIP";
-  items: (typeof projects)[number][];
+  title: ProjectStatus;
+  items: Project[];
 }) {
   return (
     <div>
@@ -52,6 +39,12 @@ function ProjectGroup({
                 <h4 className="text-foreground font-medium group-hover:text-primary transition-colors">
                   {project.title}
                 </h4>
+                <Link
+                  href={`/projects/${project.slug}`}
+                  className="text-xs text-primary/80 hover:text-primary underline underline-offset-4"
+                >
+                  Case Study
+                </Link>
               </div>
               <div className="flex items-center gap-2 shrink-0">
                 {project.githubUrl && (
@@ -103,6 +96,23 @@ function ProjectGroup({
 }
 
 export function ProjectsSection() {
+  const [selectedStatus, setSelectedStatus] = useState<"All" | ProjectStatus>("All");
+  const [selectedCategory, setSelectedCategory] = useState<"All" | (typeof projectCategories)[number]>(
+    "All",
+  );
+
+  const filteredProjects = useMemo(() => {
+    return projects.filter((project) => {
+      const statusMatch = selectedStatus === "All" || project.status === selectedStatus;
+      const categoryMatch =
+        selectedCategory === "All" || project.categories.includes(selectedCategory);
+      return statusMatch && categoryMatch;
+    });
+  }, [selectedCategory, selectedStatus]);
+
+  const liveProjects = filteredProjects.filter((project) => project.status === "Live");
+  const wipProjects = filteredProjects.filter((project) => project.status === "WIP");
+
   return (
     <section id="projects" className="py-24 scroll-mt-20">
       <div className="mx-auto max-w-5xl px-6">
@@ -115,9 +125,54 @@ export function ProjectsSection() {
           with implementation-level context and core technology decisions.
         </p>
 
+        <div className="mb-8 flex flex-wrap items-center gap-2">
+          {(["All", "Live", "WIP"] as const).map((status) => {
+            const isActive = selectedStatus === status;
+            return (
+              <button
+                key={status}
+                type="button"
+                onClick={() => setSelectedStatus(status)}
+                className={`rounded-full border px-3 py-1.5 text-xs transition-colors ${
+                  isActive
+                    ? "border-primary bg-primary/10 text-primary"
+                    : "border-border text-muted-foreground hover:border-primary/40 hover:text-primary"
+                }`}
+                aria-pressed={isActive}
+              >
+                {status}
+              </button>
+            );
+          })}
+
+          {(["All", ...projectCategories] as const).map((category) => {
+            const isActive = selectedCategory === category;
+            return (
+              <button
+                key={category}
+                type="button"
+                onClick={() => setSelectedCategory(category)}
+                className={`rounded-full border px-3 py-1.5 text-xs transition-colors ${
+                  isActive
+                    ? "border-primary bg-primary/10 text-primary"
+                    : "border-border text-muted-foreground hover:border-primary/40 hover:text-primary"
+                }`}
+                aria-pressed={isActive}
+              >
+                {category}
+              </button>
+            );
+          })}
+        </div>
+
         <div className="space-y-10">
           {liveProjects.length > 0 && <ProjectGroup title="Live" items={liveProjects} />}
           {wipProjects.length > 0 && <ProjectGroup title="WIP" items={wipProjects} />}
+          {filteredProjects.length === 0 ? (
+            <p className="text-sm text-muted-foreground">
+              No projects match the selected filters.
+            </p>
+          ) : null}
         </div>
       </div>
     </section>
