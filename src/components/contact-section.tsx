@@ -19,12 +19,14 @@ export function ContactSection() {
     name: "",
     email: "",
     message: "",
+    website: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [submitError, setSubmitError] = useState("");
   const [copied, setCopied] = useState(false);
   const [formInteracted, setFormInteracted] = useState(false);
+  const [formStartedAt] = useState(() => Date.now());
   const errorMessageId = "contact-submit-error";
 
   const copyEmail = async () => {
@@ -77,7 +79,10 @@ export function ContactSection() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          ...formData,
+          formStartedAt,
+        }),
       });
 
       if (!response.ok) {
@@ -96,7 +101,7 @@ export function ContactSection() {
       });
 
       setSubmitted(true);
-      setFormData({ name: "", email: "", message: "" });
+      setFormData({ name: "", email: "", message: "", website: "" });
     } catch (error) {
       const errorObj = error instanceof Error ? error : new Error("Unknown submit error");
       noticeBrowserError(errorObj, {
@@ -219,6 +224,23 @@ export function ContactSection() {
                     className="bg-card border-border focus:border-primary"
                   />
                 </div>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="website" className="sr-only">
+                  Website
+                </Label>
+                <Input
+                  id="website"
+                  type="text"
+                  tabIndex={-1}
+                  autoComplete="off"
+                  value={formData.website}
+                  onChange={(e) =>
+                    setFormData({ ...formData, website: e.target.value })
+                  }
+                  aria-hidden="true"
+                  className="hidden"
+                />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="message" className="text-foreground">
