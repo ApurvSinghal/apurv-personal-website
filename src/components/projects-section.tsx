@@ -41,7 +41,7 @@ function ProjectGroup({
                 </h4>
                 <Link
                   href={`/projects/${project.slug}`}
-                  className="text-xs text-primary/80 hover:text-primary underline underline-offset-4"
+                  className="text-xs text-foreground hover:text-primary underline underline-offset-4"
                 >
                   Case Study
                 </Link>
@@ -73,7 +73,7 @@ function ProjectGroup({
             </div>
 
             <p className="mt-3 text-sm text-muted-foreground leading-relaxed">{project.summary}</p>
-            <p className="mt-2 text-xs text-muted-foreground leading-relaxed opacity-80">
+            <p className="mt-2 text-xs text-muted-foreground leading-relaxed">
               {project.technicalDetails}
             </p>
 
@@ -82,7 +82,7 @@ function ProjectGroup({
                 <Badge
                   key={tech}
                   variant="secondary"
-                  className="bg-primary/10 text-primary hover:bg-primary/20 border-0 text-xs"
+                  className="bg-secondary text-secondary-foreground hover:bg-secondary/90 border-0 text-xs"
                 >
                   {tech}
                 </Badge>
@@ -135,7 +135,7 @@ export function ProjectsSection() {
                 onClick={() => setSelectedStatus(status)}
                 className={`rounded-full border px-3 py-1.5 text-xs transition-colors ${
                   isActive
-                    ? "border-primary bg-primary/10 text-primary"
+                    ? "border-primary bg-primary text-primary-foreground"
                     : "border-border text-muted-foreground hover:border-primary/40 hover:text-primary"
                 }`}
                 aria-pressed={isActive}
@@ -154,7 +154,7 @@ export function ProjectsSection() {
                 onClick={() => setSelectedCategory(category)}
                 className={`rounded-full border px-3 py-1.5 text-xs transition-colors ${
                   isActive
-                    ? "border-primary bg-primary/10 text-primary"
+                    ? "border-primary bg-primary text-primary-foreground"
                     : "border-border text-muted-foreground hover:border-primary/40 hover:text-primary"
                 }`}
                 aria-pressed={isActive}
