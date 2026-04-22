@@ -17,12 +17,28 @@ export function Header() {
   const [scrolled, setScrolled] = useState(false);
   const { theme, setTheme } = useTheme();
   const activeSection = useActiveSection(sectionIds);
+  const mobileMenuId = "mobile-navigation-menu";
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 10);
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  useEffect(() => {
+    if (!mobileMenuOpen) {
+      return;
+    }
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setMobileMenuOpen(false);
+      }
+    };
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [mobileMenuOpen]);
 
   const toggleTheme = () => {
     const nextTheme = theme === "dark" ? "light" : "dark";
@@ -120,6 +136,7 @@ export function Header() {
             onClick={toggleMobileMenu}
             aria-label="Toggle menu"
             aria-expanded={mobileMenuOpen}
+            aria-controls={mobileMenuId}
           >
             {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
@@ -128,7 +145,7 @@ export function Header() {
 
       {/* Mobile Navigation */}
       {mobileMenuOpen && (
-        <div className="md:hidden bg-background border-b border-border">
+        <div id={mobileMenuId} className="md:hidden bg-background border-b border-border">
           <ul className="px-6 py-4 flex flex-col gap-4">
             {navItems.map((item) => (
               <li key={item.href}>

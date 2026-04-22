@@ -23,9 +23,9 @@ function ProjectGroup({
       </div>
 
       <div className="grid gap-4">
-        {items.map((project, index) => (
+        {items.map((project) => (
           <article
-            key={`${project.title}-${index}`}
+            key={project.slug}
             className="group rounded-xl border border-black/[0.08] dark:border-white/[0.08] bg-white/60 dark:bg-white/[0.04] backdrop-blur-md p-6 hover:border-primary/50 hover:shadow-xl hover:shadow-primary/10 dark:hover:shadow-primary/15 transition-all duration-300"
           >
             <div className="flex items-start justify-between gap-4">

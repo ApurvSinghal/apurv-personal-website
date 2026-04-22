@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { ContactSection } from "@/components/contact-section";
 
@@ -45,5 +45,35 @@ describe("ContactSection", () => {
     expect(screen.getByLabelText("Name")).toHaveAttribute("aria-invalid", "true");
     expect(screen.getByLabelText("Email")).toHaveAttribute("aria-invalid", "true");
     expect(screen.getByLabelText("Message")).toHaveAttribute("aria-invalid", "true");
+  });
+
+  it("cleans up copy email timeout on unmount", async () => {
+    const writeTextMock = vi.fn().mockResolvedValue(undefined);
+    const clearTimeoutSpy = vi.spyOn(global, "clearTimeout");
+    const originalClipboard = navigator.clipboard;
+
+    Object.defineProperty(navigator, "clipboard", {
+      configurable: true,
+      value: {
+        writeText: writeTextMock,
+      },
+    });
+
+    const { unmount } = render(<ContactSection />);
+    await act(async () => {
+      fireEvent.click(screen.getByRole("button", { name: /copy email address/i }));
+      await Promise.resolve();
+      await Promise.resolve();
+    });
+
+    expect(writeTextMock).toHaveBeenCalledTimes(1);
+    unmount();
+
+    expect(clearTimeoutSpy).toHaveBeenCalled();
+
+    Object.defineProperty(navigator, "clipboard", {
+      configurable: true,
+      value: originalClipboard,
+    });
   });
 });

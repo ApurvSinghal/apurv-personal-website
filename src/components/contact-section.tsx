@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -27,7 +27,20 @@ export function ContactSection() {
   const [copied, setCopied] = useState(false);
   const [formInteracted, setFormInteracted] = useState(false);
   const [formStartedAt] = useState(() => Date.now());
+  const copyResetTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const errorMessageId = "contact-submit-error";
+
+  useEffect(() => {
+    return () => {
+      if (copyResetTimeoutRef.current) {
+        clearTimeout(copyResetTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  const updateField = (field: "name" | "email" | "message" | "website", value: string) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+  };
 
   const copyEmail = async () => {
     try {
@@ -36,7 +49,12 @@ export function ContactSection() {
         contactMethod: "clipboard",
       });
       setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+      if (copyResetTimeoutRef.current) {
+        clearTimeout(copyResetTimeoutRef.current);
+      }
+      copyResetTimeoutRef.current = setTimeout(() => {
+        setCopied(false);
+      }, 2000);
     } catch (error) {
       noticeBrowserError(
         error instanceof Error ? error : new Error("Clipboard write failed"),
@@ -196,9 +214,7 @@ export function ContactSection() {
                     placeholder="Your name"
                     value={formData.name}
                     onFocus={() => handleFieldFocus("name")}
-                    onChange={(e) =>
-                      setFormData({ ...formData, name: e.target.value })
-                    }
+                    onChange={(e) => updateField("name", e.target.value)}
                     aria-describedby={submitError ? errorMessageId : undefined}
                     aria-invalid={submitError ? true : undefined}
                     required
@@ -215,9 +231,7 @@ export function ContactSection() {
                     placeholder="your@email.com"
                     value={formData.email}
                     onFocus={() => handleFieldFocus("email")}
-                    onChange={(e) =>
-                      setFormData({ ...formData, email: e.target.value })
-                    }
+                    onChange={(e) => updateField("email", e.target.value)}
                     aria-describedby={submitError ? errorMessageId : undefined}
                     aria-invalid={submitError ? true : undefined}
                     required
@@ -235,9 +249,7 @@ export function ContactSection() {
                   tabIndex={-1}
                   autoComplete="off"
                   value={formData.website}
-                  onChange={(e) =>
-                    setFormData({ ...formData, website: e.target.value })
-                  }
+                  onChange={(e) => updateField("website", e.target.value)}
                   aria-hidden="true"
                   className="hidden"
                 />
@@ -252,9 +264,7 @@ export function ContactSection() {
                   rows={5}
                   value={formData.message}
                   onFocus={() => handleFieldFocus("message")}
-                  onChange={(e) =>
-                    setFormData({ ...formData, message: e.target.value })
-                  }
+                  onChange={(e) => updateField("message", e.target.value)}
                   aria-describedby={submitError ? errorMessageId : undefined}
                   aria-invalid={submitError ? true : undefined}
                   required
