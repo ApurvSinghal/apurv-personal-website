@@ -16,8 +16,8 @@ function isAuthorized(request: NextRequest) {
     return process.env.NODE_ENV !== "production";
   }
 
-  const authHeader = request.headers.get("authorization");
-  return authHeader === `Bearer ${configuredSecret}`;
+  const secretParam = request.nextUrl.searchParams.get("secret");
+  return secretParam === configuredSecret;
 }
 
 export async function GET(request: NextRequest) {

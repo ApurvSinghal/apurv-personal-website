@@ -1,7 +1,7 @@
 {
   "crons": [
     {
-      "path": "/api/ping-supabase",
+      "path": "/api/ping-supabase?secret=$CRON_SECRET",
       "schedule": "0 0 * * *"
     }
   ]
