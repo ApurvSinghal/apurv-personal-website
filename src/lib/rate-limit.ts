@@ -63,11 +63,11 @@ async function callUpstashCommand(
 }
 
 async function runUpstashRateLimit(ip: string): Promise<RateLimitDecision> {
-  const baseUrl = process.env.UPSTASH_REDIS_REST_URL;
-  const token = process.env.UPSTASH_REDIS_REST_TOKEN;
+  const baseUrl = process.env.KV_REST_API_URL ?? process.env.UPSTASH_REDIS_REST_URL;
+  const token = process.env.KV_REST_API_TOKEN ?? process.env.UPSTASH_REDIS_REST_TOKEN;
 
   if (!baseUrl || !token) {
-    throw new Error("UPSTASH_REDIS_REST_URL or UPSTASH_REDIS_REST_TOKEN is not configured");
+    throw new Error("Redis credentials not configured");
   }
 
   const key = `ratelimit:contact:${ip}`;
@@ -99,11 +99,14 @@ export async function getContactRateLimitDecision(ip: string): Promise<RateLimit
     };
   }
 
-  if (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) {
+  if (
+    (process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN) ||
+    (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN)
+  ) {
     try {
       return await runUpstashRateLimit(ip);
     } catch (error) {
-      console.warn("Upstash rate limiting failed, falling back to memory", {
+      console.warn("Redis rate limiting failed, falling back to memory", {
         error: error instanceof Error ? error.message : String(error),
       });
     }

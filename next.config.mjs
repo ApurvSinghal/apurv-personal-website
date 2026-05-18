@@ -5,8 +5,8 @@ const nextConfig = {
   async headers() {
     const csp = [
       "default-src 'self'",
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com",
-      "connect-src 'self' https://vitals.vercel-insights.com",
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://va.vercel-scripts.com",
+      "connect-src 'self' https://vitals.vercel-insights.com https://va.vercel-scripts.com",
       `img-src 'self' data: blob:`,
       `style-src 'self' 'unsafe-inline'`,
       `font-src 'self'`,
