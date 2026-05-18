@@ -12,7 +12,9 @@ export async function GET(request: NextRequest) {
     const sitemapUrl = "https://apurvsinghal.com/sitemap.xml";
     const pingUrl = `https://www.google.com/ping?sitemap=${encodeURIComponent(sitemapUrl)}`;
 
-    const response = await fetch(pingUrl, { signal: AbortSignal.timeout(5000) });
+    const response = await fetch(pingUrl, {
+      signal: AbortSignal.timeout(5000),
+    });
 
     console.info("Sitemap ping completed", {
       status: response.status,

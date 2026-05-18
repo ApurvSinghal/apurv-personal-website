@@ -12,7 +12,10 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-background relative">
       {/* Ambient background orbs */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden -z-10" aria-hidden>
+      <div
+        className="fixed inset-0 pointer-events-none overflow-hidden -z-10"
+        aria-hidden
+      >
         <div className="absolute top-[-15%] right-[-5%] w-[700px] h-[700px] rounded-full bg-primary/20 dark:bg-primary/15 blur-[140px]" />
         <div className="absolute top-[50%] left-[-10%] w-[500px] h-[500px] rounded-full bg-primary/10 dark:bg-primary/8 blur-[120px]" />
         <div className="absolute bottom-[5%] right-[10%] w-[400px] h-[400px] rounded-full bg-primary/10 dark:bg-primary/5 blur-[100px]" />
@@ -23,10 +26,18 @@ export default function Home() {
       <Header />
       <main>
         <HeroSection />
-        <div data-animate><ExperienceSection /></div>
-        <div data-animate><SkillsSection /></div>
-        <div data-animate><ProjectsSection /></div>
-        <div data-animate><ContactSection /></div>
+        <div data-animate>
+          <ExperienceSection />
+        </div>
+        <div data-animate>
+          <SkillsSection />
+        </div>
+        <div data-animate>
+          <ProjectsSection />
+        </div>
+        <div data-animate>
+          <ContactSection />
+        </div>
       </main>
       <Footer />
     </div>

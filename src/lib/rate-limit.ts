@@ -1,7 +1,10 @@
 const CONTACT_RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000;
 const CONTACT_RATE_LIMIT_MAX_REQUESTS = 5;
 
-const contactRequestCounts = new Map<string, { count: number; windowStart: number }>();
+const contactRequestCounts = new Map<
+  string,
+  { count: number; windowStart: number }
+>();
 
 type RateLimitDecision = {
   currentCount: number;
@@ -45,7 +48,9 @@ async function callUpstashCommand(
   command: string,
   ...args: Array<string | number>
 ) {
-  const url = new URL(`${baseUrl}/${command}/${args.map((value) => encodeURIComponent(String(value))).join("/")}`);
+  const url = new URL(
+    `${baseUrl}/${command}/${args.map((value) => encodeURIComponent(String(value))).join("/")}`,
+  );
   const response = await fetch(url, {
     method: "POST",
     headers: {
@@ -56,15 +61,19 @@ async function callUpstashCommand(
 
   if (!response.ok) {
     const body = await response.text().catch(() => "");
-    throw new Error(`Upstash ${command} failed with status ${response.status}${body ? `: ${body}` : ""}`);
+    throw new Error(
+      `Upstash ${command} failed with status ${response.status}${body ? `: ${body}` : ""}`,
+    );
   }
 
   return response.json() as Promise<{ result?: number | string }>;
 }
 
 async function runUpstashRateLimit(ip: string): Promise<RateLimitDecision> {
-  const baseUrl = process.env.KV_REST_API_URL ?? process.env.UPSTASH_REDIS_REST_URL;
-  const token = process.env.KV_REST_API_TOKEN ?? process.env.UPSTASH_REDIS_REST_TOKEN;
+  const baseUrl =
+    process.env.KV_REST_API_URL ?? process.env.UPSTASH_REDIS_REST_URL;
+  const token =
+    process.env.KV_REST_API_TOKEN ?? process.env.UPSTASH_REDIS_REST_TOKEN;
 
   if (!baseUrl || !token) {
     throw new Error("Redis credentials not configured");
@@ -79,7 +88,13 @@ async function runUpstashRateLimit(ip: string): Promise<RateLimitDecision> {
   }
 
   if (currentCount === 1) {
-    await callUpstashCommand(baseUrl, token, "pexpire", key, CONTACT_RATE_LIMIT_WINDOW_MS);
+    await callUpstashCommand(
+      baseUrl,
+      token,
+      "pexpire",
+      key,
+      CONTACT_RATE_LIMIT_WINDOW_MS,
+    );
   }
 
   return {
@@ -89,7 +104,9 @@ async function runUpstashRateLimit(ip: string): Promise<RateLimitDecision> {
   };
 }
 
-export async function getContactRateLimitDecision(ip: string): Promise<RateLimitDecision> {
+export async function getContactRateLimitDecision(
+  ip: string,
+): Promise<RateLimitDecision> {
   if (ip === "unknown") {
     console.info("Rate limit skipped: unknown client IP");
     return {
