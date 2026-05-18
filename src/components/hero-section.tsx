@@ -10,15 +10,18 @@ export function HeroSection() {
           {/* Left Column */}
           <div className="md:sticky md:top-28 relative">
             {/* Glow orb behind name */}
-            <div className="absolute -top-10 -left-10 w-64 h-64 rounded-full bg-primary/25 dark:bg-primary/20 blur-[80px] pointer-events-none" aria-hidden />
+            <div
+              className="absolute -top-10 -left-10 w-64 h-64 rounded-full bg-primary/25 dark:bg-primary/20 blur-[80px] pointer-events-none"
+              aria-hidden
+            />
             <h1 className="relative text-4xl md:text-5xl font-bold tracking-tight bg-gradient-to-br from-foreground via-foreground to-primary bg-clip-text text-transparent">
               Apurv Singhal
             </h1>
             <p className="mt-3 text-xl text-primary font-medium">
-              Lead Consultant at Capgemini
+              AI Engineer & Builder
             </p>
             <p className="mt-3 text-sm text-muted-foreground leading-relaxed max-w-xs">
-              Cloud & DevOps · .NET · Mobile · Japanese N5
+              AI Agents · Claude API · Azure AI · RAG
             </p>
 
             <div className="mt-4 inline-flex items-center gap-1.5 text-xs text-muted-foreground">
@@ -74,33 +77,42 @@ export function HeroSection() {
           {/* Right Column - About Content */}
           <div id="about" className="scroll-mt-28">
             <p className="text-muted-foreground leading-relaxed text-lg">
-              I&apos;m a passionate technology professional with a strong focus on{" "}
-              <span className="text-foreground font-medium">Azure Cloud</span>,{" "}
-              <span className="text-foreground font-medium">Azure DevOps</span>,{" "}
-              <span className="text-foreground font-medium">.NET</span> software development,
-              and mobile application creation. My goal is to build scalable, high-performing
-              solutions that deliver measurable results for clients and teams alike.
+              {
+                "I'm an engineer with 6+ years shipping production systems at enterprise scale. I'm now going deep on "
+              }
+              <span className="text-foreground font-medium">AI</span>
+              {
+                " — building agents, automation, and AI-powered applications that solve real business problems."
+              }
             </p>
             <p className="mt-6 text-muted-foreground leading-relaxed text-lg">
-              Currently based in{" "}
-              <span className="text-foreground font-medium">Melbourne, Australia</span>,
-              I lead Azure cloud initiatives at Capgemini, optimizing resource utilization
-              and performance while enhancing CI/CD pipelines to reduce deployment time.
-              I&apos;m committed to mentoring junior developers and fostering knowledge-sharing
-              within my teams.
+              {"Based in "}
+              <span className="text-foreground font-medium">Melbourne</span>
+              {
+                ", I currently lead cloud initiatives at Capgemini. That background — shipping reliable systems at scale, navigating enterprise constraints, talking to stakeholders — is what I bring to AI work. Not just demos, but "
+              }
+              <span className="text-foreground font-medium">
+                production-ready systems
+              </span>
+              {"."}
             </p>
             <p className="mt-6 text-muted-foreground leading-relaxed text-lg">
-              My expertise includes designing and optimizing{" "}
-              <span className="text-foreground font-medium">cloud architecture</span> for
-              performance, security, and cost efficiency, crafting robust{" "}
-              <span className="text-foreground font-medium">CI/CD pipelines</span>, and
-              building secure, maintainable applications. I also develop responsive,
-              user-centric mobile apps for diverse platforms.
+              {"My focus is on the applied side of AI: "}
+              <span className="text-foreground font-medium">Claude API</span>
+              {", "}
+              <span className="text-foreground font-medium">RAG pipelines</span>
+              {", "}
+              <span className="text-foreground font-medium">
+                agent workflows
+              </span>
+              {
+                ", and Azure AI. I care about things that actually work in production: clear failure modes, observable systems, and measurable outcomes."
+              }
             </p>
             <p className="mt-6 text-muted-foreground leading-relaxed text-lg">
-              I believe that combining technical expertise with a proactive mindset is the
-              key to delivering exceptional outcomes. I&apos;m committed to staying ahead of
-              emerging tech trends and fostering collaboration and innovation within my teams.
+              {
+                "If you have a problem that AI can solve — or you're not sure yet — I'm happy to talk through it."
+              }
             </p>
           </div>
         </div>

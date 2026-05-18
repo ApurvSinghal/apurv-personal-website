@@ -9,8 +9,14 @@ const experiences = [
     company: "Capgemini",
     companyUrl: "https://www.capgemini.com",
     description:
-      "Leading Azure cloud initiatives, optimizing resource utilization and performance across multiple projects. Enhanced CI/CD pipelines, significantly reducing deployment time and improving system stability. Actively mentoring junior developers and facilitating knowledge-sharing sessions to foster team growth and collaboration.",
-    technologies: ["Azure", "Azure DevOps", "CI/CD", ".NET", "Cloud Architecture"],
+      "Leading engineering teams building production-grade cloud systems at enterprise scale. Optimized infrastructure across multiple client engagements, cutting deployment time and improving system reliability. Mentored teams on architecture and engineering practices.",
+    technologies: [
+      "Azure",
+      "Cloud Architecture",
+      ".NET",
+      "System Design",
+      "Team Leadership",
+    ],
   },
   {
     period: "2021 — 2023",
@@ -18,8 +24,13 @@ const experiences = [
     company: "Capgemini",
     companyUrl: "https://www.capgemini.com",
     description:
-      "Implemented Azure DevOps strategies to enhance platform stability and reliability. Led platform migration initiatives, system upgrades, and continuous improvements to ensure optimal performance and scalability.",
-    technologies: ["Azure DevOps", "Platform Migration", "System Architecture", ".NET"],
+      "Led platform migration and reliability initiatives on Azure. Focused on system stability, scalability, and continuous delivery across multiple client environments.",
+    technologies: [
+      "Azure",
+      "Platform Migration",
+      "System Architecture",
+      ".NET",
+    ],
   },
   {
     period: "2021",
@@ -27,8 +38,8 @@ const experiences = [
     company: "Capgemini",
     companyUrl: "https://www.capgemini.com",
     description:
-      "Contributed to Azure cloud and DevOps initiatives during a 6-month contract period, supporting the team in delivering reliable and scalable solutions.",
-    technologies: ["Azure", "DevOps", ".NET"],
+      "Azure cloud and backend systems delivery during a 6-month contract, supporting reliable and scalable solutions.",
+    technologies: ["Azure", "Backend Systems", ".NET"],
   },
   {
     period: "2020 — 2021",
@@ -37,7 +48,11 @@ const experiences = [
     companyUrl: "https://www.willow.ai",
     description:
       "Developed responsive mobile applications with a focus on performance optimization. Streamlined back-end processes to enhance data processing efficiency and improve overall application responsiveness.",
-    technologies: ["Mobile Development", "Backend Optimization", "Data Processing"],
+    technologies: [
+      "Mobile Development",
+      "Backend Optimization",
+      "Data Processing",
+    ],
   },
   {
     period: "2018 — 2020",
@@ -45,7 +60,7 @@ const experiences = [
     company: "TechCompiler Data Systems",
     companyUrl: "https://www.techcompiler.com",
     description:
-      "Developed and maintained reliable and scalable .NET applications. Collaborated with cross-functional teams to deliver high-quality software solutions that met business requirements and user needs.",
+      "Built and maintained reliable, scalable .NET applications. Collaborated with cross-functional teams to deliver software solutions that met business requirements.",
     technologies: [".NET", "C#", "SQL Server", "Web Applications"],
   },
 ];

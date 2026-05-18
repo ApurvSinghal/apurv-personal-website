@@ -2,50 +2,55 @@ import { Badge } from "@/components/ui/badge";
 
 const skillGroups = [
   {
-    category: "Cloud & DevOps",
+    category: "AI & Agents",
     skills: [
-      "Microsoft Azure",
-      "Azure DevOps",
-      "CI/CD Pipelines",
-      "Cloud Architecture",
-      "Infrastructure as Code",
-      "Platform Migration",
+      "Claude API",
+      "OpenAI",
+      "LangChain",
+      "RAG",
+      "Vector Databases",
+      "MCP",
+      "Prompt Engineering",
+      "AI Agents",
+      "Structured Outputs",
     ],
   },
   {
-    category: "Backend Development",
+    category: "Cloud & Infrastructure",
+    skills: [
+      "Azure",
+      "Azure OpenAI",
+      "Azure AI Foundry",
+      "Vercel",
+      "Serverless",
+      "Cloud Architecture",
+    ],
+  },
+  {
+    category: "Backend & APIs",
     skills: [
       ".NET / ASP.NET Core",
       "C#",
-      "SQL Server",
-      "REST APIs",
-      "Microservices",
-      "System Architecture",
-    ],
-  },
-  {
-    category: "Mobile & Frontend",
-    skills: [
-      "Mobile Development",
-      "React Native",
-      "Next.js",
+      "Node.js",
       "TypeScript",
-      "Tailwind CSS",
+      "REST APIs",
+      "SQL Server",
+      "Microservices",
     ],
   },
   {
-    category: "Tools & Practices",
+    category: "Frontend & Mobile",
+    skills: ["Next.js", "React Native", "TypeScript", "Tailwind CSS"],
+  },
+  {
+    category: "Engineering Practices",
     skills: [
-      "Git",
-      "Agile / Scrum",
+      "CI/CD",
+      "System Architecture",
       "Technical Mentoring",
       "Code Review",
-      "Azure Boards",
+      "Agile",
     ],
-  },
-  {
-    category: "Languages",
-    skills: ["C#", "TypeScript", "JavaScript", "SQL", "Japanese (N5)"],
   },
 ];
 
@@ -57,8 +62,8 @@ export function SkillsSection() {
           Skills
         </h2>
         <p className="text-muted-foreground max-w-3xl leading-relaxed mb-12">
-          Core technologies and practices I work with day-to-day, spanning cloud
-          infrastructure, backend systems, mobile, and frontend development.
+          Core tools and practices across AI engineering, cloud infrastructure,
+          and full-stack development.
         </p>
 
         <div className="grid sm:grid-cols-2 gap-4">

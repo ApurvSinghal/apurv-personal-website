@@ -6,6 +6,7 @@ import { ProjectsSection } from "@/components/projects-section";
 import { ContactSection } from "@/components/contact-section";
 import { Footer } from "@/components/footer";
 import { KeyboardShortcuts } from "@/components/keyboard-shortcuts";
+import { AnimateOnScroll } from "@/components/animate-on-scroll";
 
 export default function Home() {
   return (
@@ -17,14 +18,15 @@ export default function Home() {
         <div className="absolute bottom-[5%] right-[10%] w-[400px] h-[400px] rounded-full bg-primary/10 dark:bg-primary/5 blur-[100px]" />
       </div>
 
+      <AnimateOnScroll />
       <KeyboardShortcuts />
       <Header />
       <main>
         <HeroSection />
-        <ExperienceSection />
-        <SkillsSection />
-        <ProjectsSection />
-        <ContactSection />
+        <div data-animate><ExperienceSection /></div>
+        <div data-animate><SkillsSection /></div>
+        <div data-animate><ProjectsSection /></div>
+        <div data-animate><ContactSection /></div>
       </main>
       <Footer />
     </div>

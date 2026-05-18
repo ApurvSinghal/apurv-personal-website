@@ -4,7 +4,12 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import { ArrowUpRight, Github } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { projectCategories, projects, type Project, type ProjectStatus } from "@/lib/projects";
+import {
+  projectCategories,
+  projects,
+  type Project,
+  type ProjectStatus,
+} from "@/lib/projects";
 
 function ProjectGroup({
   title,
@@ -16,7 +21,9 @@ function ProjectGroup({
   return (
     <div>
       <div className="mb-4 flex items-center gap-3">
-        <h3 className="text-sm font-semibold text-foreground uppercase tracking-wider">{title}</h3>
+        <h3 className="text-sm font-semibold text-foreground uppercase tracking-wider">
+          {title}
+        </h3>
         <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded-full">
           {items.length}
         </span>
@@ -72,7 +79,9 @@ function ProjectGroup({
               </div>
             </div>
 
-            <p className="mt-3 text-sm text-muted-foreground leading-relaxed">{project.summary}</p>
+            <p className="mt-3 text-sm text-muted-foreground leading-relaxed">
+              {project.summary}
+            </p>
             <p className="mt-2 text-xs text-muted-foreground leading-relaxed">
               {project.technicalDetails}
             </p>
@@ -96,22 +105,30 @@ function ProjectGroup({
 }
 
 export function ProjectsSection() {
-  const [selectedStatus, setSelectedStatus] = useState<"All" | ProjectStatus>("All");
-  const [selectedCategory, setSelectedCategory] = useState<"All" | (typeof projectCategories)[number]>(
+  const [selectedStatus, setSelectedStatus] = useState<"All" | ProjectStatus>(
     "All",
   );
+  const [selectedCategory, setSelectedCategory] = useState<
+    "All" | (typeof projectCategories)[number]
+  >("All");
 
   const filteredProjects = useMemo(() => {
     return projects.filter((project) => {
-      const statusMatch = selectedStatus === "All" || project.status === selectedStatus;
+      const statusMatch =
+        selectedStatus === "All" || project.status === selectedStatus;
       const categoryMatch =
-        selectedCategory === "All" || project.categories.includes(selectedCategory);
+        selectedCategory === "All" ||
+        project.categories.includes(selectedCategory);
       return statusMatch && categoryMatch;
     });
   }, [selectedCategory, selectedStatus]);
 
-  const liveProjects = filteredProjects.filter((project) => project.status === "Live");
-  const wipProjects = filteredProjects.filter((project) => project.status === "WIP");
+  const liveProjects = filteredProjects.filter(
+    (project) => project.status === "Live",
+  );
+  const wipProjects = filteredProjects.filter(
+    (project) => project.status === "WIP",
+  );
 
   return (
     <section id="projects" className="py-24 scroll-mt-20">
@@ -120,9 +137,8 @@ export function ProjectsSection() {
           Apps & Projects
         </h2>
         <p className="text-muted-foreground max-w-3xl leading-relaxed mb-12">
-          A curated set of production and in-progress systems, focused on cloud architecture,
-          DevOps reliability, backend performance, and developer tooling. Each project is documented
-          with implementation-level context and core technology decisions.
+          Production systems and tools I&apos;ve built — with implementation
+          detail and core decisions documented. AI projects coming soon.
         </p>
 
         <div className="mb-8 flex flex-wrap items-center gap-2">
@@ -166,8 +182,12 @@ export function ProjectsSection() {
         </div>
 
         <div className="space-y-10">
-          {liveProjects.length > 0 && <ProjectGroup title="Live" items={liveProjects} />}
-          {wipProjects.length > 0 && <ProjectGroup title="WIP" items={wipProjects} />}
+          {liveProjects.length > 0 && (
+            <ProjectGroup title="Live" items={liveProjects} />
+          )}
+          {wipProjects.length > 0 && (
+            <ProjectGroup title="WIP" items={wipProjects} />
+          )}
           {filteredProjects.length === 0 ? (
             <p className="text-sm text-muted-foreground">
               No projects match the selected filters.

@@ -3,7 +3,7 @@ export type ProjectStatus = "Live" | "WIP";
 export type ProjectCategory =
   | "Cloud"
   | "Backend"
-  | "DevOps"
+  | "AI"
   | "Frontend"
   | "Observability";
 
@@ -30,7 +30,7 @@ export const projects: Project[] = [
     technicalDetails:
       "Built with Next.js App Router, TypeScript, and Tailwind CSS using reusable UI primitives and route-level SEO. The architecture includes a monitored contact pipeline, generated Open Graph assets, structured data, and a layered testing strategy to keep product quality high as the site evolves.",
     technologies: ["Next.js", "TypeScript", "Tailwind CSS", "Resend", "Vercel"],
-    categories: ["Frontend", "Backend", "DevOps", "Observability"],
+    categories: ["Frontend", "Backend", "Cloud", "Observability"],
     liveUrl: "https://apurvsinghal.com",
     githubUrl: "https://github.com/ApurvSinghal/apurv-personal-website",
     highlights: [
@@ -62,9 +62,9 @@ export const projects: Project[] = [
 ];
 
 export const projectCategories: ProjectCategory[] = [
+  "AI",
   "Cloud",
   "Backend",
-  "DevOps",
   "Frontend",
   "Observability",
 ];

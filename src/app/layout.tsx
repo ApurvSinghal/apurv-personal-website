@@ -7,13 +7,13 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://apurvsinghal.com"),
-  title: "Apurv Singhal - Software Engineer",
+  title: "Apurv Singhal — AI Engineer & Builder",
   description:
-    "Software engineer building digital experiences. Portfolio showcasing projects, skills, and experience.",
+    "Enterprise engineer going deep on AI. I build AI agents and automation for real businesses — backed by 6 years shipping production systems on Azure.",
   openGraph: {
-    title: "Apurv Singhal - Software Engineer",
+    title: "Apurv Singhal — AI Engineer & Builder",
     description:
-      "Software engineer building digital experiences. Portfolio showcasing projects, skills, and experience.",
+      "Enterprise engineer going deep on AI. I build AI agents and automation for real businesses — backed by 6 years shipping production systems on Azure.",
     url: "https://apurvsinghal.com",
     images: ["/opengraph-image"],
     siteName: "Apurv Singhal",
@@ -22,9 +22,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Apurv Singhal - Software Engineer",
+    title: "Apurv Singhal — AI Engineer & Builder",
     description:
-      "Software engineer building digital experiences. Portfolio showcasing projects, skills, and experience.",
+      "Enterprise engineer going deep on AI. I build AI agents and automation for real businesses — backed by 6 years shipping production systems on Azure.",
     creator: "@apurvsinghal28",
     images: ["/opengraph-image"],
   },
@@ -53,7 +53,7 @@ export default function RootLayout({
           "https://www.linkedin.com/in/apurvsinghal28",
           "https://x.com/apurvsinghal28",
         ],
-        jobTitle: "Software Engineer",
+        jobTitle: "AI Engineer",
         email: "mailto:me@apurvsinghal.com",
       },
       {
