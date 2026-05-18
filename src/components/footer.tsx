@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { socialLinks } from "@/lib/constants";
-import { addBrowserPageAction } from "@/lib/newrelic-browser";
 
 export function Footer() {
   return (
@@ -10,7 +9,8 @@ export function Footer() {
       <div className="mx-auto max-w-5xl px-6">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
           <p className="text-sm text-muted-foreground">
-            &copy; {new Date().getFullYear()} Apurv Singhal. All rights reserved.
+            &copy; {new Date().getFullYear()} Apurv Singhal. All rights
+            reserved.
           </p>
 
           <div className="flex items-center gap-5">
@@ -20,13 +20,6 @@ export function Footer() {
                 href={social.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                onClick={() =>
-                  addBrowserPageAction("SocialLinkClicked", {
-                    label: social.label,
-                    location: "footer",
-                    target: social.href,
-                  })
-                }
                 className="text-muted-foreground hover:text-primary transition-colors"
                 aria-label={social.label}
               >

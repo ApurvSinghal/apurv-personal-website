@@ -1,16 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 import { z } from "zod";
-import {
-  flushNewRelic,
-  getDurationMs,
-  getErrorAttributes,
-  recordNewRelicEvent,
-  addTransactionAttributes,
-  noticeServerError,
-} from "@/lib/newrelic";
 import { getContactRateLimitDecision } from "@/lib/rate-limit";
-import { insertContactMessage } from "@/lib/supabase";
 
 const contactSchema = z.object({
   name: z.string().trim().min(1).max(100),
@@ -34,6 +25,10 @@ function getClientIp(request: NextRequest) {
   return request.headers.get("x-real-ip") ?? "unknown";
 }
 
+function getDurationMs(startTimeMs: number) {
+  return Date.now() - startTimeMs;
+}
+
 function escapeHtml(value: string) {
   return value
     .replace(/&/g, "&amp;")
@@ -45,54 +40,32 @@ function escapeHtml(value: string) {
 
 export async function POST(request: NextRequest) {
   const requestStartedAtMs = Date.now();
-  const receivedAt = new Date().toISOString();
-  const requestPath = request.nextUrl.pathname;
-  const requestHost = request.headers.get("host") ?? "unknown";
-  const referrer = request.headers.get("referer") ?? "direct";
-  const userAgent = request.headers.get("user-agent") ?? "unknown";
 
   try {
-    const payload = await request.json();
+    let payload: unknown;
+
+    try {
+      payload = await request.json();
+    } catch {
+      return NextResponse.json(
+        { error: "Invalid JSON payload." },
+        { status: 400 },
+      );
+    }
+
     const validationResult = contactSchema.safeParse(payload);
 
-    await addTransactionAttributes({
-      contactRequestHost: requestHost,
-      contactReferrer: referrer,
-      contactRequestPath: requestPath,
-    });
-
     if (!validationResult.success) {
-      const fieldErrors = validationResult.error.issues
-        .map((issue) => `${issue.path.join(".")}: ${issue.message}`)
-        .join("; ");
-      console.warn("Contact validation failed", { receivedAt, fieldErrors, referrer, userAgent });
-      await recordNewRelicEvent("ContactFlowEvent", {
-        stage: "validation_failed",
-        fieldErrors,
-        receivedAt,
-        requestHost,
-        requestPath,
-        referrer,
-        totalDurationMs: getDurationMs(requestStartedAtMs),
-        userAgent,
-      });
-      await flushNewRelic();
       return NextResponse.json(
         { error: "Please provide a valid name, email, and message." },
         { status: 400 },
       );
     }
 
-    const { name, email, message, website, formStartedAt } = validationResult.data;
+    const { name, email, message, website, formStartedAt } =
+      validationResult.data;
 
-    // Bots often fill hidden fields or submit unrealistically fast.
     if (website) {
-      await recordNewRelicEvent("ContactFlowEvent", {
-        stage: "honeypot_triggered",
-        requestPath,
-        receivedAt,
-      });
-      await flushNewRelic();
       return NextResponse.json(
         { error: "Invalid submission." },
         { status: 400 },
@@ -100,130 +73,28 @@ export async function POST(request: NextRequest) {
     }
 
     if (formStartedAt && Date.now() - formStartedAt < 1200) {
-      await recordNewRelicEvent("ContactFlowEvent", {
-        stage: "submitted_too_fast",
-        requestPath,
-        receivedAt,
-      });
-      await flushNewRelic();
       return NextResponse.json(
         { error: "Please take a moment and try again." },
         { status: 400 },
       );
     }
 
-    const messageLength = message?.length ?? 0;
-    const emailDomain = email ? getEmailDomain(email) : "unknown";
     const clientIp = getClientIp(request);
-    const clientIpKnown = clientIp !== "unknown";
-    let emailOutcome = "not_attempted";
-    let emailDurationMs = 0;
-    let supabaseDurationMs = 0;
-
-    console.info("Contact form submission received", {
-      receivedAt,
-      emailDomain,
-      messageLength,
-      clientIpKnown,
-      referrer,
-    });
-
-    await addTransactionAttributes({
-      contactEmailDomain: emailDomain,
-      contactMessageLength: messageLength,
-      contactClientIpKnown: clientIpKnown,
-    });
-
-    await recordNewRelicEvent("ContactFlowEvent", {
-      stage: "submit_received",
-      clientIpKnown,
-      receivedAt,
-      emailDomain,
-      messageLength,
-      referrer,
-      requestHost,
-      requestPath,
-      userAgent,
-    });
-
     const rateLimitDecision = await getContactRateLimitDecision(clientIp);
 
     if (rateLimitDecision.limited) {
-      console.warn("Contact request rate limited", {
-        receivedAt,
-        clientIpKnown,
-        currentRequestCount: rateLimitDecision.currentCount,
-        rateLimitSource: rateLimitDecision.source,
-      });
-      await recordNewRelicEvent("ContactFlowEvent", {
-        stage: "rate_limited",
-        clientIpKnown,
-        currentRequestCount: rateLimitDecision.currentCount,
-        receivedAt,
-        emailDomain,
-        messageLength,
-        requestPath,
-        rateLimitSource: rateLimitDecision.source,
-        totalDurationMs: getDurationMs(requestStartedAtMs),
-      });
-      await flushNewRelic();
       return NextResponse.json(
         { error: "Too many requests. Please try again later." },
         { status: 429 },
       );
     }
 
-    await recordNewRelicEvent("ContactFlowEvent", {
-      stage: "rate_limit_checked",
-      clientIpKnown,
-      currentRequestCount: rateLimitDecision.currentCount,
-      receivedAt,
-      requestPath,
-      rateLimitSource: rateLimitDecision.source,
-    });
+    const resendApiKey = process.env.RESEND_API_KEY;
+    const fromEmail = process.env.RESEND_FROM_EMAIL;
+    const adminEmail =
+      process.env.CONTACT_NOTIFICATION_EMAIL || "me@apurvsinghal.com";
 
-    try {
-      const supabaseStartedAtMs = Date.now();
-      await insertContactMessage({
-        name,
-        email,
-        message,
-      });
-      supabaseDurationMs = getDurationMs(supabaseStartedAtMs);
-      console.info("Supabase insert succeeded", {
-        receivedAt,
-        emailDomain,
-        supabaseDurationMs,
-      });
-      await recordNewRelicEvent("ContactFlowEvent", {
-        stage: "supabase_insert_success",
-        receivedAt,
-        emailDomain,
-        messageLength,
-        requestPath,
-        supabaseDurationMs,
-      });
-    } catch (databaseError) {
-      console.error("Supabase insert failed", {
-        receivedAt,
-        emailDomain,
-        error: databaseError instanceof Error ? databaseError.message : String(databaseError),
-      });
-      await noticeServerError(databaseError, {
-        stage: "supabase_insert_failed",
-        requestPath,
-      });
-      supabaseDurationMs = getDurationMs(requestStartedAtMs);
-      await recordNewRelicEvent("ContactFlowEvent", {
-        stage: "supabase_insert_failed",
-        receivedAt,
-        emailDomain,
-        requestPath,
-        supabaseDurationMs,
-        totalDurationMs: getDurationMs(requestStartedAtMs),
-        ...getErrorAttributes(databaseError),
-      });
-      await flushNewRelic();
+    if (!resendApiKey || !fromEmail) {
       return NextResponse.json(
         {
           error:
@@ -233,138 +104,83 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Resend email notifications
-    const resendApiKey = process.env.RESEND_API_KEY;
-    const fromEmail = process.env.RESEND_FROM_EMAIL;
-    const adminEmail =
-      process.env.CONTACT_NOTIFICATION_EMAIL || "me@apurvsinghal.com";
+    const resend = new Resend(resendApiKey);
+    const submittedAt = new Date().toLocaleString("en-US", {
+      timeZone: "Asia/Kolkata",
+    });
 
-    if (resendApiKey && fromEmail) {
-      try {
-        const emailStartedAtMs = Date.now();
-        const resend = new Resend(resendApiKey);
-        const submittedAt = new Date().toLocaleString("en-US", {
-          timeZone: "Asia/Kolkata",
-        });
-        const escapedName = escapeHtml(name);
-        const escapedEmail = escapeHtml(email);
-        const escapedMessageWithBreaks = escapeHtml(message).replace(/\n/g, "<br/>");
-        const safeNameForSubject = name.replace(/[\r\n]+/g, " ").trim();
+    const escapedName = escapeHtml(name);
+    const escapedEmail = escapeHtml(email);
+    const escapedMessageWithBreaks = escapeHtml(message).replace(
+      /\n/g,
+      "<br/>",
+    );
+    const safeNameForSubject = name.replace(/[\r\n]+/g, " ").trim();
 
-        await resend.emails.send({
-          from: fromEmail,
-          to: adminEmail,
-          subject: `New contact form submission: ${safeNameForSubject}`,
-          replyTo: email,
-          text: `Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}\n\nSubmitted at: ${submittedAt}`,
-          html: `
+    try {
+      await resend.emails.send({
+        from: fromEmail,
+        to: adminEmail,
+        subject: `New contact form submission: ${safeNameForSubject}`,
+        replyTo: email,
+        text: `Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}\n\nSubmitted at: ${submittedAt}`,
+        html: `
             <h2>New contact form submission</h2>
             <p><strong>Name:</strong> ${escapedName}</p>
             <p><strong>Email:</strong> ${escapedEmail}</p>
             <p><strong>Message:</strong><br/>${escapedMessageWithBreaks}</p>
             <p><strong>Submitted at:</strong> ${submittedAt}</p>
           `,
-        });
+      });
+    } catch (error) {
+      console.error("Resend owner notification failed", {
+        error: error instanceof Error ? error.message : String(error),
+      });
+      return NextResponse.json(
+        {
+          error:
+            "Contact service is temporarily unavailable. Please try again in a minute or email me@apurvsinghal.com.",
+        },
+        { status: 503 },
+      );
+    }
 
-        await resend.emails.send({
-          from: fromEmail,
-          to: email,
-          subject: `Thanks for reaching out, ${safeNameForSubject}`,
-          replyTo: adminEmail,
-          text: `Hi ${name},\n\nThanks for reaching out! I have received your message and will get back to you within 24-48 hours.\n\nFor your reference, here is a copy of your message:\n\n${message}\n\nBest,\nApurv Singhal`,
-          html: `
+    const emailDurationMs = getDurationMs(requestStartedAtMs);
+
+    try {
+      await resend.emails.send({
+        from: fromEmail,
+        to: email,
+        subject: `Thanks for reaching out, ${safeNameForSubject}`,
+        replyTo: adminEmail,
+        text: `Hi ${name},\n\nThanks for reaching out! I have received your message and will get back to you within 24-48 hours.\n\nFor your reference, here is a copy of your message:\n\n${message}\n\nBest,\nApurv Singhal`,
+        html: `
             <p>Hi ${escapedName},</p>
             <p>Thanks for reaching out! I have received your message and will get back to you within 24-48 hours.</p>
             <p><strong>Your message:</strong></p>
             <p>${escapedMessageWithBreaks}</p>
             <p>Best,<br/>Apurv Singhal</p>
           `,
-        });
-
-        emailDurationMs = getDurationMs(emailStartedAtMs);
-        emailOutcome = "sent";
-
-        console.info("Email notifications sent", {
-          receivedAt,
-          emailDomain,
-          emailDurationMs,
-        });
-
-        await recordNewRelicEvent("ContactFlowEvent", {
-          stage: "email_notifications_sent",
-          receivedAt,
-          emailDomain,
-          emailDurationMs,
-          requestPath,
-        });
-      } catch (emailError) {
-        console.error("Resend email notification failed", {
-          receivedAt,
-          emailDomain,
-          error: emailError instanceof Error ? emailError.message : String(emailError),
-        });
-        await noticeServerError(emailError, {
-          stage: "email_notifications_failed",
-          requestPath,
-        });
-        emailDurationMs = getDurationMs(requestStartedAtMs);
-        emailOutcome = "failed";
-        await recordNewRelicEvent("ContactFlowEvent", {
-          stage: "email_notifications_failed",
-          receivedAt,
-          emailDomain,
-          emailDurationMs,
-          requestPath,
-          ...getErrorAttributes(emailError),
-        });
-      }
-    } else {
-      console.warn(
-        "Resend not configured: missing RESEND_API_KEY or RESEND_FROM_EMAIL"
-      );
-      emailOutcome = "skipped";
-      await recordNewRelicEvent("ContactFlowEvent", {
-        stage: "email_notifications_skipped",
-        receivedAt,
-        requestPath,
+      });
+    } catch (error) {
+      console.warn("Resend acknowledgement email failed", {
+        emailDomain: getEmailDomain(email),
+        emailDurationMs,
+        error: error instanceof Error ? error.message : String(error),
       });
     }
 
-    await recordNewRelicEvent("ContactFlowEvent", {
-      stage: "response_success",
-      emailDurationMs,
-      emailOutcome,
-      receivedAt,
-      emailDomain,
-      messageLength,
-      requestPath,
-      responseStatus: 200,
-      supabaseDurationMs,
-      totalDurationMs: getDurationMs(requestStartedAtMs),
-    });
-    await flushNewRelic();
-
-    return NextResponse.json({ message: "Message sent successfully" }, { status: 200 });
+    return NextResponse.json(
+      { message: "Message sent successfully" },
+      { status: 200 },
+    );
   } catch (error) {
     console.error("Contact API unhandled error", {
-      receivedAt,
       error: error instanceof Error ? error.message : String(error),
-      stack: error instanceof Error ? error.stack : undefined,
     });
-    await noticeServerError(error, {
-      stage: "response_error",
-      requestPath,
-    });
-    await recordNewRelicEvent("ContactFlowEvent", {
-      stage: "response_error",
-      receivedAt,
-      requestPath,
-      responseStatus: 500,
-      totalDurationMs: getDurationMs(requestStartedAtMs),
-      userAgent,
-      ...getErrorAttributes(error),
-    });
-    await flushNewRelic();
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 },
+    );
   }
 }

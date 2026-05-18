@@ -16,7 +16,6 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
-newrelic_agent.log
 
 # env files
 .env*

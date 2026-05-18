@@ -2,10 +2,6 @@
 
 import { NextRequest } from "next/server";
 
-vi.mock("@/lib/supabase", () => ({
-  insertContactMessage: vi.fn(),
-}));
-
 vi.mock("resend", () => ({
   Resend: class {
     emails = { send: vi.fn().mockResolvedValue({ id: "mock" }) };
@@ -13,13 +9,12 @@ vi.mock("resend", () => ({
 }));
 
 import { POST } from "@/app/api/contact/route";
-import { insertContactMessage } from "@/lib/supabase";
 
 describe("POST /api/contact", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    delete process.env.RESEND_API_KEY;
-    delete process.env.RESEND_FROM_EMAIL;
+    process.env.RESEND_API_KEY = "test-key";
+    process.env.RESEND_FROM_EMAIL = "Portfolio <noreply@example.com>";
   });
 
   it("returns 400 when required fields are invalid", async () => {
@@ -34,6 +29,20 @@ describe("POST /api/contact", () => {
 
     expect(response.status).toBe(400);
     expect(json.error).toMatch(/valid name, email, and message/i);
+  });
+
+  it("returns 400 when JSON payload is invalid", async () => {
+    const request = new NextRequest("http://localhost:3000/api/contact", {
+      method: "POST",
+      body: "{not-valid-json",
+      headers: { "Content-Type": "application/json" },
+    });
+
+    const response = await POST(request);
+    const json = await response.json();
+
+    expect(response.status).toBe(400);
+    expect(json.error).toMatch(/invalid json payload/i);
   });
 
   it("returns 400 when email format is invalid", async () => {
@@ -53,8 +62,6 @@ describe("POST /api/contact", () => {
   });
 
   it("returns 429 when rate limit is exceeded", async () => {
-    vi.mocked(insertContactMessage).mockResolvedValue();
-
     const makeRequest = () =>
       POST(
         new NextRequest("http://localhost:3000/api/contact", {
@@ -81,8 +88,6 @@ describe("POST /api/contact", () => {
   });
 
   it("does not rate limit when client IP is unavailable", async () => {
-    vi.mocked(insertContactMessage).mockResolvedValue();
-
     const makeRequest = () =>
       POST(
         new NextRequest("http://localhost:3000/api/contact", {
@@ -104,10 +109,9 @@ describe("POST /api/contact", () => {
     }
   });
 
-  it("returns 503 when Supabase write fails", async () => {
-    vi.mocked(insertContactMessage).mockRejectedValueOnce(
-      new Error("Unauthorized"),
-    );
+  it("returns 503 when email delivery is not configured", async () => {
+    delete process.env.RESEND_API_KEY;
+    delete process.env.RESEND_FROM_EMAIL;
 
     const request = new NextRequest("http://localhost:3000/api/contact", {
       method: "POST",
@@ -127,8 +131,6 @@ describe("POST /api/contact", () => {
   });
 
   it("returns 200 on successful submission", async () => {
-    vi.mocked(insertContactMessage).mockResolvedValueOnce();
-
     const request = new NextRequest("http://localhost:3000/api/contact", {
       method: "POST",
       body: JSON.stringify({
@@ -161,7 +163,6 @@ describe("POST /api/contact", () => {
     const response = await POST(request);
 
     expect(response.status).toBe(400);
-    expect(insertContactMessage).not.toHaveBeenCalled();
   });
 
   it("returns 400 when form is submitted too quickly", async () => {
@@ -179,6 +180,5 @@ describe("POST /api/contact", () => {
     const response = await POST(request);
 
     expect(response.status).toBe(400);
-    expect(insertContactMessage).not.toHaveBeenCalled();
   });
 });

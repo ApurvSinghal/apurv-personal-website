@@ -2,14 +2,9 @@
 
 import { NextRequest } from "next/server";
 
-vi.mock("@/lib/supabase", () => ({
-  pingSupabase: vi.fn(),
-}));
+import { GET } from "@/app/api/ping-health/route";
 
-import { GET } from "@/app/api/ping-supabase/route";
-import { pingSupabase } from "@/lib/supabase";
-
-describe("GET /api/ping-supabase", () => {
+describe("GET /api/ping-health", () => {
   const originalEnv = { ...process.env };
 
   beforeEach(() => {
@@ -24,7 +19,7 @@ describe("GET /api/ping-supabase", () => {
   it("returns 401 when cron secret is configured and missing", async () => {
     process.env.CRON_SECRET = "secret";
 
-    const request = new NextRequest("http://localhost:3000/api/ping-supabase");
+    const request = new NextRequest("http://localhost:3000/api/ping-health");
     const response = await GET(request);
 
     expect(response.status).toBe(401);
@@ -34,17 +29,16 @@ describe("GET /api/ping-supabase", () => {
     delete process.env.CRON_SECRET;
     process.env = { ...process.env, NODE_ENV: "production" };
 
-    const request = new NextRequest("http://localhost:3000/api/ping-supabase");
+    const request = new NextRequest("http://localhost:3000/api/ping-health");
     const response = await GET(request);
 
     expect(response.status).toBe(401);
   });
 
-  it("returns 200 when ping succeeds", async () => {
+  it("returns 200 when bearer token matches", async () => {
     process.env.CRON_SECRET = "secret";
-    vi.mocked(pingSupabase).mockResolvedValueOnce();
 
-    const request = new NextRequest("http://localhost:3000/api/ping-supabase", {
+    const request = new NextRequest("http://localhost:3000/api/ping-health", {
       headers: {
         authorization: "Bearer secret",
       },
@@ -54,5 +48,16 @@ describe("GET /api/ping-supabase", () => {
 
     expect(response.status).toBe(200);
     expect(json.ok).toBe(true);
+  });
+
+  it("returns 401 when only query secret is sent", async () => {
+    process.env.CRON_SECRET = "secret";
+
+    const request = new NextRequest(
+      "http://localhost:3000/api/ping-health?secret=secret",
+    );
+    const response = await GET(request);
+
+    expect(response.status).toBe(401);
   });
 });

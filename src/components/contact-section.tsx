@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { addBrowserPageAction, recordBrowserEvent, noticeBrowserError } from "@/lib/newrelic-browser";
 import { Mail, Send, Check, Copy } from "lucide-react";
 import { CONTACT_EMAIL } from "@/lib/constants";
 
@@ -27,7 +26,9 @@ export function ContactSection() {
   const [copied, setCopied] = useState(false);
   const [formInteracted, setFormInteracted] = useState(false);
   const [formStartedAt] = useState(() => Date.now());
-  const copyResetTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const copyResetTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(
+    null,
+  );
   const errorMessageId = "contact-submit-error";
 
   useEffect(() => {
@@ -38,16 +39,16 @@ export function ContactSection() {
     };
   }, []);
 
-  const updateField = (field: "name" | "email" | "message" | "website", value: string) => {
+  const updateField = (
+    field: "name" | "email" | "message" | "website",
+    value: string,
+  ) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
   const copyEmail = async () => {
     try {
       await navigator.clipboard.writeText(CONTACT_EMAIL);
-      addBrowserPageAction("ContactEmailCopied", {
-        contactMethod: "clipboard",
-      });
       setCopied(true);
       if (copyResetTimeoutRef.current) {
         clearTimeout(copyResetTimeoutRef.current);
@@ -56,13 +57,8 @@ export function ContactSection() {
         setCopied(false);
       }, 2000);
     } catch (error) {
-      noticeBrowserError(
-        error instanceof Error ? error : new Error("Clipboard write failed"),
-        { stage: "copy_email_failed" },
-      );
-      recordBrowserEvent("ContactClientEvent", {
-        errorMessage: error instanceof Error ? error.message : "Clipboard write failed",
-        stage: "copy_email_failed",
+      console.warn("Failed to copy email to clipboard", {
+        error: error instanceof Error ? error.message : String(error),
       });
     }
   };
@@ -70,9 +66,7 @@ export function ContactSection() {
   const handleFieldFocus = (fieldName: string) => {
     if (!formInteracted) {
       setFormInteracted(true);
-      addBrowserPageAction("ContactFormInteractionStarted", {
-        firstField: fieldName,
-      });
+      void fieldName;
     }
   };
 
@@ -80,16 +74,6 @@ export function ContactSection() {
     e.preventDefault();
     setSubmitError("");
     setIsSubmitting(true);
-
-    const submitStartedAt = performance.now();
-    const emailDomain = getEmailDomain(formData.email);
-    const messageLength = formData.message.length;
-
-    addBrowserPageAction("ContactSubmitAttempted", {
-      emailDomain,
-      messageLength,
-      pathname: window.location.pathname,
-    });
 
     try {
       const response = await fetch("/api/contact", {
@@ -104,35 +88,20 @@ export function ContactSection() {
       });
 
       if (!response.ok) {
-        const result = (await response.json().catch(() => null)) as
-          | { error?: string }
-          | null;
-        throw new Error(result?.error || "Failed to send message. Please try again.");
+        const result = (await response.json().catch(() => null)) as {
+          error?: string;
+        } | null;
+        throw new Error(
+          result?.error || "Failed to send message. Please try again.",
+        );
       }
-
-      recordBrowserEvent("ContactClientEvent", {
-        durationMs: Number((performance.now() - submitStartedAt).toFixed(2)),
-        emailDomain,
-        messageLength,
-        responseStatus: response.status,
-        stage: "submit_success",
-      });
 
       setSubmitted(true);
       setFormData({ name: "", email: "", message: "", website: "" });
     } catch (error) {
-      const errorObj = error instanceof Error ? error : new Error("Unknown submit error");
-      noticeBrowserError(errorObj, {
-        stage: "submit_failed",
-        emailDomain,
-      });
-      recordBrowserEvent("ContactClientEvent", {
-        durationMs: Number((performance.now() - submitStartedAt).toFixed(2)),
-        emailDomain,
-        errorMessage:
-          error instanceof Error ? error.message.slice(0, 500) : "Unknown submit error",
-        messageLength,
-        stage: "submit_failed",
+      console.warn("Contact form submit failed", {
+        error: error instanceof Error ? error.message : String(error),
+        emailDomain: getEmailDomain(formData.email),
       });
 
       setSubmitError(
@@ -159,18 +128,15 @@ export function ContactSection() {
             {"Let's work together"}
           </p>
           <p className="text-muted-foreground leading-relaxed mb-8">
-            {"I'm currently open to new opportunities and interesting projects. Whether you have a question or just want to say hi, I'll try my best to get back to you!"}
+            {
+              "I'm currently open to new opportunities and interesting projects. Whether you have a question or just want to say hi, I'll try my best to get back to you!"
+            }
           </p>
 
           {/* Email Link */}
           <div className="inline-flex items-center gap-3 mb-12">
             <a
               href={`mailto:${CONTACT_EMAIL}`}
-              onClick={() =>
-                addBrowserPageAction("ContactEmailClicked", {
-                  contactMethod: "mailto",
-                })
-              }
               className="inline-flex items-center gap-2 text-primary hover:text-primary/80 transition-colors"
             >
               <Mail size={20} />

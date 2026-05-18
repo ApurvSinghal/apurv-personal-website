@@ -6,7 +6,6 @@ import { Menu, Moon, Sun, X } from "lucide-react";
 import { useTheme } from "next-themes";
 import { navItems } from "@/lib/constants";
 import { useActiveSection } from "@/hooks/use-active-section";
-import { addBrowserPageAction } from "@/lib/newrelic-browser";
 
 const sectionIds = navItems
   .map((item) => item.href.replace("#", ""))
@@ -42,20 +41,11 @@ export function Header() {
 
   const toggleTheme = () => {
     const nextTheme = theme === "dark" ? "light" : "dark";
-    addBrowserPageAction("ThemeToggled", {
-      nextTheme,
-      pathname: window.location.pathname,
-    });
     setTheme(nextTheme);
   };
 
   const toggleMobileMenu = () => {
-    const nextState = !mobileMenuOpen;
-    addBrowserPageAction("MobileMenuToggled", {
-      nextState,
-      pathname: window.location.pathname,
-    });
-    setMobileMenuOpen(nextState);
+    setMobileMenuOpen((previous) => !previous);
   };
 
   return (
@@ -67,7 +57,6 @@ export function Header() {
       <nav className="mx-auto max-w-5xl px-6 py-4 flex items-center justify-between">
         <Link
           href="/"
-          onClick={() => addBrowserPageAction("BrandClicked", { location: "header" })}
           className="text-lg font-semibold text-foreground hover:text-primary transition-colors"
         >
           Apurv Singhal
@@ -82,13 +71,6 @@ export function Header() {
               <li key={item.href}>
                 <Link
                   href={item.href}
-                  onClick={() =>
-                    addBrowserPageAction("NavigationClicked", {
-                      label: item.label,
-                      location: "header_desktop",
-                      target: item.href,
-                    })
-                  }
                   className={`text-sm transition-colors ${
                     isActive
                       ? "text-primary font-medium"
@@ -105,11 +87,6 @@ export function Header() {
               href="/documents/resume.pdf"
               target="_blank"
               rel="noopener noreferrer"
-              onClick={() =>
-                addBrowserPageAction("ResumeOpened", {
-                  location: "header_desktop",
-                })
-              }
               className="text-sm text-muted-foreground hover:text-primary transition-colors"
             >
               Resume
@@ -145,7 +122,10 @@ export function Header() {
 
       {/* Mobile Navigation */}
       {mobileMenuOpen && (
-        <div id={mobileMenuId} className="md:hidden bg-background border-b border-border">
+        <div
+          id={mobileMenuId}
+          className="md:hidden bg-background border-b border-border"
+        >
           <ul className="px-6 py-4 flex flex-col gap-4">
             {navItems.map((item) => (
               <li key={item.href}>
@@ -153,11 +133,6 @@ export function Header() {
                   href={item.href}
                   className="text-sm text-muted-foreground hover:text-primary transition-colors"
                   onClick={() => {
-                    addBrowserPageAction("NavigationClicked", {
-                      label: item.label,
-                      location: "header_mobile",
-                      target: item.href,
-                    });
                     setMobileMenuOpen(false);
                   }}
                 >
@@ -172,9 +147,6 @@ export function Header() {
                 rel="noopener noreferrer"
                 className="text-sm text-muted-foreground hover:text-primary transition-colors"
                 onClick={() => {
-                  addBrowserPageAction("ResumeOpened", {
-                    location: "header_mobile",
-                  });
                   setMobileMenuOpen(false);
                 }}
               >

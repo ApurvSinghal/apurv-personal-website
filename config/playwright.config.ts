@@ -1,5 +1,7 @@
 import { defineConfig, devices } from "@playwright/test";
 
+const browserChannel = process.env.PLAYWRIGHT_BROWSER_CHANNEL;
+
 export default defineConfig({
   testDir: "../src/tests/e2e",
   fullyParallel: false,
@@ -9,7 +11,7 @@ export default defineConfig({
     trace: "on-first-retry",
   },
   webServer: {
-    command: "NEW_RELIC_ENABLED=false npm run dev",
+    command: "npm run dev",
     port: 3000,
     reuseExistingServer: true,
     timeout: 120000,
@@ -17,7 +19,7 @@ export default defineConfig({
   projects: [
     {
       name: "chromium",
-      use: { ...devices["Desktop Chrome"], channel: "chrome" },
+      use: { ...devices["Desktop Chrome"], channel: browserChannel },
     },
   ],
 });
