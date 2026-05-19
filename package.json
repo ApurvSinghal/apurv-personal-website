@@ -2,6 +2,7 @@
   "name": "apurv-personal-website",
   "version": "0.1.0",
   "private": true,
+  "packageManager": "pnpm@11.1.2",
   "scripts": {
     "build": "next build",
     "dev": "next dev",
