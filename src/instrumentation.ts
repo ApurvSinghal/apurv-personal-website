@@ -1,3 +1,5 @@
 export async function register() {
-  // No runtime instrumentation.
+  if (process.env.NEXT_RUNTIME === "nodejs") {
+    await import("../sentry.server.config");
+  }
 }

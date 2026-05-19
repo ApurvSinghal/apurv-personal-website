@@ -5,6 +5,10 @@ export async function GET(request: NextRequest) {
   const cronSecret = process.env.CRON_SECRET;
 
   if (!cronSecret || authHeader !== `Bearer ${cronSecret}`) {
+    console.warn("Sitemap ping unauthorized", {
+      checkedAt: new Date().toISOString(),
+      userAgent: request.headers.get("user-agent") ?? "unknown",
+    });
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
