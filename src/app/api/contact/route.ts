@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 import { z } from "zod";
 import { getContactRateLimitDecision } from "@/lib/rate-limit";
+import { getEmailDomain } from "@/lib/utils";
 
 const contactSchema = z.object({
   name: z.string().trim().min(1).max(100),
@@ -11,10 +12,6 @@ const contactSchema = z.object({
   formStartedAt: z.number().int().positive().optional(),
 });
 
-function getEmailDomain(email: string) {
-  const parts = email.toLowerCase().split("@");
-  return parts.length === 2 ? parts[1] : "unknown";
-}
 
 function getClientIp(request: NextRequest) {
   const forwardedFor = request.headers.get("x-forwarded-for");

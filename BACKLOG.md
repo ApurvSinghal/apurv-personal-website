@@ -32,19 +32,6 @@ Add AI projects as proof of new direction.
 
 ---
 
-## ⚠️ Pending Manual Step
-
-### Vercel KV — not yet linked to project
-The KV store was created in the dashboard but env vars (`KV_REST_API_URL` / `KV_REST_API_TOKEN`) are not showing up in the project.
-
-**Fix:**
-1. Vercel dashboard → Storage → click your KV store
-2. Go to **Projects** tab → add `apurv-personal-website`
-3. Vercel auto-injects the env vars — a redeploy activates them
-
-Until fixed, rate limiting falls back to in-memory (works fine for a personal site).
-
----
 
 ## Phase 1 — Build AI Projects (Weeks 1–6)
 *Do this before changing more site copy. The portfolio needs proof, not just new copy.*

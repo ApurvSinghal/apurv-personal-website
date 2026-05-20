@@ -7,11 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Mail, Send, Check, Copy } from "lucide-react";
 import { CONTACT_EMAIL } from "@/lib/constants";
-
-function getEmailDomain(email: string) {
-  const parts = email.toLowerCase().split("@");
-  return parts.length === 2 ? parts[1] : "unknown";
-}
+import { getEmailDomain } from "@/lib/utils";
 
 export function ContactSection() {
   const [formData, setFormData] = useState({
@@ -63,10 +59,9 @@ export function ContactSection() {
     }
   };
 
-  const handleFieldFocus = (fieldName: string) => {
+  const handleFieldFocus = () => {
     if (!formInteracted) {
       setFormInteracted(true);
-      void fieldName;
     }
   };
 
@@ -179,7 +174,7 @@ export function ContactSection() {
                     type="text"
                     placeholder="Your name"
                     value={formData.name}
-                    onFocus={() => handleFieldFocus("name")}
+                    onFocus={handleFieldFocus}
                     onChange={(e) => updateField("name", e.target.value)}
                     aria-describedby={submitError ? errorMessageId : undefined}
                     aria-invalid={submitError ? true : undefined}
@@ -196,7 +191,7 @@ export function ContactSection() {
                     type="email"
                     placeholder="your@email.com"
                     value={formData.email}
-                    onFocus={() => handleFieldFocus("email")}
+                    onFocus={handleFieldFocus}
                     onChange={(e) => updateField("email", e.target.value)}
                     aria-describedby={submitError ? errorMessageId : undefined}
                     aria-invalid={submitError ? true : undefined}
@@ -229,7 +224,7 @@ export function ContactSection() {
                   placeholder="Your message..."
                   rows={5}
                   value={formData.message}
-                  onFocus={() => handleFieldFocus("message")}
+                  onFocus={handleFieldFocus}
                   onChange={(e) => updateField("message", e.target.value)}
                   aria-describedby={submitError ? errorMessageId : undefined}
                   aria-invalid={submitError ? true : undefined}
