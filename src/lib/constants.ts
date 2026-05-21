@@ -2,6 +2,8 @@ import { Github, Linkedin, Mail, Twitter } from "lucide-react";
 
 export const CONTACT_EMAIL = "me@apurvsinghal.com";
 
+export const CAREER_START_YEAR = 2020;
+
 export const navItems = [
   { label: "About", href: "#about" },
   { label: "Experience", href: "#experience" },

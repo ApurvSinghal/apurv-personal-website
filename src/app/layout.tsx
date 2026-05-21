@@ -4,17 +4,20 @@ import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { ThemeProvider } from "@/components/theme-provider";
 import { GlobalErrorHandler } from "@/components/global-error-handler";
+import { getYearsOfExperience } from "@/lib/utils";
 import "./globals.css";
+
+const yearsOfExperience = getYearsOfExperience();
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://apurvsinghal.com"),
   title: "Apurv Singhal — AI Engineer & Builder",
   description:
-    "Enterprise engineer going deep on AI. I build AI agents and automation for real businesses — backed by 6 years shipping production systems on Azure.",
+    `Enterprise engineer going deep on AI. I build AI agents and automation for real businesses — backed by ${yearsOfExperience} years shipping production systems on Azure.`,
   openGraph: {
     title: "Apurv Singhal — AI Engineer & Builder",
     description:
-      "Enterprise engineer going deep on AI. I build AI agents and automation for real businesses — backed by 6 years shipping production systems on Azure.",
+      `Enterprise engineer going deep on AI. I build AI agents and automation for real businesses — backed by ${yearsOfExperience} years shipping production systems on Azure.`,
     url: "https://apurvsinghal.com",
     images: ["/opengraph-image"],
     siteName: "Apurv Singhal",
@@ -25,7 +28,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Apurv Singhal — AI Engineer & Builder",
     description:
-      "Enterprise engineer going deep on AI. I build AI agents and automation for real businesses — backed by 6 years shipping production systems on Azure.",
+      `Enterprise engineer going deep on AI. I build AI agents and automation for real businesses — backed by ${yearsOfExperience} years shipping production systems on Azure.`,
     creator: "@apurvsinghal28",
     images: ["/opengraph-image"],
   },

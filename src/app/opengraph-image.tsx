@@ -1,4 +1,5 @@
 import { ImageResponse } from "next/og";
+import { getYearsOfExperience } from "@/lib/utils";
 
 export const size = {
   width: 1200,
@@ -52,7 +53,7 @@ export default function OpenGraphImage() {
             color: "#4b4b4b",
           }}
         >
-          Building AI agents and automation backed by 6 years of enterprise
+          Building AI agents and automation backed by {getYearsOfExperience()} years of enterprise
           engineering.
         </div>
       </div>
