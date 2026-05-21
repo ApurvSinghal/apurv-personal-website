@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { MapPin } from "lucide-react";
 import { socialLinks, navItems } from "@/lib/constants";
+import { getYearsOfExperience } from "@/lib/utils";
 
 export function HeroSection() {
   return (
@@ -78,7 +79,7 @@ export function HeroSection() {
           <div id="about" className="scroll-mt-28">
             <p className="text-muted-foreground leading-relaxed text-lg">
               {
-                "I'm an engineer with 6+ years shipping production systems at enterprise scale. I'm now going deep on "
+                `I'm an engineer with ${getYearsOfExperience()}+ years shipping production systems at enterprise scale. I'm now going deep on `
               }
               <span className="text-foreground font-medium">AI</span>
               {

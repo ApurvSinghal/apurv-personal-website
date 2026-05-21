@@ -1,4 +1,5 @@
 import { ImageResponse } from "next/og";
+import { getYearsOfExperience } from "@/lib/utils";
 
 export const size = {
   width: 1200,
@@ -8,6 +9,7 @@ export const size = {
 export const contentType = "image/png";
 
 export default function OpenGraphImage() {
+  const yearsOfExperience = getYearsOfExperience();
   return new ImageResponse(
     <div
       style={{
@@ -52,8 +54,7 @@ export default function OpenGraphImage() {
             color: "#4b4b4b",
           }}
         >
-          Building AI agents and automation backed by 6 years of enterprise
-          engineering.
+          {`Building AI agents and automation backed by ${yearsOfExperience} years of enterprise engineering.`}
         </div>
       </div>
 
