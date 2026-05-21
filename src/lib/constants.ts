@@ -3,7 +3,7 @@ import { Github, Linkedin, Mail, Twitter } from "lucide-react";
 export const CONTACT_EMAIL = "me@apurvsinghal.com";
 
 export const CAREER_START_YEAR = 2018;
-export const CAREER_START_MONTH_INDEX = 6;
+export const CAREER_START_MONTH = 7;
 
 export const navItems = [
   { label: "About", href: "#about" },
