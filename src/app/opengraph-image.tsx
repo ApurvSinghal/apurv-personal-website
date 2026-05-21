@@ -7,7 +7,6 @@ export const size = {
 };
 
 export const contentType = "image/png";
-export const revalidate = 60 * 60 * 24;
 
 export default function OpenGraphImage() {
   const yearsOfExperience = getYearsOfExperience();

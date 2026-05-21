@@ -8,8 +8,6 @@ import { Footer } from "@/components/footer";
 import { KeyboardShortcuts } from "@/components/keyboard-shortcuts";
 import { AnimateOnScroll } from "@/components/animate-on-scroll";
 
-export const revalidate = 60 * 60 * 24;
-
 export default function Home() {
   return (
     <div className="min-h-screen bg-background relative">
