@@ -7,7 +7,7 @@ import { GlobalErrorHandler } from "@/components/global-error-handler";
 import { getYearsOfExperience } from "@/lib/utils";
 import "./globals.css";
 
-export function generateMetadata(): Metadata {
+export async function generateMetadata(): Promise<Metadata> {
   const years = getYearsOfExperience();
   const description = `Enterprise engineer going deep on AI. I build AI agents and automation for real businesses — backed by ${years} years shipping production systems on Azure.`;
   return {
