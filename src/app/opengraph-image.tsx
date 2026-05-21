@@ -9,6 +9,7 @@ export const size = {
 export const contentType = "image/png";
 
 export default function OpenGraphImage() {
+  const yearsOfExperience = getYearsOfExperience();
   return new ImageResponse(
     <div
       style={{
@@ -53,7 +54,7 @@ export default function OpenGraphImage() {
             color: "#4b4b4b",
           }}
         >
-          Building AI agents and automation backed by {getYearsOfExperience()} years of enterprise
+          Building AI agents and automation backed by {yearsOfExperience} years of enterprise
           engineering.
         </div>
       </div>

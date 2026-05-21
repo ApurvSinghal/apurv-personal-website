@@ -7,36 +7,35 @@ import { GlobalErrorHandler } from "@/components/global-error-handler";
 import { getYearsOfExperience } from "@/lib/utils";
 import "./globals.css";
 
-const yearsOfExperience = getYearsOfExperience();
-
-export const metadata: Metadata = {
-  metadataBase: new URL("https://apurvsinghal.com"),
-  title: "Apurv Singhal — AI Engineer & Builder",
-  description:
-    `Enterprise engineer going deep on AI. I build AI agents and automation for real businesses — backed by ${yearsOfExperience} years shipping production systems on Azure.`,
-  openGraph: {
+export function generateMetadata(): Metadata {
+  const years = getYearsOfExperience();
+  const description = `Enterprise engineer going deep on AI. I build AI agents and automation for real businesses — backed by ${years} years shipping production systems on Azure.`;
+  return {
+    metadataBase: new URL("https://apurvsinghal.com"),
     title: "Apurv Singhal — AI Engineer & Builder",
-    description:
-      `Enterprise engineer going deep on AI. I build AI agents and automation for real businesses — backed by ${yearsOfExperience} years shipping production systems on Azure.`,
-    url: "https://apurvsinghal.com",
-    images: ["/opengraph-image"],
-    siteName: "Apurv Singhal",
-    locale: "en_AU",
-    type: "website",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Apurv Singhal — AI Engineer & Builder",
-    description:
-      `Enterprise engineer going deep on AI. I build AI agents and automation for real businesses — backed by ${yearsOfExperience} years shipping production systems on Azure.`,
-    creator: "@apurvsinghal28",
-    images: ["/opengraph-image"],
-  },
-  icons: {
-    icon: "/icon.png",
-    apple: "/apple-icon.png",
-  },
-};
+    description,
+    openGraph: {
+      title: "Apurv Singhal — AI Engineer & Builder",
+      description,
+      url: "https://apurvsinghal.com",
+      images: ["/opengraph-image"],
+      siteName: "Apurv Singhal",
+      locale: "en_AU",
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: "Apurv Singhal — AI Engineer & Builder",
+      description,
+      creator: "@apurvsinghal28",
+      images: ["/opengraph-image"],
+    },
+    icons: {
+      icon: "/icon.png",
+      apple: "/apple-icon.png",
+    },
+  };
+}
 
 export default function RootLayout({
   children,
