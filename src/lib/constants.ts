@@ -4,6 +4,7 @@ export const CONTACT_EMAIL = "me@apurvsinghal.com";
 
 export const CAREER_START_YEAR = 2018;
 export const CAREER_START_MONTH = 7;
+export const CAREER_START_DAY = 1;
 
 export const navItems = [
   { label: "About", href: "#about" },
