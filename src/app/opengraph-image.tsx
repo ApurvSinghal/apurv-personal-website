@@ -54,8 +54,7 @@ export default function OpenGraphImage() {
             color: "#4b4b4b",
           }}
         >
-          Building AI agents and automation backed by {yearsOfExperience} years of enterprise
-          engineering.
+          {`Building AI agents and automation backed by ${yearsOfExperience} years of enterprise engineering.`}
         </div>
       </div>
 
