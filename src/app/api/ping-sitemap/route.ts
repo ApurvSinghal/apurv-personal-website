@@ -5,10 +5,6 @@ export async function GET(request: NextRequest) {
   const cronSecret = process.env.CRON_SECRET;
 
   if (!cronSecret || authHeader !== `Bearer ${cronSecret}`) {
-    console.warn("Sitemap ping unauthorized", {
-      checkedAt: new Date().toISOString(),
-      userAgent: request.headers.get("user-agent") ?? "unknown",
-    });
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -18,12 +14,6 @@ export async function GET(request: NextRequest) {
 
     const response = await fetch(pingUrl, {
       signal: AbortSignal.timeout(5000),
-    });
-
-    console.info("Sitemap ping completed", {
-      status: response.status,
-      sitemapUrl,
-      checkedAt: new Date().toISOString(),
     });
 
     return NextResponse.json({

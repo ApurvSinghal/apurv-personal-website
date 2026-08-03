@@ -7,7 +7,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Mail, Send, Check, Copy } from "lucide-react";
 import { CONTACT_EMAIL } from "@/lib/constants";
-import { getEmailDomain } from "@/lib/utils";
 
 export function ContactSection() {
   const [formData, setFormData] = useState({
@@ -53,9 +52,7 @@ export function ContactSection() {
         setCopied(false);
       }, 2000);
     } catch (error) {
-      console.warn("Failed to copy email to clipboard", {
-        error: error instanceof Error ? error.message : String(error),
-      });
+      setSubmitError("Unable to copy email right now. Please try again.");
     }
   };
 
@@ -94,11 +91,6 @@ export function ContactSection() {
       setSubmitted(true);
       setFormData({ name: "", email: "", message: "", website: "" });
     } catch (error) {
-      console.warn("Contact form submit failed", {
-        error: error instanceof Error ? error.message : String(error),
-        emailDomain: getEmailDomain(formData.email),
-      });
-
       setSubmitError(
         error instanceof Error
           ? error.message

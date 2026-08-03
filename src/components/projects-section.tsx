@@ -33,13 +33,13 @@ function ProjectGroup({
         {items.map((project) => (
           <article
             key={project.slug}
-            className="group rounded-xl border border-black/[0.08] dark:border-white/[0.08] bg-white/60 dark:bg-white/[0.04] backdrop-blur-md p-6 hover:border-primary/50 hover:shadow-xl hover:shadow-primary/10 dark:hover:shadow-primary/15 transition-all duration-300"
+            className="group rounded-xl border border-black/[0.08] dark:border-white/[0.08] bg-white/60 dark:bg-white/[0.04] p-6 hover:border-primary/50 hover:shadow-xl hover:shadow-primary/10 dark:hover:shadow-primary/15 transition-[border-color,box-shadow] duration-200"
           >
             <div className="flex items-start justify-between gap-4">
               <div className="flex items-center gap-2.5">
                 {project.status === "Live" && (
                   <span className="relative flex h-2 w-2 mt-1 shrink-0">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                    <span className="motion-safe:animate-ping motion-reduce:animate-none absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
                     <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
                   </span>
                 )}

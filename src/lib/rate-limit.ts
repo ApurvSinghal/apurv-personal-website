@@ -108,7 +108,6 @@ export async function getContactRateLimitDecision(
   ip: string,
 ): Promise<RateLimitDecision> {
   if (ip === "unknown") {
-    console.info("Rate limit skipped: unknown client IP");
     return {
       currentCount: 0,
       limited: false,
@@ -122,10 +121,8 @@ export async function getContactRateLimitDecision(
   ) {
     try {
       return await runUpstashRateLimit(ip);
-    } catch (error) {
-      console.warn("Redis rate limiting failed, falling back to memory", {
-        error: error instanceof Error ? error.message : String(error),
-      });
+    } catch {
+      // Fall back to memory when Redis is unavailable.
     }
   }
 

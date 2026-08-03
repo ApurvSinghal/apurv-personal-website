@@ -19,7 +19,24 @@ export function Header() {
   const mobileMenuId = "mobile-navigation-menu";
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 10);
+    let frameRequested = false;
+
+    const onScroll = () => {
+      if (frameRequested) {
+        return;
+      }
+
+      frameRequested = true;
+      window.requestAnimationFrame(() => {
+        frameRequested = false;
+        const nextScrolled = window.scrollY > 10;
+        setScrolled((previous) =>
+          previous === nextScrolled ? previous : nextScrolled,
+        );
+      });
+    };
+
+    onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);

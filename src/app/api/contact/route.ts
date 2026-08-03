@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 import { z } from "zod";
 import { getContactRateLimitDecision } from "@/lib/rate-limit";
-import { getEmailDomain } from "@/lib/utils";
 
 const contactSchema = z.object({
   name: z.string().trim().min(1).max(100),
@@ -53,9 +52,6 @@ export async function POST(request: NextRequest) {
     const validationResult = contactSchema.safeParse(payload);
 
     if (!validationResult.success) {
-      console.warn("Contact form validation failed", {
-        issues: validationResult.error.issues.map((i) => i.path.join(".")),
-      });
       return NextResponse.json(
         { error: "Please provide a valid name, email, and message." },
         { status: 400 },
@@ -66,7 +62,6 @@ export async function POST(request: NextRequest) {
       validationResult.data;
 
     if (website) {
-      console.warn("Contact form honeypot triggered");
       return NextResponse.json(
         { error: "Invalid submission." },
         { status: 400 },
@@ -74,9 +69,6 @@ export async function POST(request: NextRequest) {
     }
 
     if (formStartedAt && Date.now() - formStartedAt < 1200) {
-      console.warn("Contact form submitted too fast", {
-        elapsedMs: Date.now() - formStartedAt,
-      });
       return NextResponse.json(
         { error: "Please take a moment and try again." },
         { status: 400 },
@@ -87,10 +79,6 @@ export async function POST(request: NextRequest) {
     const rateLimitDecision = await getContactRateLimitDecision(clientIp);
 
     if (rateLimitDecision.limited) {
-      console.warn("Contact form rate limited", {
-        source: rateLimitDecision.source,
-        count: rateLimitDecision.currentCount,
-      });
       return NextResponse.json(
         { error: "Too many requests. Please try again later." },
         { status: 429 },
@@ -175,11 +163,7 @@ export async function POST(request: NextRequest) {
           `,
       });
     } catch (error) {
-      console.warn("Resend acknowledgement email failed", {
-        emailDomain: getEmailDomain(email),
-        emailDurationMs,
-        error: error instanceof Error ? error.message : String(error),
-      });
+      // Keep API success path intact even if acknowledgement email fails.
     }
 
     return NextResponse.json(

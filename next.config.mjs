@@ -7,11 +7,14 @@ const nextConfig = {
   async headers() {
     const csp = [
       "default-src 'self'",
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://va.vercel-scripts.com",
-      "connect-src 'self' https://vitals.vercel-insights.com https://va.vercel-scripts.com https://*.ingest.sentry.io https://*.ingest.us.sentry.io",
+      "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.clarity.ms https://va.vercel-scripts.com",
+      "connect-src 'self' https://www.clarity.ms https://vitals.vercel-insights.com https://va.vercel-scripts.com https://*.ingest.sentry.io https://*.ingest.us.sentry.io",
       `img-src 'self' data: blob:`,
       `style-src 'self' 'unsafe-inline'`,
       `font-src 'self'`,
+      `object-src 'none'`,
+      `base-uri 'self'`,
+      `form-action 'self'`,
       `frame-ancestors 'none'`,
     ].join("; ");
 
@@ -34,6 +37,22 @@ const nextConfig = {
           {
             key: "X-Frame-Options",
             value: "DENY",
+          },
+          {
+            key: "Cross-Origin-Opener-Policy",
+            value: "same-origin",
+          },
+          {
+            key: "Cross-Origin-Resource-Policy",
+            value: "same-site",
+          },
+          {
+            key: "Trusted-Types",
+            value: "default",
+          },
+          {
+            key: "Require-Trusted-Types-For",
+            value: "'script'",
           },
           {
             key: "Permissions-Policy",

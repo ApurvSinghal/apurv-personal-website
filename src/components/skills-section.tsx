@@ -70,7 +70,7 @@ export function SkillsSection() {
           {skillGroups.map((group) => (
             <div
               key={group.category}
-              className="rounded-xl border border-black/[0.08] dark:border-white/[0.08] bg-white/60 dark:bg-white/[0.04] backdrop-blur-md p-5 hover:border-primary/40 dark:hover:border-primary/30 hover:shadow-lg hover:shadow-primary/8 transition-all duration-300"
+              className="rounded-xl border border-black/[0.08] dark:border-white/[0.08] bg-white/60 dark:bg-white/[0.04] p-5 hover:border-primary/40 dark:hover:border-primary/30 hover:shadow-lg hover:shadow-primary/8 transition-[border-color,box-shadow] duration-200"
             >
               <h3 className="text-xs font-semibold text-primary uppercase tracking-wider mb-3">
                 {group.category}

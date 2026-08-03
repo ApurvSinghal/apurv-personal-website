@@ -27,16 +27,10 @@ function isAuthorized(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   const checkedAt = new Date().toISOString();
-  const userAgent = request.headers.get("user-agent") ?? "unknown";
 
   if (!isAuthorized(request)) {
-    console.warn("Healthcheck ping unauthorized", { checkedAt, userAgent });
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  console.info("Healthcheck ping succeeded", {
-    checkedAt,
-    userAgent,
-  });
   return NextResponse.json({ ok: true, checkedAt }, { status: 200 });
 }

@@ -69,7 +69,7 @@ export function ExperienceSection() {
   return (
     <section id="experience" className="py-24 scroll-mt-20">
       <div className="mx-auto max-w-5xl px-6">
-        <h2 className="text-sm font-semibold text-primary uppercase tracking-wider mb-12 md:hidden">
+        <h2 className="text-sm font-semibold text-primary uppercase tracking-wider mb-12 sr-only md:not-sr-only">
           Experience
         </h2>
 
@@ -96,7 +96,7 @@ export function ExperienceSection() {
                     {exp.title} · {exp.company}
                     <ArrowUpRight
                       size={14}
-                      className="opacity-0 -translate-y-1 translate-x-1 group-hover/link:opacity-100 group-hover/link:translate-y-0 group-hover/link:translate-x-0 transition-all"
+                      className="opacity-0 -translate-y-1 translate-x-1 group-hover/link:opacity-100 group-hover/link:translate-y-0 group-hover/link:translate-x-0 transition-transform"
                     />
                   </h3>
                 </Link>
