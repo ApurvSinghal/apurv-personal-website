@@ -45,7 +45,7 @@ export function HeroSection() {
                   </li>
                 ))}
                 <li>
-                  <Link
+                  <a
                     href="/documents/resume.pdf"
                     target="_blank"
                     rel="noopener noreferrer"
@@ -53,7 +53,7 @@ export function HeroSection() {
                   >
                     <span className="w-8 h-px bg-muted-foreground group-hover:w-16 group-hover:bg-foreground transition-all duration-300 mr-4" />
                     RESUME
-                  </Link>
+                  </a>
                 </li>
               </ul>
             </nav>

@@ -100,14 +100,14 @@ export function Header() {
             );
           })}
           <li>
-            <Link
+            <a
               href="/documents/resume.pdf"
               target="_blank"
               rel="noopener noreferrer"
               className="text-sm text-muted-foreground hover:text-primary transition-colors"
             >
               Resume
-            </Link>
+            </a>
           </li>
         </ul>
 
@@ -158,7 +158,7 @@ export function Header() {
               </li>
             ))}
             <li>
-              <Link
+              <a
                 href="/documents/resume.pdf"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -168,7 +168,7 @@ export function Header() {
                 }}
               >
                 Resume
-              </Link>
+              </a>
             </li>
           </ul>
         </div>
