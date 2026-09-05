@@ -25,7 +25,16 @@ export function HeroSection() {
               AI Agents · Claude API · Azure AI · RAG
             </p>
 
-            <div className="mt-4 inline-flex items-center gap-1.5 text-xs text-muted-foreground">
+            {/* Availability Badge */}
+            <div className="mt-4 inline-flex items-center gap-2 rounded-full border border-emerald-500/25 bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-600 dark:text-emerald-400 shadow-sm shadow-emerald-500/5">
+              <span className="relative flex h-2 w-2">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
+              </span>
+              Available for AI Advisory & Consulting
+            </div>
+
+            <div className="mt-3 flex items-center gap-1.5 text-xs text-muted-foreground">
               <MapPin size={12} />
               Melbourne, Australia
             </div>

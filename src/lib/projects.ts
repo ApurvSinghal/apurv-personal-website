@@ -22,6 +22,33 @@ export type Project = {
 
 export const projects: Project[] = [
   {
+    slug: "portfolio-rag-ai-agent",
+    title: "Interactive RAG Portfolio Agent",
+    status: "Live",
+    summary:
+      "A zero-cost, streaming RAG AI agent integrated directly into production to represent professional experience, demonstrate architectural depth, and capture qualified inbound leads.",
+    technicalDetails:
+      "Engineered with Next.js 16 (App Router, Turbopack) using a zero-cost architecture on Google Gemini Flash with real-time SSE streaming via ReadableStream. Features strict prompt grounding over professional milestones, sliding-window rate limiting, and an in-chat lead capture pipeline connected directly to Resend.",
+    technologies: [
+      "Next.js",
+      "TypeScript",
+      "Google Gemini",
+      "RAG",
+      "Tailwind CSS",
+      "Resend",
+      "Vercel",
+    ],
+    categories: ["AI", "Frontend", "Backend", "Observability"],
+    liveUrl: "https://apurvsinghal.com",
+    githubUrl: "https://github.com/ApurvSinghal/apurv-personal-website",
+    highlights: [
+      "Zero-cost production architecture delivering sub-second streaming responses without cloud billing overhead.",
+      "Knowledge-grounded system architecture trained on 8+ years of enterprise Azure and AI delivery.",
+      "Built-in defensive rate-limiting and session guardrails to protect free quota against automated scraping.",
+      "Integrated in-chat lead capture piping recruiter inquiries directly to personal inbox via Resend.",
+    ],
+  },
+  {
     slug: "apurv-personal-website",
     title: "Apurv Singhal - Personal Website",
     status: "Live",

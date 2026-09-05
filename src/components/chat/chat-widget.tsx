@@ -3,7 +3,10 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import {
+  AlertCircle,
   Bot,
+  CheckCircle2,
+  Mail,
   MessageSquare,
   RotateCcw,
   Send,
@@ -132,6 +135,13 @@ export function ChatWidget() {
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [hasPrompted, setHasPrompted] = useState(false);
+  const [showLeadForm, setShowLeadForm] = useState(false);
+  const [leadName, setLeadName] = useState("");
+  const [leadEmail, setLeadEmail] = useState("");
+  const [leadMessage, setLeadMessage] = useState("");
+  const [isSendingLead, setIsSendingLead] = useState(false);
+  const [leadStatus, setLeadStatus] = useState<"idle" | "success" | "error">("idle");
+  const [leadStatusMsg, setLeadStatusMsg] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -145,7 +155,7 @@ export function ChatWidget() {
       scrollToBottom();
       inputRef.current?.focus();
     }
-  }, [isOpen, messages]);
+  }, [isOpen, messages, showLeadForm]);
 
   // Handle Escape key to close
   useEffect(() => {
@@ -157,6 +167,56 @@ export function ChatWidget() {
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isOpen]);
+
+  // Handle lead submission via /api/contact
+  const handleLeadSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!leadName.trim() || !leadEmail.trim() || !leadMessage.trim() || isSendingLead) return;
+
+    setIsSendingLead(true);
+    setLeadStatus("idle");
+
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: leadName.trim(),
+          email: leadEmail.trim(),
+          message: leadMessage.trim(),
+          website: "", // honeypot
+        }),
+      });
+
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        throw new Error(data.message || "Failed to send message. Please try again.");
+      }
+
+      setLeadStatus("success");
+      setLeadStatusMsg("✓ Message sent directly to Apurv! He will reply shortly.");
+      setLeadName("");
+      setLeadEmail("");
+      setLeadMessage("");
+
+      // Also append confirmation as a chat message
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: `lead-confirmed-${Date.now()}`,
+          role: "assistant",
+          content: "Thank you for reaching out! Your message has been routed directly to **Apurv's inbox**. He'll get back to you shortly.",
+        },
+      ]);
+    } catch (err: unknown) {
+      setLeadStatus("error");
+      setLeadStatusMsg(
+        err instanceof Error ? err.message : "Failed to send message.",
+      );
+    } finally {
+      setIsSendingLead(false);
+    }
+  };
 
   // Send message handler
   const handleSend = async (userText: string) => {
@@ -324,6 +384,20 @@ export function ChatWidget() {
             <div className="flex items-center gap-1">
               <button
                 type="button"
+                onClick={() => setShowLeadForm((prev) => !prev)}
+                title="Send Apurv a message"
+                aria-label="Send Apurv a message"
+                className={`rounded-lg px-2.5 py-1 text-xs font-medium transition-colors flex items-center gap-1.5 ${
+                  showLeadForm
+                    ? "bg-primary text-primary-foreground shadow-sm"
+                    : "text-primary hover:bg-primary/10 border border-primary/20"
+                }`}
+              >
+                <Mail size={13} />
+                <span>Message Apurv</span>
+              </button>
+              <button
+                type="button"
                 onClick={handleReset}
                 title="Reset conversation"
                 aria-label="Reset conversation"
@@ -342,6 +416,83 @@ export function ChatWidget() {
               </button>
             </div>
           </div>
+
+          {/* Quick Lead Form Drawer/Card */}
+          {showLeadForm && (
+            <div className="border-b border-primary/20 bg-primary/[0.04] p-4">
+              <div className="flex items-center justify-between mb-2">
+                <h4 className="text-xs font-semibold text-primary flex items-center gap-1.5">
+                  <Mail size={13} /> Direct Message to Apurv&apos;s Inbox
+                </h4>
+                <button
+                  type="button"
+                  onClick={() => setShowLeadForm(false)}
+                  className="text-muted-foreground hover:text-foreground text-xs"
+                >
+                  Close
+                </button>
+              </div>
+
+              {leadStatus === "success" ? (
+                <div className="rounded-xl bg-emerald-500/10 border border-emerald-500/20 p-3 text-xs text-emerald-600 dark:text-emerald-400 flex items-start gap-2">
+                  <CheckCircle2 size={16} className="shrink-0 mt-0.5" />
+                  <div>
+                    <p className="font-semibold">Delivered directly to Apurv!</p>
+                    <p className="mt-0.5 text-muted-foreground">He will reply to your email shortly.</p>
+                  </div>
+                </div>
+              ) : (
+                <form onSubmit={handleLeadSubmit} className="space-y-2">
+                  {leadStatus === "error" && (
+                    <div className="rounded-lg bg-destructive/10 border border-destructive/20 p-2 text-xs text-destructive flex items-center gap-1.5">
+                      <AlertCircle size={13} />
+                      <span>{leadStatusMsg}</span>
+                    </div>
+                  )}
+                  <div className="grid grid-cols-2 gap-2">
+                    <input
+                      type="text"
+                      required
+                      placeholder="Your Name"
+                      value={leadName}
+                      onChange={(e) => setLeadName(e.target.value)}
+                      className="rounded-lg border border-input bg-background px-2.5 py-1.5 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+                    />
+                    <input
+                      type="email"
+                      required
+                      placeholder="Your Email"
+                      value={leadEmail}
+                      onChange={(e) => setLeadEmail(e.target.value)}
+                      className="rounded-lg border border-input bg-background px-2.5 py-1.5 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+                    />
+                  </div>
+                  <textarea
+                    required
+                    rows={2}
+                    placeholder="Briefly describe what you'd like to collaborate on..."
+                    value={leadMessage}
+                    onChange={(e) => setLeadMessage(e.target.value)}
+                    className="w-full rounded-lg border border-input bg-background px-2.5 py-1.5 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary resize-none"
+                  />
+                  <button
+                    type="submit"
+                    disabled={isSendingLead}
+                    className="w-full rounded-lg bg-primary py-1.5 text-xs font-semibold text-primary-foreground shadow-sm hover:bg-primary/90 disabled:opacity-50 transition-opacity flex items-center justify-center gap-1.5"
+                  >
+                    {isSendingLead ? (
+                      "Sending to inbox..."
+                    ) : (
+                      <>
+                        <Send size={12} />
+                        Send Directly to Apurv
+                      </>
+                    )}
+                  </button>
+                </form>
+              )}
+            </div>
+          )}
 
           {/* Messages Scroll Area */}
           <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4">
@@ -403,6 +554,17 @@ export function ChatWidget() {
                   Suggested questions:
                 </p>
                 <div className="flex flex-col gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setShowLeadForm(true)}
+                    className="text-left rounded-xl border border-primary/30 bg-primary/10 hover:bg-primary/15 px-3.5 py-2 text-xs font-medium text-primary flex items-center justify-between transition-all duration-200"
+                  >
+                    <span className="flex items-center gap-1.5">
+                      <Mail size={13} />
+                      Send a message to Apurv&apos;s inbox
+                    </span>
+                    <span className="text-[10px] opacity-75">Connect →</span>
+                  </button>
                   {STARTER_QUESTIONS.map((q) => (
                     <button
                       key={q}
