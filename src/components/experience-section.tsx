@@ -70,7 +70,7 @@ const experiences = [
 
 const volunteerExperiences = [
   {
-    period: "Apr 2026 — Present",
+    period: "April 2026 — Present",
     title: "Head of IT (Volunteer)",
     organization: "IndianCare Inc.",
     organizationUrl: "https://www.indiancare.org.au",
