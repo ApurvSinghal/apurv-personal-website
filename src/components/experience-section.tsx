@@ -5,30 +5,33 @@ import { Badge } from "@/components/ui/badge";
 const experiences = [
   {
     period: "2023 — Present",
-    title: "Lead Consultant",
+    title: "Lead Consultant (Azure Cloud, DevOps & Platform)",
     company: "Capgemini",
     companyUrl: "https://www.capgemini.com",
     description:
-      "Leading engineering teams building production-grade cloud systems at enterprise scale. Optimized infrastructure across multiple client engagements, cutting deployment time and improving system reliability. Mentored teams on architecture and engineering practices.",
+      "Leading platform engineering teams and enterprise cloud architecture across client engagements on Azure. Designed automated DevOps CI/CD pipelines, optimized deployment velocity, and improved system reliability and security standards. Mentoring teams on cloud architecture, containerization, and production AI readiness.",
     technologies: [
-      "Azure",
-      "Cloud Architecture",
+      "Azure Cloud",
+      "DevOps",
+      "Platform Engineering",
+      "CI/CD Pipelines",
+      "Docker",
       ".NET",
-      "System Design",
-      "Team Leadership",
+      "System Architecture",
     ],
   },
   {
     period: "2021 — 2023",
-    title: "Consultant",
+    title: "Consultant (Platform & Cloud Migration)",
     company: "Capgemini",
     companyUrl: "https://www.capgemini.com",
     description:
-      "Led platform migration and reliability initiatives on Azure. Focused on system stability, scalability, and continuous delivery across multiple client environments.",
+      "Led platform migration and cloud reliability initiatives on Azure. Focused on infrastructure automation, developer platform scalability, and automated continuous delivery across multiple enterprise client environments.",
     technologies: [
       "Azure",
       "Platform Migration",
-      "System Architecture",
+      "DevOps",
+      "Infrastructure Automation",
       ".NET",
     ],
   },

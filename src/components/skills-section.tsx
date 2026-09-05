@@ -2,54 +2,66 @@ import { Badge } from "@/components/ui/badge";
 
 const skillGroups = [
   {
-    category: "AI & Agents",
+    category: "Azure Cloud + DevOps",
     skills: [
-      "Claude API",
-      "OpenAI",
-      "LangChain",
-      "RAG",
-      "Vector Databases",
-      "MCP",
-      "Prompt Engineering",
+      "Microsoft Azure",
+      "CI/CD Pipelines",
+      "GitHub Actions",
+      "Docker",
+      "Terraform / Bicep",
+      "Azure Functions (Serverless)",
+      "Telemetry & Log Analytics",
+      "Cloud Cost Optimization",
+    ],
+  },
+  {
+    category: "Platform Engineering",
+    skills: [
+      "Platform Migration",
+      "Enterprise Landing Zones",
+      "Developer Platform Velocity",
+      "Infrastructure as Code",
+      "Microservices Architecture",
+      "Zero-Trust & Security",
+      "SRE & Reliability",
+      "System Design",
+    ],
+  },
+  {
+    category: "Applied AI & Agents",
+    skills: [
+      "Azure AI Foundry",
+      "Azure OpenAI",
       "AI Agents",
+      "Claude API",
+      "RAG Architectures",
+      "Vector Databases",
+      "Model Context Protocol (MCP)",
+      "APP 1.7 Compliance",
       "Structured Outputs",
     ],
   },
   {
-    category: "Cloud & Infrastructure",
-    skills: [
-      "Azure",
-      "Azure OpenAI",
-      "Azure AI Foundry",
-      "Vercel",
-      "Serverless",
-      "Cloud Architecture",
-    ],
-  },
-  {
-    category: "Backend & APIs",
+    category: "Backend & Systems",
     skills: [
       ".NET / ASP.NET Core",
       "C#",
-      "Node.js",
       "TypeScript",
+      "Node.js",
+      "Python SDKs",
       "REST APIs",
       "SQL Server",
-      "Microservices",
+      "Azure Cosmos DB",
     ],
   },
   {
-    category: "Frontend & Mobile",
-    skills: ["Next.js", "React Native", "TypeScript", "Tailwind CSS"],
-  },
-  {
-    category: "Engineering Practices",
+    category: "Engineering Leadership",
     skills: [
-      "CI/CD",
-      "System Architecture",
       "Technical Mentoring",
-      "Code Review",
-      "Agile",
+      "Architecture Governance",
+      "Cross-functional Leadership",
+      "Code Review & Standards",
+      "Agile Delivery",
     ],
   },
 ];
@@ -62,8 +74,8 @@ export function SkillsSection() {
           Skills
         </h2>
         <p className="text-muted-foreground max-w-3xl leading-relaxed mb-12">
-          Core tools and practices across AI engineering, cloud infrastructure,
-          and full-stack development.
+          Core technical competencies across Azure Cloud + DevOps, Platform Engineering,
+          Applied AI systems, and enterprise architectures.
         </p>
 
         <div className="grid sm:grid-cols-2 gap-4">

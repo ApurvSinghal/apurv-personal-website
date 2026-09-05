@@ -19,7 +19,7 @@ export function HeroSection() {
               Apurv Singhal
             </h1>
             <p className="mt-3 text-xl text-primary font-medium">
-              AI Engineer & Cloud Architect
+              Azure Cloud + DevOps · Platform Engineer · AI
             </p>
             <p className="mt-3 text-sm text-muted-foreground leading-relaxed max-w-xs">
               Lead Consultant at Capgemini · Founder of ADM Guard · Enterprise Scale
@@ -31,7 +31,7 @@ export function HeroSection() {
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
                 <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
               </span>
-              Available for AI Advisory & Consulting
+              Available for Cloud, Platform & AI Consulting
             </div>
 
             <div className="mt-3 flex items-center gap-1.5 text-xs text-muted-foreground">
@@ -88,7 +88,7 @@ export function HeroSection() {
           <div id="about" className="scroll-mt-28">
             <p className="text-muted-foreground leading-relaxed text-lg">
               {
-                `I'm an engineer with ${getYearsOfExperience()}+ years shipping production systems at enterprise scale. I currently lead cloud initiatives at Capgemini, and I'm the founder of `
+                `I'm an engineer with ${getYearsOfExperience()}+ years shipping production systems at enterprise scale. I currently lead cloud and platform initiatives at Capgemini, and I'm the founder of `
               }
               <Link
                 href="https://www.admguard.com.au"
@@ -103,32 +103,24 @@ export function HeroSection() {
               }
             </p>
             <p className="mt-6 text-muted-foreground leading-relaxed text-lg">
+              {"My work centers on three core pillars: "}
+              <span className="text-foreground font-medium">Azure Cloud + DevOps</span>
+              {", "}
+              <span className="text-foreground font-medium">Platform Engineering</span>
+              {", and "}
+              <span className="text-foreground font-medium">Applied AI</span>
               {
-                "That background — shipping reliable systems at scale, navigating enterprise constraints, talking to stakeholders — is what shapes everything I build. Not just demos, but "
-              }
-              <span className="text-foreground font-medium">
-                production-ready systems
-              </span>
-              {"."}
-            </p>
-            <p className="mt-6 text-muted-foreground leading-relaxed text-lg">
-              {"My focus is on the applied side of AI and engineering: "}
-              <span className="text-foreground font-medium">AI Governance & Compliance</span>
-              {", "}
-              <span className="text-foreground font-medium">Claude API</span>
-              {", "}
-              <span className="text-foreground font-medium">RAG architectures</span>
-              {", "}
-              <span className="text-foreground font-medium">
-                agent workflows
-              </span>
-              {
-                ", and Azure cloud infrastructure. I care about things that actually work in production: clear failure modes, observable systems, and measurable outcomes."
+                ". That background — automating delivery pipelines, migrating mission-critical platforms, navigating enterprise governance, and designing resilient infrastructure — is what shapes everything I build."
               }
             </p>
             <p className="mt-6 text-muted-foreground leading-relaxed text-lg">
               {
-                "If you have a problem that AI or compliance infrastructure can solve — or you're not sure yet — I'm happy to talk through it."
+                "Whether it's architecting cloud landing zones, driving internal developer velocity, implementing AI compliance gateways, or deploying production RAG and agent workflows, I care about systems that actually work in production: clear failure modes, observable architecture, and measurable business outcomes."
+              }
+            </p>
+            <p className="mt-6 text-muted-foreground leading-relaxed text-lg">
+              {
+                "If you have a problem in Azure cloud, platform engineering, or AI systems — or you're planning your next architectural milestone — I'm happy to talk through it."
               }
             </p>
           </div>
