@@ -145,7 +145,7 @@ export const RESUME_DATA: ResumeData = {
       role: "Consultant (Platform & Cloud Migration)",
       company: "Capgemini",
       companyUrl: "https://www.capgemini.com",
-      location: "Melbourne, Australia",
+      location: "New Delhi, India",
       highlights: [
         "Led platform migration and cloud reliability initiatives across multiple enterprise environments on Azure.",
         "Automated deployment workflows, eliminating cross-team delivery friction and improving system availability SLAs.",
@@ -158,7 +158,7 @@ export const RESUME_DATA: ResumeData = {
       role: "Contractor (Cloud & Backend Engineering)",
       company: "Capgemini",
       companyUrl: "https://www.capgemini.com",
-      location: "Melbourne, Australia",
+      location: "New Delhi, India",
       highlights: [
         "Delivered critical backend systems and cloud infrastructure components for high-demand client environments.",
         "Collaborated with architecture teams to ensure zero-downtime releases and strict compliance adherence.",
@@ -170,7 +170,7 @@ export const RESUME_DATA: ResumeData = {
       role: "Software Developer",
       company: "Willow.ai",
       companyUrl: "https://www.willowinc.com",
-      location: "Melbourne, Australia",
+      location: "New Delhi, India",
       highlights: [
         "Engineered scalable web and mobile software solutions for smart building and digital twin platform ecosystems.",
         "Streamlined backend data ingestion and query pipelines to optimize application latency and user experience.",
@@ -182,7 +182,7 @@ export const RESUME_DATA: ResumeData = {
       role: "Software Developer",
       company: "TechCompiler Data Systems",
       companyUrl: "https://www.techcompiler.com",
-      location: "India",
+      location: "New Delhi, India",
       highlights: [
         "Engineered robust enterprise applications using .NET, C#, and relational database systems.",
         "Implemented database schema optimizations, indexing strategies, and automated testing suites.",

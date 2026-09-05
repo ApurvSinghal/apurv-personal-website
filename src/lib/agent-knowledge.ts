@@ -48,15 +48,15 @@ He focuses on systems that actually work in production: clear failure modes, obs
    - Leads platform engineering teams and enterprise cloud architecture across client engagements on Azure.
    - Designed automated DevOps CI/CD pipelines, optimized deployment velocity, and improved system reliability and security standards.
    - Mentors teams on cloud architecture, containerization, and production AI readiness.
-2. Capgemini — Consultant (Platform & Cloud Migration) (2021 — 2023)
+2. Capgemini — Consultant (Platform & Cloud Migration) (2021 — 2023) | New Delhi, India
    - Led platform migration and cloud reliability initiatives on Azure.
    - Focused on infrastructure automation, developer platform scalability, and automated continuous delivery across multiple enterprise client environments.
-3. Capgemini — Contractor (2021)
+3. Capgemini — Contractor (2021) | New Delhi, India
    - Azure cloud and backend systems delivery for high-demand client environments.
-4. Willow.ai — Software Developer (2020 — 2021)
+4. Willow.ai — Software Developer (2020 — 2021) | New Delhi, India
    - Developed responsive mobile and web applications with focus on performance optimization.
    - Streamlined backend data processing pipelines to improve application responsiveness.
-5. TechCompiler Data Systems — Software Developer (2018 — 2020)
+5. TechCompiler Data Systems — Software Developer (2018 — 2020) | New Delhi, India
    - Built and maintained scalable .NET, C#, and SQL Server applications.
 
 # COMMUNITY & PRO BONO LEADERSHIP
