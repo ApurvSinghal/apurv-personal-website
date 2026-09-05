@@ -57,7 +57,7 @@ jobs:
           git add content/x-history.json content/x-queue.json
           if ! git diff --cached --quiet; then
             git commit -m "chore(bot): record published X post and update queue [skip ci]"
-            git push origin main
+            git push origin main || echo "::warning::Direct git push to main was blocked by branch protection. Please allow github-actions[bot] to bypass branch protection in repository settings."
           else
             echo "No content changes to commit."
           fi

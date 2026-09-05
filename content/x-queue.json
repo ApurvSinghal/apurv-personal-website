@@ -1,8 +1,1 @@
-[
-  {
-    "id": "queue-landing-zones-1",
-    "topic": "Azure Cloud & DevOps",
-    "text": "Most cloud migrations I've worked on don't stall from Kubernetes or databases.\n\nThey stall because multi-subscription governance wasn't locked in on Day 1.\n\nAutomating policy guardrails in Terraform before onboarding devs saved us months of rework. #Azure #PlatformEngineering",
-    "createdAt": "2026-09-06T01:24:00.000Z"
-  }
-]
+[]
