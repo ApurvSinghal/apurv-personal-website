@@ -44,9 +44,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const gaId = process.env.NEXT_PUBLIC_GA_ID;
-  const clarityId =
+  const cfAnalyticsToken =
     process.env.NODE_ENV === "production"
-      ? process.env.NEXT_PUBLIC_CLARITY_ID
+      ? process.env.NEXT_PUBLIC_CF_ANALYTICS_TOKEN
       : undefined;
   const structuredData = {
     "@context": "https://schema.org",
@@ -100,16 +100,16 @@ export default function RootLayout({
         <Analytics />
         <SpeedInsights />
         {gaId ? <GoogleAnalytics gaId={gaId} /> : null}
-        {clarityId ? (
-          <Script id="clarity" strategy="lazyOnload">
-            {`
-              (function(c,l,a,r,i,t,y){
-                  c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-                  t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-                  y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-              })(window, document, "clarity", "script", "${clarityId}");
-            `}
-          </Script>
+        {cfAnalyticsToken ? (
+          <Script
+            id="cloudflare-analytics"
+            strategy="afterInteractive"
+            src="https://static.cloudflareinsights.com/beacon.min.js"
+            data-cf-beacon={JSON.stringify({
+              token: cfAnalyticsToken,
+              spa: true,
+            })}
+          />
         ) : null}
       </body>
     </html>

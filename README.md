@@ -18,7 +18,7 @@ Personal portfolio built with Next.js 16, React 19, TypeScript, and Tailwind CSS
 - Resume download from `public/documents/resume.pdf`
 - Contact form posting to `/api/contact`
 - Optional Google Analytics integration through `NEXT_PUBLIC_GA_ID`
-- Optional Microsoft Clarity session recordings through `NEXT_PUBLIC_CLARITY_ID` (production builds only)
+- Optional Cloudflare Web Analytics through `NEXT_PUBLIC_CF_ANALYTICS_TOKEN` (production builds only)
 - Runtime performance monitoring via Vercel Speed Insights
 
 ## Getting Started
@@ -79,10 +79,10 @@ CONTACT_NOTIFICATION_EMAIL=me@apurvsinghal.com
 
 ```bash
 NEXT_PUBLIC_GA_ID=G-XXXXXXXXXX
-NEXT_PUBLIC_CLARITY_ID=xsy2hc4cqe
+NEXT_PUBLIC_CF_ANALYTICS_TOKEN=your_cloudflare_analytics_token
 ```
 
-Microsoft Clarity only loads in production builds (`NODE_ENV=production`) and only when `NEXT_PUBLIC_CLARITY_ID` is set. The project ID comes from the Clarity dashboard URL, e.g. `clarity.microsoft.com/projects/view/<id>`.
+Cloudflare Web Analytics only loads in production builds (`NODE_ENV=production`) and only when `NEXT_PUBLIC_CF_ANALYTICS_TOKEN` is set. The token can be found in the Cloudflare Dashboard under **Analytics & Logs** > **Web Analytics** > **Manage Site** (the token within the JS snippet snippet `{"token": "..."}`).
 
 Notes:
 
