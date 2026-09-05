@@ -125,10 +125,10 @@ export const RESUME_DATA: ResumeData = {
       companyUrl: "https://www.capgemini.com",
       location: "Melbourne, Australia",
       highlights: [
-        "Architect and lead cloud platform engineering initiatives across enterprise client engagements on Microsoft Azure.",
-        "Design production CI/CD automation pipelines using GitHub Actions, reducing release cycle lead time and eliminating manual operational risk.",
-        "Establish standardized infrastructure-as-code (Terraform, Bicep) blueprints for cloud landing zones, security guardrails, and compliance governance.",
-        "Mentor engineering teams on cloud-native practices, containerization, observability telemetry, and production AI readiness.",
+        "Architect and lead enterprise cloud platform initiatives on Microsoft Azure, delivering resilient multi-region infrastructure for mission-critical client services.",
+        "Design production GitHub Actions CI/CD automation pipelines, cutting release cycle lead time by ~40% and eliminating manual deployment errors.",
+        "Establish standardized infrastructure-as-code (Terraform, Bicep) blueprints for enterprise landing zones with automated compliance guardrails.",
+        "Mentor engineering pods on cloud-native practices, containerization, observability telemetry, and production AI readiness.",
       ],
       skills: [
         "Microsoft Azure",
@@ -147,9 +147,9 @@ export const RESUME_DATA: ResumeData = {
       companyUrl: "https://www.capgemini.com",
       location: "New Delhi, India",
       highlights: [
-        "Led platform migration and cloud reliability initiatives across multiple enterprise environments on Azure.",
-        "Automated deployment workflows, eliminating cross-team delivery friction and improving system availability SLAs.",
-        "Standardized container deployment patterns and cloud monitoring telemetry to maintain enterprise-grade resilience.",
+        "Led platform migration and cloud reliability initiatives across multiple enterprise environments on Azure, sustaining 99.95%+ platform availability.",
+        "Automated deployment workflows across cross-functional teams, shifting release cadences from monthly batches to on-demand zero-downtime deployments.",
+        "Standardized container deployment patterns and cloud monitoring telemetry, reducing mean-time-to-resolution (MTTR) by ~30%.",
       ],
       skills: ["Azure", "Docker", "CI/CD", "Cloud Migration", "PowerShell", "SRE"],
     },
@@ -160,8 +160,8 @@ export const RESUME_DATA: ResumeData = {
       companyUrl: "https://www.capgemini.com",
       location: "New Delhi, India",
       highlights: [
-        "Delivered critical backend systems and cloud infrastructure components for high-demand client environments.",
-        "Collaborated with architecture teams to ensure zero-downtime releases and strict compliance adherence.",
+        "Delivered critical backend systems and cloud infrastructure components for high-demand client environments with zero downtime.",
+        "Collaborated with architecture teams to ensure strict compliance adherence and seamless integration with core enterprise services.",
       ],
       skills: ["Azure", "Backend Systems", "APIs", "Agile Delivery"],
     },
@@ -173,7 +173,7 @@ export const RESUME_DATA: ResumeData = {
       location: "New Delhi, India",
       highlights: [
         "Engineered scalable web and mobile software solutions for smart building and digital twin platform ecosystems.",
-        "Streamlined backend data ingestion and query pipelines to optimize application latency and user experience.",
+        "Streamlined backend data ingestion and query pipelines, improving API response times by ~35% for real-time telemetry.",
       ],
       skills: ["Software Engineering", "Full-Stack Development", "APIs", "Cloud Services"],
     },
@@ -184,8 +184,8 @@ export const RESUME_DATA: ResumeData = {
       companyUrl: "https://www.techcompiler.com",
       location: "New Delhi, India",
       highlights: [
-        "Engineered robust enterprise applications using .NET, C#, and relational database systems.",
-        "Implemented database schema optimizations, indexing strategies, and automated testing suites.",
+        "Engineered robust enterprise applications using .NET, C#, and relational database systems for commercial clients.",
+        "Implemented database schema optimizations, indexing strategies, and automated testing suites that improved query performance by ~50%.",
       ],
       skills: [".NET", "C#", "SQL Server", "Web Applications", "Relational Databases"],
     },

@@ -311,7 +311,7 @@ export function ChatWidget() {
   return (
     <>
       {/* Floating Action Button */}
-      <div className="fixed bottom-6 right-6 z-40">
+      <div className="fixed bottom-6 right-6 z-40 print:hidden">
         {!isOpen && (
           <div className="group relative flex items-center">
             {/* Tooltip hint on hover */}
@@ -356,7 +356,7 @@ export function ChatWidget() {
           role="dialog"
           aria-modal="true"
           aria-labelledby="chat-modal-title"
-          className="fixed inset-0 sm:inset-auto sm:bottom-6 sm:right-6 sm:w-[420px] sm:h-[620px] z-50 flex flex-col overflow-hidden rounded-none sm:rounded-2xl border border-black/10 dark:border-white/10 bg-background/95 backdrop-blur-2xl shadow-2xl shadow-black/20"
+          className="fixed inset-0 sm:inset-auto sm:bottom-6 sm:right-6 sm:w-[420px] sm:h-[620px] z-50 flex flex-col overflow-hidden rounded-none sm:rounded-2xl border border-black/10 dark:border-white/10 bg-background/95 backdrop-blur-2xl shadow-2xl shadow-black/20 print:hidden"
         >
           {/* Header */}
           <div className="flex items-center justify-between border-b border-border/80 px-4 py-3 bg-muted/40">

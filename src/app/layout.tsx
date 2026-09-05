@@ -101,7 +101,9 @@ export default function RootLayout({
         />
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           {children}
-          <ChatWidget />
+          <div className="print:hidden">
+            <ChatWidget />
+          </div>
         </ThemeProvider>
         <GlobalErrorHandler />
         <Analytics />

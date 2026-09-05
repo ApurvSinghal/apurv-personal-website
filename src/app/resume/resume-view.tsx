@@ -24,6 +24,28 @@ export function ResumeView() {
     }
   };
 
+  // Group experiences by company for clear promotion and tenure hierarchy
+  const groupedExperience = [
+    {
+      company: "Capgemini",
+      period: "2021 — Present",
+      companyUrl: "https://www.capgemini.com",
+      roles: RESUME_DATA.experience.filter((e) => e.company === "Capgemini"),
+    },
+    {
+      company: "Willow.ai",
+      period: "2020 — 2021",
+      companyUrl: "https://www.willowinc.com",
+      roles: RESUME_DATA.experience.filter((e) => e.company === "Willow.ai"),
+    },
+    {
+      company: "TechCompiler Data Systems",
+      period: "2018 — 2020",
+      companyUrl: "https://www.techcompiler.com",
+      roles: RESUME_DATA.experience.filter((e) => e.company === "TechCompiler Data Systems"),
+    },
+  ];
+
   return (
     <div className="min-h-screen bg-muted/30 text-foreground py-6 px-4 sm:px-6 lg:px-8 print:p-0 print:bg-white print:text-black">
       {/* Top Action Toolbar (Hidden in Print) */}
@@ -63,7 +85,7 @@ export function ResumeView() {
       {/* Main Resume Document Sheet */}
       <main className="max-w-4xl mx-auto bg-card text-card-foreground border border-border/60 rounded-xl shadow-xl p-6 sm:p-12 print:shadow-none print:border-none print:p-0 print:m-0 print:max-w-none print:bg-white print:text-black">
         {/* Header */}
-        <header className="border-b border-border/80 pb-6 print:pb-4 print:border-black/20">
+        <header className="border-b border-border/80 pb-5 print:pb-3 print:border-black/20">
           <div className="flex flex-col md:flex-row md:items-baseline justify-between gap-2">
             <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-foreground print:text-black print:text-3xl">
               {RESUME_DATA.name}
@@ -73,52 +95,67 @@ export function ResumeView() {
             </p>
           </div>
 
-          {/* Contact Strip */}
-          <div className="mt-3 flex flex-wrap items-center gap-y-1.5 gap-x-4 text-xs text-muted-foreground print:text-neutral-600">
-            <span className="inline-flex items-center gap-1">
-              <MapPin size={12} className="print:hidden" />
-              {RESUME_DATA.location}
-            </span>
-            <span>•</span>
-            <a
-              href={`mailto:${RESUME_DATA.email}`}
-              className="inline-flex items-center gap-1 hover:text-foreground print:text-black hover:underline"
-            >
-              <Mail size={12} className="print:hidden" />
-              {RESUME_DATA.email}
-            </a>
-            <span>•</span>
-            <a
-              href={RESUME_DATA.website}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 hover:text-foreground print:text-black hover:underline"
-            >
-              <Globe size={12} className="print:hidden" />
-              apurvsinghal.com
-            </a>
-            <span>•</span>
-            <a
-              href={RESUME_DATA.linkedin}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-foreground print:text-black hover:underline"
-            >
-              linkedin.com/in/apurvsinghal28
-            </a>
-            <span>•</span>
-            <a
-              href="https://www.admguard.com.au"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-foreground print:text-black hover:underline font-medium text-foreground print:text-black"
-            >
-              admguard.com.au
-            </a>
+          {/* Contact Strip: 2 Clean, Balanced Lines */}
+          <div className="mt-2.5 text-xs text-muted-foreground print:text-neutral-700 space-y-1">
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+              <span className="inline-flex items-center gap-1">
+                <MapPin size={11} className="print:hidden text-primary" />
+                {RESUME_DATA.location}
+              </span>
+              <span className="text-border print:text-neutral-400">•</span>
+              <a
+                href={`mailto:${RESUME_DATA.email}`}
+                className="inline-flex items-center gap-1 hover:text-foreground print:text-black hover:underline"
+              >
+                <Mail size={11} className="print:hidden text-primary" />
+                {RESUME_DATA.email}
+              </a>
+              <span className="text-border print:text-neutral-400">•</span>
+              <a
+                href={RESUME_DATA.website}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 hover:text-foreground print:text-black hover:underline font-medium text-foreground print:text-black"
+              >
+                <Globe size={11} className="print:hidden text-primary" />
+                apurvsinghal.com
+              </a>
+            </div>
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+              <a
+                href={RESUME_DATA.linkedin}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-foreground print:text-black hover:underline"
+              >
+                linkedin.com/in/apurvsinghal28
+              </a>
+              <span className="text-border print:text-neutral-400">•</span>
+              <a
+                href={RESUME_DATA.github}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-foreground print:text-black hover:underline"
+              >
+                github.com/ApurvSinghal
+              </a>
+              <span className="text-border print:text-neutral-400">•</span>
+              <a
+                href="https://www.admguard.com.au"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-foreground print:text-black hover:underline font-medium text-foreground print:text-black"
+              >
+                admguard.com.au
+              </a>
+            </div>
           </div>
 
           {/* Core Pillars */}
-          <div className="mt-3.5 flex flex-wrap gap-1.5 print:mt-2">
+          <div className="mt-3 flex flex-wrap items-center gap-1.5 print:mt-2">
+            <span className="text-xs font-semibold text-foreground print:text-black mr-1">
+              Core Focus:
+            </span>
             {RESUME_DATA.pillars.map((pillar) => (
               <span
                 key={pillar}
@@ -131,8 +168,8 @@ export function ResumeView() {
         </header>
 
         {/* Executive Summary */}
-        <section className="mt-6 print:mt-4">
-          <h2 className="text-xs font-bold uppercase tracking-wider text-primary print:text-black mb-2">
+        <section className="mt-6 print:mt-3.5">
+          <h2 className="text-xs font-bold uppercase tracking-wider text-primary print:text-black mb-2 print:mb-1">
             Executive Summary
           </h2>
           <p className="text-sm leading-relaxed text-muted-foreground print:text-neutral-700">
@@ -140,43 +177,44 @@ export function ResumeView() {
           </p>
         </section>
 
-        {/* Professional Experience */}
-        <section className="mt-8 print:mt-5">
-          <h2 className="text-xs font-bold uppercase tracking-wider text-primary print:text-black mb-4 print:mb-2 border-b border-border/40 pb-1 print:border-black/20">
+        {/* Professional Experience (Grouped by Company for Promotion & Retention) */}
+        <section className="mt-7 print:mt-4">
+          <h2 className="text-xs font-bold uppercase tracking-wider text-primary print:text-black mb-3 print:mb-2 border-b border-border/40 pb-1 print:border-black/20">
             Professional Experience
           </h2>
 
-          <div className="space-y-6 print:space-y-4">
-            {RESUME_DATA.experience.map((exp, idx) => (
-              <div key={idx} className="break-inside-avoid">
-                <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1">
-                  <div>
-                    <h3 className="text-sm font-semibold text-foreground print:text-black inline-flex items-center gap-1.5">
-                      {exp.role}
-                      <span className="font-normal text-muted-foreground print:text-neutral-600">
-                        · {exp.company}
-                      </span>
-                    </h3>
-                  </div>
-                  <div className="text-xs font-mono text-muted-foreground print:text-neutral-600 tabular-nums">
-                    {exp.period} | {exp.location}
-                  </div>
+          <div className="space-y-5 print:space-y-3.5">
+            {groupedExperience.map((group, gIdx) => (
+              <div key={gIdx} className="break-inside-avoid">
+                {/* Company Header */}
+                <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1 pb-1 border-b border-border/30 print:border-black/15">
+                  <h3 className="text-sm font-bold text-foreground print:text-black">
+                    {group.company}
+                  </h3>
+                  <span className="text-xs font-mono text-muted-foreground print:text-neutral-600 tabular-nums">
+                    {group.period}
+                  </span>
                 </div>
 
-                <ul className="mt-2 space-y-1 text-xs text-muted-foreground print:text-neutral-700 list-disc list-outside pl-4 leading-relaxed">
-                  {exp.highlights.map((item, hIdx) => (
-                    <li key={hIdx}>{item}</li>
-                  ))}
-                </ul>
+                {/* Sub-Roles */}
+                <div className="mt-2 space-y-3 print:space-y-2.5 sm:pl-2">
+                  {group.roles.map((role, rIdx) => (
+                    <div key={rIdx} className="break-inside-avoid">
+                      <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1">
+                        <h4 className="text-xs font-semibold text-foreground print:text-black">
+                          {role.role}
+                        </h4>
+                        <div className="text-[11px] font-mono text-muted-foreground print:text-neutral-600 tabular-nums">
+                          {role.period} | {role.location}
+                        </div>
+                      </div>
 
-                <div className="mt-2 flex flex-wrap gap-1 print:hidden">
-                  {exp.skills.map((skill) => (
-                    <span
-                      key={skill}
-                      className="px-2 py-0.5 rounded text-[10px] bg-secondary text-secondary-foreground"
-                    >
-                      {skill}
-                    </span>
+                      <ul className="mt-1 space-y-1 text-xs text-muted-foreground print:text-neutral-700 list-disc list-outside pl-4 leading-relaxed">
+                        {role.highlights.map((item, hIdx) => (
+                          <li key={hIdx}>{item}</li>
+                        ))}
+                      </ul>
+                    </div>
                   ))}
                 </div>
               </div>
@@ -185,12 +223,12 @@ export function ResumeView() {
         </section>
 
         {/* Community & Pro Bono Leadership */}
-        <section className="mt-8 print:mt-5 break-inside-avoid">
-          <h2 className="text-xs font-bold uppercase tracking-wider text-primary print:text-black mb-4 print:mb-2 border-b border-border/40 pb-1 print:border-black/20">
+        <section className="mt-7 print:mt-4 break-inside-avoid">
+          <h2 className="text-xs font-bold uppercase tracking-wider text-primary print:text-black mb-3 print:mb-2 border-b border-border/40 pb-1 print:border-black/20">
             Community & Pro Bono Leadership
           </h2>
 
-          <div className="space-y-4">
+          <div className="space-y-3 print:space-y-2">
             {RESUME_DATA.volunteer.map((item, idx) => (
               <div key={idx} className="break-inside-avoid">
                 <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1">
@@ -207,34 +245,23 @@ export function ResumeView() {
                   </div>
                 </div>
 
-                <ul className="mt-2 space-y-1 text-xs text-muted-foreground print:text-neutral-700 list-disc list-outside pl-4 leading-relaxed">
+                <ul className="mt-1.5 space-y-1 text-xs text-muted-foreground print:text-neutral-700 list-disc list-outside pl-4 leading-relaxed">
                   {item.highlights.map((h, hIdx) => (
                     <li key={hIdx}>{h}</li>
                   ))}
                 </ul>
-
-                <div className="mt-2 flex flex-wrap gap-1 print:hidden">
-                  {item.skills.map((skill) => (
-                    <span
-                      key={skill}
-                      className="px-2 py-0.5 rounded text-[10px] bg-secondary text-secondary-foreground"
-                    >
-                      {skill}
-                    </span>
-                  ))}
-                </div>
               </div>
             ))}
           </div>
         </section>
 
         {/* Key Products & Architectures */}
-        <section className="mt-8 print:mt-5 break-inside-avoid">
-          <h2 className="text-xs font-bold uppercase tracking-wider text-primary print:text-black mb-4 print:mb-2 border-b border-border/40 pb-1 print:border-black/20">
+        <section className="mt-7 print:mt-4 break-inside-avoid">
+          <h2 className="text-xs font-bold uppercase tracking-wider text-primary print:text-black mb-3 print:mb-2 border-b border-border/40 pb-1 print:border-black/20">
             Featured Commercial Venture & Systems
           </h2>
 
-          <div className="space-y-4">
+          <div className="space-y-4 print:space-y-3">
             {RESUME_DATA.projects.map((proj, idx) => (
               <div key={idx} className="break-inside-avoid">
                 <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1">
@@ -258,11 +285,11 @@ export function ResumeView() {
                   </div>
                 </div>
 
-                <p className="mt-1 text-xs font-medium text-foreground print:text-neutral-800">
+                <p className="mt-0.5 text-xs font-medium text-foreground print:text-neutral-800">
                   {proj.description}
                 </p>
 
-                <ul className="mt-1.5 space-y-1 text-xs text-muted-foreground print:text-neutral-700 list-disc list-outside pl-4 leading-relaxed">
+                <ul className="mt-1 space-y-1 text-xs text-muted-foreground print:text-neutral-700 list-disc list-outside pl-4 leading-relaxed">
                   {proj.highlights.map((h, hIdx) => (
                     <li key={hIdx}>{h}</li>
                   ))}
@@ -273,7 +300,7 @@ export function ResumeView() {
         </section>
 
         {/* Technical Competencies Matrix */}
-        <section className="mt-8 print:mt-5 break-inside-avoid">
+        <section className="mt-7 print:mt-4 break-inside-avoid">
           <h2 className="text-xs font-bold uppercase tracking-wider text-primary print:text-black mb-3 print:mb-2 border-b border-border/40 pb-1 print:border-black/20">
             Technical Competencies & Tooling
           </h2>
@@ -281,7 +308,7 @@ export function ResumeView() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 print:gap-2">
             {RESUME_DATA.skills.map((skillGroup, idx) => (
               <div key={idx} className="text-xs break-inside-avoid">
-                <span className="font-semibold text-foreground print:text-black block mb-1">
+                <span className="font-semibold text-foreground print:text-black block mb-0.5">
                   {skillGroup.category}:
                 </span>
                 <p className="text-muted-foreground print:text-neutral-700 leading-relaxed">
@@ -293,12 +320,12 @@ export function ResumeView() {
         </section>
 
         {/* Education & Certifications */}
-        <section className="mt-8 print:mt-5 break-inside-avoid">
+        <section className="mt-7 print:mt-4 break-inside-avoid">
           <h2 className="text-xs font-bold uppercase tracking-wider text-primary print:text-black mb-3 print:mb-2 border-b border-border/40 pb-1 print:border-black/20">
             Education & Certifications
           </h2>
 
-          <div className="space-y-3 text-xs">
+          <div className="space-y-2.5 text-xs">
             {RESUME_DATA.education.map((edu, idx) => (
               <div key={idx} className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1">
                 <div>
@@ -315,8 +342,8 @@ export function ResumeView() {
               </div>
             ))}
 
-            <div className="pt-2">
-              <span className="font-semibold text-foreground print:text-black block mb-1">
+            <div className="pt-1">
+              <span className="font-semibold text-foreground print:text-black block mb-0.5">
                 Industry Certifications:
               </span>
               <p className="text-muted-foreground print:text-neutral-700">
@@ -334,9 +361,9 @@ export function ResumeView() {
             @media print {
               @page {
                 size: A4 portrait;
-                margin: 12mm 14mm 12mm 14mm;
+                margin: 10mm 12mm 10mm 12mm;
               }
-              body {
+              html, body {
                 background-color: #ffffff !important;
                 color: #000000 !important;
                 -webkit-print-color-adjust: exact !important;
