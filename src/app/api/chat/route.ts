@@ -42,12 +42,31 @@ function checkRateLimit(ip: string): boolean {
 function generateMockResponse(query: string): string {
   const lower = query.toLowerCase();
 
-  if (lower.includes("project") || lower.includes("built") || lower.includes("portfolio")) {
-    return `Apurv has built several notable production and AI projects:
+  if (
+    lower.includes("adm") ||
+    lower.includes("guard") ||
+    lower.includes("company") ||
+    lower.includes("product") ||
+    lower.includes("compliance")
+  ) {
+    return `**ADM Guard** ([www.admguard.com.au](https://www.admguard.com.au)) is Apurv Singhal's company and flagship product — "the compliance flight recorder for automated decisions".
 
-1. **AI Personal Portfolio & Agent Platform** (this website!): Built with Next.js 16 (App Router & Turbopack), Tailwind CSS, and streaming AI assistant integration.
-2. **Contact Pipeline Observability System**: A resilient lead-intake pipeline with strict Zod validation, honeypot defenses, Upstash rate limiting, and end-to-end Sentry telemetry.
-3. **Enterprise AI Agents & Claude API Workflows**: Production workflow automation using Claude API, tool-calling agents, Model Context Protocol (MCP) servers, and RAG architectures.
+Key Highlights:
+- **The Regulatory Need**: Solves the mandatory **10 December 2026** Australian Privacy Act APP 1.7–1.9 deadline (Privacy and Other Legislation Amendment Act 2024), which requires Australian businesses to evidence every automated decision materially affecting people.
+- **Code-Layer Evidence**: Replaces static policy PDFs and out-of-sync spreadsheets with automated runtime instrumentation that cannot drift.
+- **Zero-PII By Architecture**: Rejects personal information at the ingestion boundary with HTTP 422 before persistence. Only opaque subject tokens are accepted.
+- **Cryptographic Tamper-Evidence**: SHA-256 hash chains + Merkle trees anchored to **Azure Australia East WORM** (Write-Once-Read-Many) storage.
+- **Developer-First**: One API call to integrate with drop-in SDKs (Python, Node, Go) and client idempotency key retries.
+
+Visit [www.admguard.com.au](https://www.admguard.com.au) or explore the case study in the [Projects](#projects) section!`;
+  }
+
+  if (lower.includes("project") || lower.includes("built") || lower.includes("portfolio")) {
+    return `Apurv has built several notable production systems and AI products:
+
+1. **ADM Guard** ([www.admguard.com.au](https://www.admguard.com.au)): The compliance flight recorder for automated decisions. Solves Australia's Privacy Act APP 1.7–1.9 with zero-PII boundary validation, Merkle hash chains, and Azure WORM storage.
+2. **Interactive RAG Portfolio Agent** (this website!): Built with Next.js 16 (App Router & Turbopack), Tailwind CSS, streaming AI assistant integration, and in-chat lead capture.
+3. **Contact Pipeline Observability System**: A resilient lead-intake pipeline with strict Zod validation, honeypot defenses, Upstash rate limiting, and end-to-end Sentry telemetry.
 
 You can explore detailed case studies in the [Projects](#projects) section!`;
   }
@@ -55,19 +74,20 @@ You can explore detailed case studies in the [Projects](#projects) section!`;
   if (lower.includes("azure") || lower.includes("cloud") || lower.includes("capgemini")) {
     return `Apurv has **8+ years of enterprise experience** shipping mission-critical systems on Microsoft Azure:
 
+- **Founder & Engineer at ADM Guard** (2025 — Present): Engineered compliance infrastructure on Azure Australia East with WORM storage policies.
 - **Lead Consultant at Capgemini** (2023 — Present): Leads cloud engineering teams, designs enterprise architectures, optimizes CI/CD pipelines, and mentors engineers.
 - **Consultant at Capgemini** (2021 — 2023): Drove large-scale platform migrations and reliability initiatives.
-- **Deep Technical Breadth**: Azure App Services, Azure Functions (Serverless), Azure OpenAI, Azure AI Foundry, Cosmos DB, Entra ID, and containerized microservices.
+- **Deep Technical Breadth**: Azure App Services, Azure Functions (Serverless), Azure OpenAI, Azure AI Foundry, Cosmos DB, WORM storage, Entra ID, and containerized microservices.
 
-His enterprise background ensures that the AI agents he builds are reliable, observable, and ready for production constraints.`;
+His enterprise background ensures that the AI agents and compliance systems he builds are reliable, observable, and ready for production constraints.`;
   }
 
   if (lower.includes("skill") || lower.includes("tech") || lower.includes("stack")) {
-    return `Apurv's core skills span AI engineering and enterprise full-stack development:
+    return `Apurv's core skills span AI engineering, compliance infrastructure, and enterprise full-stack development:
 
-- **AI & Agents**: Claude API, Google Gemini, OpenAI, RAG, Vector DBs, Model Context Protocol (MCP), Prompt Engineering, Tool Use.
-- **Cloud & DevOps**: Microsoft Azure, Azure AI Foundry, Vercel, Docker, GitHub Actions CI/CD.
-- **Backend**: TypeScript, Node.js, C#, .NET / ASP.NET Core, SQL Server, RESTful microservices.
+- **AI & Governance**: AI Agents, Claude API, Google Gemini, OpenAI, RAG, Vector DBs, APP 1.7–1.9 Compliance, Zero-PII architectures.
+- **Cloud & DevOps**: Microsoft Azure, Azure AI Foundry, Azure AU East WORM, Vercel, Docker, GitHub Actions CI/CD.
+- **Backend**: TypeScript, Node.js, Python (SDK development), C#, .NET / ASP.NET Core, SQL Server, RESTful microservices.
 - **Frontend**: Next.js, React, React Native, Tailwind CSS.
 
 Check out the interactive [Skills](#skills) section for the complete breakdown!`;
@@ -78,18 +98,19 @@ Check out the interactive [Skills](#skills) section for the complete breakdown!`
 
 - **Email**: [me@apurvsinghal.com](mailto:me@apurvsinghal.com)
 - **LinkedIn**: [linkedin.com/in/apurvsinghal28](https://www.linkedin.com/in/apurvsinghal28)
+- **ADM Guard**: [www.admguard.com.au](https://www.admguard.com.au)
 - **Contact Form**: Scroll down to the [Contact Section](#contact) on this page to send a direct message.
 
-He is based in **Melbourne, Australia** and is open to AI engineering advisory, contract projects, and consulting engagements!`;
+He is based in **Melbourne, Australia** and is open to AI engineering advisory, compliance infrastructure consulting, and contract engagements!`;
   }
 
-  return `Hello! I'm Apurv's AI representative. Apurv is an AI Engineer and Lead Cloud Consultant based in Melbourne with 8+ years shipping enterprise production systems on Azure, now specializing in AI agents, Claude API, and RAG pipelines.
+  return `Hello! I'm Apurv's AI representative. Apurv is the Founder of **[ADM Guard](https://www.admguard.com.au)** and a Lead Cloud Consultant in Melbourne with 8+ years shipping enterprise production systems on Azure, now specializing in AI agents, AI governance, and compliance infrastructure.
 
 Feel free to ask me about:
-- His recent AI projects and architecture case studies
+- **ADM Guard** (his automated decision compliance product)
+- His AI engineering projects and architecture case studies
 - His 8+ years of enterprise Azure & cloud leadership
-- His technical skillset across AI, TypeScript, and .NET
-- How to get in touch or collaborate with him!`;
+- How to get in touch or book an advisory session!`;
 }
 
 export async function POST(req: NextRequest) {

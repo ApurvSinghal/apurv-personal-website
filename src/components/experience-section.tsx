@@ -4,6 +4,22 @@ import { Badge } from "@/components/ui/badge";
 
 const experiences = [
   {
+    period: "2025 — Present",
+    title: "Founder & Engineer",
+    company: "ADM Guard",
+    companyUrl: "https://www.admguard.com.au",
+    description:
+      "Founded and built ADM Guard, the compliance flight recorder for automated decisions. Architected zero-PII boundary validation, cryptographic SHA-256 Merkle hash chaining, and Azure Australia East WORM storage to help Australian SaaS comply with Privacy Act APP 1.7–1.9 before the December 2026 enforcement cliff.",
+    technologies: [
+      "SaaS",
+      "Compliance & RegTech",
+      "Azure WORM",
+      "SHA-256 Merkle",
+      "TypeScript",
+      "Python SDK",
+    ],
+  },
+  {
     period: "2023 — Present",
     title: "Lead Consultant",
     company: "Capgemini",

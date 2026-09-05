@@ -19,10 +19,10 @@ export function HeroSection() {
               Apurv Singhal
             </h1>
             <p className="mt-3 text-xl text-primary font-medium">
-              AI Engineer & Builder
+              Founder, ADM Guard · AI Engineer
             </p>
             <p className="mt-3 text-sm text-muted-foreground leading-relaxed max-w-xs">
-              AI Agents · Claude API · Azure AI · RAG
+              Building ADM Guard · AI Agents · Azure Cloud · Enterprise Scale
             </p>
 
             {/* Availability Badge */}
@@ -88,18 +88,23 @@ export function HeroSection() {
           <div id="about" className="scroll-mt-28">
             <p className="text-muted-foreground leading-relaxed text-lg">
               {
-                `I'm an engineer with ${getYearsOfExperience()}+ years shipping production systems at enterprise scale. I'm now going deep on `
+                `I'm an engineer with ${getYearsOfExperience()}+ years shipping production systems at enterprise scale. I'm the founder of `
               }
-              <span className="text-foreground font-medium">AI</span>
+              <Link
+                href="https://www.admguard.com.au"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-foreground font-medium underline underline-offset-4 decoration-primary/40 hover:decoration-primary transition-colors"
+              >
+                ADM Guard
+              </Link>
               {
-                " — building agents, automation, and AI-powered applications that solve real business problems."
+                " — the compliance flight recorder for automated decisions (APP 1.7–1.9) — and lead cloud initiatives at Capgemini."
               }
             </p>
             <p className="mt-6 text-muted-foreground leading-relaxed text-lg">
-              {"Based in "}
-              <span className="text-foreground font-medium">Melbourne</span>
               {
-                ", I currently lead cloud initiatives at Capgemini. That background — shipping reliable systems at scale, navigating enterprise constraints, talking to stakeholders — is what I bring to AI work. Not just demos, but "
+                "That background — shipping reliable systems at scale, navigating enterprise constraints, talking to stakeholders — is what shapes everything I build. Not just demos, but "
               }
               <span className="text-foreground font-medium">
                 production-ready systems
@@ -107,21 +112,23 @@ export function HeroSection() {
               {"."}
             </p>
             <p className="mt-6 text-muted-foreground leading-relaxed text-lg">
-              {"My focus is on the applied side of AI: "}
+              {"My focus is on the applied side of AI and engineering: "}
+              <span className="text-foreground font-medium">AI Governance & Compliance</span>
+              {", "}
               <span className="text-foreground font-medium">Claude API</span>
               {", "}
-              <span className="text-foreground font-medium">RAG pipelines</span>
+              <span className="text-foreground font-medium">RAG architectures</span>
               {", "}
               <span className="text-foreground font-medium">
                 agent workflows
               </span>
               {
-                ", and Azure AI. I care about things that actually work in production: clear failure modes, observable systems, and measurable outcomes."
+                ", and Azure cloud infrastructure. I care about things that actually work in production: clear failure modes, observable systems, and measurable outcomes."
               }
             </p>
             <p className="mt-6 text-muted-foreground leading-relaxed text-lg">
               {
-                "If you have a problem that AI can solve — or you're not sure yet — I'm happy to talk through it."
+                "If you have a problem that AI or compliance infrastructure can solve — or you're not sure yet — I'm happy to talk through it."
               }
             </p>
           </div>

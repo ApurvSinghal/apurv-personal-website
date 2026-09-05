@@ -22,6 +22,32 @@ export type Project = {
 
 export const projects: Project[] = [
   {
+    slug: "adm-guard",
+    title: "ADM Guard — Automated Decision Compliance Platform",
+    status: "Live",
+    summary:
+      "The compliance flight recorder for automated decisions. Built for Australian B2B SaaS, fintech, and HR-tech to meet mandatory Privacy Act APP 1.7–1.9 obligations before the December 2026 enforcement deadline.",
+    technicalDetails:
+      "Architected as a developer-first compliance evidence layer at the code boundary. Integrates a zero-PII ingestion firewall (422 rejection before persistence), tamper-evident SHA-256 hash chains with Merkle verification, and Azure Australia East WORM (Write-Once-Read-Many) storage with single-call SDKs for Python, Node, and Go.",
+    technologies: [
+      "TypeScript",
+      "Python SDK",
+      "Azure AU East (WORM)",
+      "Next.js",
+      "SHA-256 Merkle",
+      "REST API",
+      "RegTech",
+    ],
+    categories: ["AI", "Cloud", "Backend", "Observability"],
+    liveUrl: "https://www.admguard.com.au",
+    highlights: [
+      "Solves the 10 December 2026 Australian Privacy Act APP 1.7–1.9 enforcement cliff with continuous code-level evidence rather than stale PDFs.",
+      "Zero-PII ingestion boundary actively rejects personal names, emails, TFNs, and Medicare numbers prior to persistence.",
+      "Tamper-evident SHA-256 hash chain and Merkle trees anchored to immutable Azure Australia East WORM storage.",
+      "Drop-in REST API and multi-language SDKs with client-generated idempotency keys for instant developer adoption.",
+    ],
+  },
+  {
     slug: "portfolio-rag-ai-agent",
     title: "Interactive RAG Portfolio Agent",
     status: "Live",
