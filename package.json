@@ -16,7 +16,9 @@
     "test:component": "vitest --config config/vitest.config.ts run src/tests/components",
     "test:smoke": "playwright test --config config/playwright.config.ts src/tests/e2e/smoke.spec.ts",
     "test:e2e": "playwright test --config config/playwright.config.ts src/tests/e2e/navigation.spec.ts src/tests/e2e/contact.spec.ts",
-    "test:a11y": "playwright test --config config/playwright.config.ts src/tests/e2e/a11y.spec.ts"
+    "test:a11y": "playwright test --config config/playwright.config.ts src/tests/e2e/a11y.spec.ts",
+    "x:post": "node scripts/x-poster/index.ts",
+    "x:test": "node scripts/x-poster/index.ts --dry-run"
   },
   "dependencies": {
     "@next/third-parties": "^16.2.6",
