@@ -119,6 +119,18 @@ export function HeroSection() {
               }
             </p>
             <p className="mt-6 text-muted-foreground leading-relaxed text-lg">
+              {"Beyond enterprise architecture, I believe in using engineering skills for community impact — serving as Head of IT (Volunteer) for "}
+              <Link
+                href="https://www.indiancare.org.au"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-foreground font-medium underline underline-offset-4 decoration-primary/40 hover:decoration-primary transition-colors"
+              >
+                IndianCare Inc.
+              </Link>
+              {", a Melbourne-based welfare non-profit, managing their complete end-to-end IT infrastructure."}
+            </p>
+            <p className="mt-6 text-muted-foreground leading-relaxed text-lg">
               {
                 "If you have a problem in Azure cloud, platform engineering, or AI systems — or you're planning your next architectural milestone — I'm happy to talk through it."
               }

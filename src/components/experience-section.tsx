@@ -68,6 +68,24 @@ const experiences = [
   },
 ];
 
+const volunteerExperiences = [
+  {
+    period: "Apr 2026 — Present",
+    title: "Head of IT (Volunteer)",
+    organization: "IndianCare Inc.",
+    organizationUrl: "https://www.indiancare.org.au",
+    description:
+      "Managing complete end-to-end IT infrastructure, cloud administration, and digital operations for a Victoria-based community welfare non-profit. Overseeing Microsoft 365 and Entra ID identity governance, domain security, website operations, and digital safeguarding for sensitive community helpline and family welfare support services.",
+    technologies: [
+      "End-to-End IT Operations",
+      "Microsoft 365 / Entra ID",
+      "Cloud & Web Infrastructure",
+      "Cyber Hygiene",
+      "Identity Governance",
+    ],
+  },
+];
+
 export function ExperienceSection() {
   return (
     <section id="experience" className="py-24 scroll-mt-20">
@@ -122,6 +140,59 @@ export function ExperienceSection() {
               </div>
             </div>
           ))}
+        </div>
+
+        {/* Community & Pro Bono Leadership */}
+        <div className="mt-16 pt-12 border-t border-black/[0.08] dark:border-white/[0.08]">
+          <h3 className="text-xs font-semibold text-primary uppercase tracking-wider mb-8">
+            Community & Pro Bono Leadership
+          </h3>
+
+          <div className="space-y-2">
+            {volunteerExperiences.map((item, index) => (
+              <div
+                key={index}
+                className="group relative grid md:grid-cols-[140px_1fr] gap-4 md:gap-8 rounded-lg p-4 -mx-4 hover:bg-muted/40 transition-colors duration-200"
+              >
+                <div className="text-xs text-muted-foreground font-mono pt-1 tabular-nums">
+                  {item.period}
+                </div>
+
+                <div className="relative">
+                  <Link
+                    href={item.organizationUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group/link"
+                  >
+                    <h4 className="text-foreground font-medium group-hover/link:text-primary transition-colors inline-flex items-center gap-1">
+                      {item.title} · {item.organization}
+                      <ArrowUpRight
+                        size={14}
+                        className="opacity-0 -translate-y-1 translate-x-1 group-hover/link:opacity-100 group-hover/link:translate-y-0 group-hover/link:translate-x-0 transition-transform"
+                      />
+                    </h4>
+                  </Link>
+
+                  <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
+                    {item.description}
+                  </p>
+
+                  <div className="mt-3 flex flex-wrap gap-1.5">
+                    {item.technologies.map((tech) => (
+                      <Badge
+                        key={tech}
+                        variant="secondary"
+                        className="bg-secondary text-secondary-foreground hover:bg-secondary/90 border-0 text-xs"
+                      >
+                        {tech}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* Resume Link */}

@@ -98,6 +98,23 @@ His deep platform and DevOps background ensures that the cloud infrastructure an
 Check out the interactive [Skills](#skills) section for the complete breakdown!`;
   }
 
+  if (
+    lower.includes("indiancare") ||
+    lower.includes("volunteer") ||
+    lower.includes("community") ||
+    lower.includes("pro bono") ||
+    lower.includes("non-profit") ||
+    lower.includes("nonprofit")
+  ) {
+    return `Apurv actively gives back to the Victorian community through pro bono technology leadership:
+
+- **Role**: **Head of IT (Volunteer)** at **[IndianCare Inc.](https://www.indiancare.org.au)** (April 2026 — Present)
+- **Organization**: IndianCare is a registered Melbourne-based community development and welfare non-profit providing confidential support services, helplines, and advocacy for individuals and families of Indian origin in Victoria.
+- **His Contribution**: Managing complete end-to-end IT infrastructure, cloud administration, Microsoft 365 / Entra ID identity governance, domain security, website operations, and safeguarding digital workflows for sensitive community helpline services.
+
+You can learn more in the [Experience](#experience) section!`;
+  }
+
   if (lower.includes("hire") || lower.includes("contact") || lower.includes("work") || lower.includes("email")) {
     return `You can get in touch with Apurv directly:
 

@@ -59,6 +59,11 @@ He focuses on systems that actually work in production: clear failure modes, obs
 5. TechCompiler Data Systems — Software Developer (2018 — 2020)
    - Built and maintained scalable .NET, C#, and SQL Server applications.
 
+# COMMUNITY & PRO BONO LEADERSHIP
+1. IndianCare Inc. (https://www.indiancare.org.au) — Head of IT (Volunteer) (April 2026 — Present) | Melbourne, Victoria
+   - Manages complete end-to-end IT infrastructure, cloud administration, and digital operations for a registered Victorian community welfare non-profit supporting individuals and families.
+   - Oversees Microsoft 365 and Entra ID identity governance, domain security, website operations, and digital safeguarding for sensitive community helpline and welfare workflows.
+
 # FEATURED PROJECTS
 1. ADM Guard (https://www.admguard.com.au) — Compliance Flight Recorder for Automated Decisions
    - Live commercial SaaS platform for Australian Privacy Act APP 1.7–1.9 compliance.
