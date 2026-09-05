@@ -39,13 +39,13 @@ export const PILLAR_SCHEDULE: Record<number, ContentPillar> = {
   6: {
     dayName: "Saturday",
     pillar: "Community & IT Leadership",
-    theme: "Pro bono technology leadership, non-profit digital safeguarding, Entra ID identity hygiene, IndianCare Inc.",
+    theme: "Pro bono technology leadership, non-profit digital safeguarding, Entra ID identity hygiene, volunteer tech governance.",
     hashtags: "#Community #Leadership",
   },
   0: {
     dayName: "Sunday",
     pillar: "Engineer Reflections",
-    theme: "Engineering mindset, system design first principles, balancing full-time consulting and startup building.",
+    theme: "Engineering mindset, system design first principles, balancing enterprise consulting and startup building.",
     hashtags: "#BuildingInPublic #Engineering",
   },
 };
@@ -76,10 +76,10 @@ export const EVERGREEN_TOPIC_BANK: Record<string, string[]> = {
     "After 8+ years shipping enterprise production systems, my golden rule:\n\nDesign for the failure mode first. If you don't know what happens when downstream returns HTTP 504, you haven't finished designing. #SoftwareEngineering",
   ],
   "Community & IT Leadership": [
-    "Managing IT for non-profits like IndianCare Inc. reminds me tech hygiene matters most where budgets are tightest.\n\nEnforcing strict Entra ID MFA and domain security protects vulnerable community helplines from compromise. #Leadership",
+    "Managing IT for community non-profits reminds me that tech hygiene matters most where budgets are tightest.\n\nEnforcing strict Entra ID MFA and domain security protects vulnerable community helplines from compromise. #Leadership",
   ],
   "Engineer Reflections": [
-    "Balancing enterprise consulting at Capgemini while building ADM Guard:\n\nThe key is zero context-switching during focus blocks.\n\nEnterprise delivery builds discipline; startups demand speed. Both make you a sharper engineer. #BuildingInPublic",
+    "Balancing enterprise consulting while building a tech startup:\n\nThe key is zero context-switching during focus blocks.\n\nEnterprise delivery builds discipline; startups demand speed. Both make you a sharper engineer. #BuildingInPublic",
   ],
 };
 
@@ -108,8 +108,9 @@ Previously posted topics to avoid repeating: ${historyTexts.slice(-10).join(" | 
 Rules:
 1. Max length: 240 characters total (strict limit so it fits in 280 chars easily).
 2. Voice: Hands-on engineer with 7-8 years experience. Practical, real-world, sharing what you've learned and implemented. No preaching, no gatekeeping, no corporate jargon.
-3. Max 1 clean hashtag at the end: ${pillarConfig.hashtags.split(" ")[0]}.
-4. Return ONLY the raw tweet text, no quotes, no markdown wrappers.`;
+3. NEVER mention any employer names, company names, enterprise client names, or specific non-profit names. Keep all references completely generic (e.g. 'enterprise consulting', 'large enterprise clients', 'community non-profits').
+4. Max 1 clean hashtag at the end: ${pillarConfig.hashtags.split(" ")[0]}.
+5. Return ONLY the raw tweet text, no quotes, no markdown wrappers.`;
 
       const response = await fetch(
         `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiKey}`,
