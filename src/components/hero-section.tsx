@@ -19,10 +19,10 @@ export function HeroSection() {
               Apurv Singhal
             </h1>
             <p className="mt-3 text-xl text-primary font-medium">
-              Founder, ADM Guard · AI Engineer
+              AI Engineer & Cloud Architect
             </p>
             <p className="mt-3 text-sm text-muted-foreground leading-relaxed max-w-xs">
-              Building ADM Guard · AI Agents · Azure Cloud · Enterprise Scale
+              Lead Consultant at Capgemini · Founder of ADM Guard · Enterprise Scale
             </p>
 
             {/* Availability Badge */}
@@ -88,7 +88,7 @@ export function HeroSection() {
           <div id="about" className="scroll-mt-28">
             <p className="text-muted-foreground leading-relaxed text-lg">
               {
-                `I'm an engineer with ${getYearsOfExperience()}+ years shipping production systems at enterprise scale. I'm the founder of `
+                `I'm an engineer with ${getYearsOfExperience()}+ years shipping production systems at enterprise scale. I currently lead cloud initiatives at Capgemini, and I'm the founder of `
               }
               <Link
                 href="https://www.admguard.com.au"
@@ -99,7 +99,7 @@ export function HeroSection() {
                 ADM Guard
               </Link>
               {
-                " — the compliance flight recorder for automated decisions (APP 1.7–1.9) — and lead cloud initiatives at Capgemini."
+                " — the compliance flight recorder for automated decisions (APP 1.7–1.9)."
               }
             </p>
             <p className="mt-6 text-muted-foreground leading-relaxed text-lg">

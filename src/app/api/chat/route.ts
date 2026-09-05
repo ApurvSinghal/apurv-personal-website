@@ -74,12 +74,12 @@ You can explore detailed case studies in the [Projects](#projects) section!`;
   if (lower.includes("azure") || lower.includes("cloud") || lower.includes("capgemini")) {
     return `Apurv has **8+ years of enterprise experience** shipping mission-critical systems on Microsoft Azure:
 
-- **Founder & Engineer at ADM Guard** (2025 — Present): Engineered compliance infrastructure on Azure Australia East with WORM storage policies.
-- **Lead Consultant at Capgemini** (2023 — Present): Leads cloud engineering teams, designs enterprise architectures, optimizes CI/CD pipelines, and mentors engineers.
+- **Lead Consultant at Capgemini** (2023 — Present, Full-Time): Leads cloud engineering teams, designs enterprise architectures, optimizes CI/CD pipelines, and mentors engineers.
 - **Consultant at Capgemini** (2021 — 2023): Drove large-scale platform migrations and reliability initiatives.
+- **Founder of ADM Guard** ([www.admguard.com.au](https://www.admguard.com.au)): Engineered automated compliance infrastructure on Azure Australia East with WORM storage policies.
 - **Deep Technical Breadth**: Azure App Services, Azure Functions (Serverless), Azure OpenAI, Azure AI Foundry, Cosmos DB, WORM storage, Entra ID, and containerized microservices.
 
-His enterprise background ensures that the AI agents and compliance systems he builds are reliable, observable, and ready for production constraints.`;
+His enterprise background ensures that the AI agents and systems he builds are reliable, observable, and ready for production constraints.`;
   }
 
   if (lower.includes("skill") || lower.includes("tech") || lower.includes("stack")) {
