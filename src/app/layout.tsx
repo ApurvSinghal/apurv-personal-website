@@ -45,9 +45,10 @@ export default function RootLayout({
 }>) {
   const gaId = process.env.NEXT_PUBLIC_GA_ID;
   const cfAnalyticsToken =
-    process.env.NODE_ENV === "production"
-      ? process.env.NEXT_PUBLIC_CF_ANALYTICS_TOKEN
-      : undefined;
+    process.env.NEXT_PUBLIC_CF_ANALYTICS_TOKEN ||
+    (process.env.NODE_ENV === "production"
+      ? "c23a74586cfb4b81adf2bda629859be6"
+      : undefined);
   const structuredData = {
     "@context": "https://schema.org",
     "@graph": [
