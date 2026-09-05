@@ -111,14 +111,12 @@ export function Header() {
             );
           })}
           <li>
-            <a
-              href="/documents/resume.pdf"
-              target="_blank"
-              rel="noopener noreferrer"
+            <Link
+              href="/resume"
               className="text-sm text-muted-foreground hover:text-primary transition-colors"
             >
               Resume
-            </a>
+            </Link>
           </li>
         </ul>
 
@@ -169,17 +167,15 @@ export function Header() {
               </li>
             ))}
             <li>
-              <a
-                href="/documents/resume.pdf"
-                target="_blank"
-                rel="noopener noreferrer"
+              <Link
+                href="/resume"
                 className="text-sm text-muted-foreground hover:text-primary transition-colors"
                 onClick={() => {
                   setMobileMenuOpen(false);
                 }}
               >
                 Resume
-              </a>
+              </Link>
             </li>
           </ul>
         </div>

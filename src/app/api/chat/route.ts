@@ -115,6 +115,14 @@ Check out the interactive [Skills](#skills) section for the complete breakdown!`
 You can learn more in the [Experience](#experience) section!`;
   }
 
+  if (lower.includes("resume") || lower.includes("cv") || lower.includes("curriculum vitae")) {
+    return `You can view and download Apurv's dynamic, ATS-compliant executive resume directly:
+
+- **Dynamic Resume & PDF**: [View Apurv's Resume](/resume)
+- Includes his full experience at **Capgemini** (Lead Consultant), his pro bono leadership at **IndianCare Inc.** (Head of IT Volunteer), his founder venture at **ADM Guard**, and his complete Azure, Platform Engineering, and AI competencies.
+- Click **Download / Save as PDF** on the page for a clean, vector-sharp PDF!`;
+  }
+
   if (lower.includes("hire") || lower.includes("contact") || lower.includes("work") || lower.includes("email")) {
     return `You can get in touch with Apurv directly:
 

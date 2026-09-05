@@ -197,10 +197,8 @@ export function ExperienceSection() {
 
         {/* Resume Link */}
         <div className="mt-12 ml-4">
-          <a
-            href="/documents/resume.pdf"
-            target="_blank"
-            rel="noopener noreferrer"
+          <Link
+            href="/resume"
             className="group inline-flex items-center gap-2 text-sm text-foreground font-medium hover:text-primary transition-colors"
           >
             View Full Resume
@@ -208,7 +206,7 @@ export function ExperienceSection() {
               size={16}
               className="group-hover:-translate-y-0.5 group-hover:translate-x-0.5 transition-transform"
             />
-          </a>
+          </Link>
         </div>
       </div>
     </section>

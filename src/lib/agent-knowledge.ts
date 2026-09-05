@@ -74,6 +74,7 @@ He focuses on systems that actually work in production: clear failure modes, obs
    - Resilient lead-intake pipeline with strict Zod validation, honeypot anti-spam defense, rate limiting, and Sentry telemetry.
 
 # HOW TO WORK WITH APURV
+- Dynamic Resume & PDF: https://www.apurvsinghal.com/resume (or /resume)
 - Advisory & Consulting: Available for AI engineering consulting, compliance flight recording, agent prototyping, and cloud architecture reviews.
 - Best way to reach out:
   - Fill out the Contact Form on this site (https://apurvsinghal.com/#contact)
