@@ -41,7 +41,7 @@ jobs:
           if [ -n "${{ github.event.inputs.custom_topic }}" ]; then
             ARGS="$ARGS --force-topic \"${{ github.event.inputs.custom_topic }}\""
           fi
-          node scripts/x-poster/index.ts $ARGS
+          node --no-warnings scripts/x-poster/index.ts $ARGS
         env:
           X_API_KEY: ${{ secrets.X_API_KEY }}
           X_API_SECRET: ${{ secrets.X_API_SECRET }}

@@ -102,6 +102,11 @@ export async function postTweetToX(
 
   if (!res.ok) {
     const errorBody = await res.text();
+    if (res.status === 402) {
+      throw new Error(
+        `X API error HTTP 402 (Payment Required / Credits Depleted): Your X Developer account has $0.00 credits balance. As of 2025/2026, X API v2 operates on a pay-as-you-go credit system ($0.015 per post). Please visit https://console.x.com/ and add a small prepaid balance ($5) under Billing -> Credits to enable automated posting. Raw response: ${errorBody}`,
+      );
+    }
     throw new Error(`X API error HTTP ${res.status}: ${errorBody}`);
   }
 
