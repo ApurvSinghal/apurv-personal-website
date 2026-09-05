@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import { Menu, Moon, Sun, X } from "lucide-react";
 import { useTheme } from "next-themes";
@@ -74,9 +75,19 @@ export function Header() {
       <nav className="mx-auto max-w-5xl px-6 py-4 flex items-center justify-between">
         <Link
           href="/"
-          className="text-lg font-semibold text-foreground hover:text-primary transition-colors"
+          className="group flex items-center gap-2.5 text-lg font-semibold text-foreground hover:text-primary transition-colors"
         >
-          Apurv Singhal
+          <span className="relative flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-full ring-1 ring-black/10 dark:ring-white/15 bg-white shadow-sm transition-transform duration-200 group-hover:scale-105">
+            <Image
+              src="/icon.svg"
+              alt="Apurv Singhal Logo"
+              width={32}
+              height={32}
+              priority
+              className="h-full w-full object-cover"
+            />
+          </span>
+          <span>Apurv Singhal</span>
         </Link>
 
         {/* Desktop Navigation */}
