@@ -5,6 +5,7 @@ import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { ThemeProvider } from "@/components/theme-provider";
 import { GlobalErrorHandler } from "@/components/global-error-handler";
+import { ChatWidget } from "@/components/chat/chat-widget";
 import { getYearsOfExperience } from "@/lib/utils";
 import "./globals.css";
 
@@ -100,6 +101,7 @@ export default function RootLayout({
         />
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           {children}
+          <ChatWidget />
         </ThemeProvider>
         <GlobalErrorHandler />
         <Analytics />
