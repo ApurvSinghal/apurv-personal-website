@@ -1,8 +1,8 @@
 [
   {
-    "id": "sample-queue-1",
-    "topic": "Azure Landing Zones",
-    "text": "Most enterprise cloud migrations fail not because of Kubernetes or databases, but because nobody designed multi-subscription governance and landing zones on Day 1.\n\nAutomate your policy guardrails with Terraform before granting developer access. It saves months of refactoring.",
-    "createdAt": "2026-09-06T00:48:00.000Z"
+    "id": "queue-landing-zones-1",
+    "topic": "Azure Cloud & DevOps",
+    "text": "Most cloud migrations I've worked on don't stall from Kubernetes or databases.\n\nThey stall because multi-subscription governance wasn't locked in on Day 1.\n\nAutomating policy guardrails in Terraform before onboarding devs saved us months of rework. #Azure #PlatformEngineering",
+    "createdAt": "2026-09-06T01:24:00.000Z"
   }
 ]
