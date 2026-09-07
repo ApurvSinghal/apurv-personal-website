@@ -5,6 +5,18 @@ export interface ContentPillar {
   hashtags: string;
 }
 
+export interface PostBriefing {
+  tweet?: string;
+  concept: string;
+  whyItMatters: string;
+  example: {
+    language: string;
+    description: string;
+    code: string;
+  };
+  talkingPoints: string[];
+}
+
 export const PILLAR_SCHEDULE: Record<number, ContentPillar> = {
   1: {
     dayName: "Monday",
@@ -83,45 +95,49 @@ export const EVERGREEN_TOPIC_BANK: Record<string, string[]> = {
   ],
 };
 
-export async function generateDailyPost(
-  customTopic?: string,
-  historyTexts: string[] = [],
-): Promise<{ text: string; pillar: string; source: "ai" | "curated" }> {
-  const dayOfWeek = new Date().getDay();
-  const pillarConfig = PILLAR_SCHEDULE[dayOfWeek] || PILLAR_SCHEDULE[1];
-  const targetPillar = customTopic || pillarConfig.pillar;
+export function sanitizeGeneratedText(raw: string): string {
+  if (!raw) return "";
+  let text = raw.trim();
 
-  const geminiKey = process.env.GEMINI_API_KEY;
+  // Strip code blocks if present
+  if (text.startsWith("```") && text.endsWith("```")) {
+    text = text.replace(/^```[a-z]*\n?/, "").replace(/\n?```$/, "").trim();
+  }
 
-  if (geminiKey) {
+  // Remove common conversational LLM intros
+  text = text.replace(/^(here(?:'s| is) (?:a |the )?(?:tweet|post|draft|thought):?\s*)/i, "");
+
+  // Strip leading and trailing quotes (including typographic quotes)
+  text = text.replace(/^["'“”‘’`]+|["'“”‘’`]+$/g, "").trim();
+  text = text.replace(/^(here(?:'s| is) (?:a |the )?(?:tweet|post|draft|thought):?\s*)/i, "").trim();
+  text = text.replace(/^["'“”‘’`]+|["'“”‘’`]+$/g, "").trim();
+
+  // Normalize excessive line breaks
+  text = text.replace(/\n{3,}/g, "\n\n");
+
+  return text;
+}
+
+async function callGeminiApi(prompt: string, apiKey: string): Promise<string | null> {
+  const preferredModel = process.env.GEMINI_MODEL || "gemini-2.5-flash";
+  const modelsToTry = [preferredModel];
+  if (preferredModel !== "gemini-2.0-flash") {
+    modelsToTry.push("gemini-2.0-flash");
+  }
+
+  for (const model of modelsToTry) {
     try {
-      const prompt = `You are Apurv Singhal, a hands-on Cloud, Platform, and AI engineer with 7-8 years of experience shipping production systems in Melbourne, Australia. Founder of ADM Guard.
-You write like a curious, practical builder in the trenches who loves testing new tools, learning in public, and sharing what actually works.
-You are NOT a lecturing 20+ year corporate architect. You are relatable, humble, and eager to implement and experiment.
-
-Write a single, authentic, high-signal technical tweet for your X account (@apurvsinghal28).
-
-Topic Pillar: "${targetPillar}"
-Context: ${pillarConfig.theme}
-Previously posted topics to avoid repeating: ${historyTexts.slice(-10).join(" | ")}
-
-Rules:
-1. Max length: 240 characters total (strict limit so it fits in 280 chars easily).
-2. Voice: Hands-on engineer with 7-8 years experience. Practical, real-world, sharing what you've learned and implemented. No preaching, no gatekeeping, no corporate jargon.
-3. NEVER mention any employer names, company names, enterprise client names, or specific non-profit names. Keep all references completely generic (e.g. 'enterprise consulting', 'large enterprise clients', 'community non-profits').
-4. Max 1 clean hashtag at the end: ${pillarConfig.hashtags.split(" ")[0]}.
-5. Return ONLY the raw tweet text, no quotes, no markdown wrappers.`;
-
       const response = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiKey}`,
+        `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
+          signal: AbortSignal.timeout(15000),
           body: JSON.stringify({
             contents: [{ parts: [{ text: prompt }] }],
             generationConfig: {
               temperature: 0.7,
-              maxOutputTokens: 120,
+              responseMimeType: "application/json",
             },
           }),
         },
@@ -131,9 +147,142 @@ Rules:
         const data = (await response.json()) as {
           candidates?: { content?: { parts?: { text?: string }[] } }[];
         };
-        const text = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
-        if (text && text.length >= 40 && text.length <= 280) {
-          return { text, pillar: targetPillar, source: "ai" };
+        const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (text) return text;
+      }
+    } catch {
+      // Fall through to next model in cascade
+    }
+  }
+
+  return null;
+}
+
+export function createFallbackBriefing(tweetText: string, pillar: string): PostBriefing {
+  const dayOfWeek = new Date().getDay();
+  const theme = PILLAR_SCHEDULE[dayOfWeek]?.theme || "Enterprise Platform & AI Architecture";
+
+  return {
+    tweet: tweetText,
+    concept: `Key engineering focus on ${pillar}: ${theme}`,
+    whyItMatters:
+      "Implementing production-grade patterns early prevents drift, mitigates downstream incidents, and establishes reliable architecture guardrails.",
+    example: {
+      language: "yaml",
+      description: "Architecture verification step in GitHub Actions CI",
+      code: `- name: Architecture Guardrail Check\n  run: |\n    echo "Verifying landing zone compliance and zero-drift policy..."`,
+    },
+    talkingPoints: [
+      "Focus on how automation reduces cognitive load for engineering teams.",
+      "Highlight the balance between developer velocity and enterprise compliance.",
+    ],
+  };
+}
+
+export async function generateBriefingForExistingPost(
+  tweetText: string,
+  pillar: string,
+): Promise<PostBriefing> {
+  const geminiKey = process.env.GEMINI_API_KEY;
+  if (!geminiKey) {
+    return createFallbackBriefing(tweetText, pillar);
+  }
+
+  const prompt = `You are a Principal Cloud, Platform, and AI Systems Architect.
+Here is a technical tweet being published by Apurv Singhal (@apurvsinghal28):
+"${tweetText}"
+Topic Pillar: "${pillar}"
+
+Generate an educational technical briefing and a concrete code example that explains this concept to the author.
+Return a strict JSON object with this exact structure:
+{
+  "concept": "2-3 sentences explaining the core architectural concept clearly and simply.",
+  "whyItMatters": "2-3 sentences on why enterprise systems or startups need this in production.",
+  "example": {
+    "language": "bicep | terraform | python | typescript | yaml | bash",
+    "description": "1 sentence describing what this code demonstrates.",
+    "code": "A realistic, working 6-15 line snippet implementing or demonstrating the concept."
+  },
+  "talkingPoints": [
+    "If someone asks X, answer Y...",
+    "Key architectural nuance to keep in mind..."
+  ]
+}`;
+
+  try {
+    const rawJson = await callGeminiApi(prompt, geminiKey);
+    if (rawJson) {
+      const parsed = JSON.parse(rawJson) as PostBriefing;
+      if (parsed.concept && parsed.example?.code) {
+        parsed.tweet = tweetText;
+        return parsed;
+      }
+    }
+  } catch {
+    // Fall back to structured fallback
+  }
+
+  return createFallbackBriefing(tweetText, pillar);
+}
+
+export async function generateDailyPost(
+  customTopic?: string,
+  historyTexts: string[] = [],
+): Promise<{ text: string; pillar: string; source: "ai" | "curated"; briefing?: PostBriefing }> {
+  const dayOfWeek = new Date().getDay();
+  const pillarConfig = PILLAR_SCHEDULE[dayOfWeek] || PILLAR_SCHEDULE[1];
+  const targetPillar = customTopic || pillarConfig.pillar;
+
+  const geminiKey = process.env.GEMINI_API_KEY;
+
+  if (geminiKey) {
+    const prompt = `You are Apurv Singhal, a hands-on Cloud, Platform, and AI engineer with 7-8 years of experience shipping production systems in Melbourne, Australia. Founder of ADM Guard.
+You write like a curious, practical builder in the trenches who loves testing new tools, learning in public, and sharing what actually works.
+You are NOT a lecturing 20+ year corporate architect. You are relatable, humble, and eager to implement and experiment.
+
+Generate a single authentic, high-signal technical tweet for @apurvsinghal28 along with an educational technical briefing and concrete code example.
+
+Topic Pillar: "${targetPillar}"
+Context: ${pillarConfig.theme}
+Previously posted topics to avoid repeating: ${historyTexts.slice(-10).join(" | ")}
+
+Return a strict JSON object with this exact structure:
+{
+  "tweet": "The raw tweet text strictly between 40 and 240 characters total with 1 hashtag at the end (${pillarConfig.hashtags.split(" ")[0]})",
+  "concept": "2-3 sentences explaining the core architectural concept clearly and simply.",
+  "whyItMatters": "2-3 sentences on why enterprise systems or startups need this in production.",
+  "example": {
+    "language": "bicep | terraform | python | typescript | yaml | bash",
+    "description": "1 sentence describing what this code demonstrates.",
+    "code": "A realistic, working 6-15 line snippet implementing or demonstrating the concept."
+  },
+  "talkingPoints": [
+    "If someone asks X, answer Y...",
+    "Key architectural nuance to keep in mind..."
+  ]
+}
+
+Rules for the tweet:
+1. Max length: 240 characters total (strict limit so it fits in 280 chars easily).
+2. Voice: Hands-on engineer with 7-8 years experience. Practical, real-world, sharing what you've learned and implemented. No preaching, no gatekeeping, no corporate jargon.
+3. NEVER mention any employer names, company names, enterprise client names, or specific non-profit names. Keep all references completely generic.
+4. Exactly 1 clean hashtag at the end: ${pillarConfig.hashtags.split(" ")[0]}.`;
+
+    try {
+      const rawJson = await callGeminiApi(prompt, geminiKey);
+      if (rawJson) {
+        const parsed = JSON.parse(rawJson) as PostBriefing;
+        if (parsed.tweet) {
+          const sanitizedTweet = sanitizeGeneratedText(parsed.tweet);
+          if (sanitizedTweet.length >= 30 && sanitizedTweet.length <= 280) {
+            parsed.tweet = sanitizedTweet;
+            return {
+              text: sanitizedTweet,
+              pillar: targetPillar,
+              source: "ai",
+              briefing: parsed,
+            };
+          }
         }
       }
     } catch {
@@ -145,10 +294,12 @@ Rules:
   const candidates = EVERGREEN_TOPIC_BANK[targetPillar] || EVERGREEN_TOPIC_BANK["Azure Cloud & DevOps"];
   const unused = candidates.filter((item) => !historyTexts.some((h) => h.includes(item.slice(0, 30))));
   const chosen = unused.length > 0 ? unused[0] : candidates[Math.floor(Math.random() * candidates.length)];
+  const sanitizedText = sanitizeGeneratedText(chosen);
 
   return {
-    text: chosen,
+    text: sanitizedText,
     pillar: targetPillar,
     source: "curated",
+    briefing: createFallbackBriefing(sanitizedText, targetPillar),
   };
 }

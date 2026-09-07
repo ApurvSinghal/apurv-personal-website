@@ -10,8 +10,8 @@
     "start": "next start",
     "clean": "rm -rf .next .vercel test-results tsconfig.tsbuildinfo",
     "test": "vitest --config config/vitest.config.ts run src/tests",
-    "x:post": "node scripts/x-poster/index.ts",
-    "x:test": "node scripts/x-poster/index.ts --dry-run"
+    "x:post": "node --no-warnings scripts/x-poster/index.ts",
+    "x:test": "node --no-warnings scripts/x-poster/index.ts --dry-run"
   },
   "dependencies": {
     "@radix-ui/react-label": "2.1.1",

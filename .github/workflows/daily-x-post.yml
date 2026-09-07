@@ -48,6 +48,10 @@ jobs:
           X_ACCESS_TOKEN: ${{ secrets.X_ACCESS_TOKEN }}
           X_ACCESS_TOKEN_SECRET: ${{ secrets.X_ACCESS_TOKEN_SECRET }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_MODEL: ${{ secrets.GEMINI_MODEL }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          RESEND_FROM_EMAIL: ${{ secrets.RESEND_FROM_EMAIL }}
+          CONTACT_NOTIFICATION_EMAIL: ${{ secrets.CONTACT_NOTIFICATION_EMAIL }}
 
       - name: Commit history and queue updates
         if: github.event.inputs.dry_run != 'true'
@@ -57,7 +61,8 @@ jobs:
           git add content/x-history.json content/x-queue.json
           if ! git diff --cached --quiet; then
             git commit -m "chore(bot): record published X post and update queue [skip ci]"
-            git push origin main || echo "::warning::Direct git push to main was blocked by branch protection. Please allow github-actions[bot] to bypass branch protection in repository settings."
+            git pull --rebase origin main
+            git push origin main
           else
             echo "No content changes to commit."
           fi

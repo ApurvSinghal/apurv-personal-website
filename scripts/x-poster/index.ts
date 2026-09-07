@@ -1,14 +1,20 @@
 import fs from "node:fs";
 import path from "node:path";
-import { generateDailyPost } from "./generator.ts";
+import {
+  generateDailyPost,
+  generateBriefingForExistingPost,
+  sanitizeGeneratedText,
+  type PostBriefing,
+} from "./generator.ts";
 import { postTweetToX } from "./x-client.ts";
+import { sendPostBriefingEmail } from "./notifier.ts";
 
 interface HistoryItem {
   id: string;
   text: string;
   pillar: string;
   source: string;
-  timestamp: string;
+  postedAt: string;
 }
 
 interface QueueItem {
@@ -61,23 +67,31 @@ export async function runXPoster(args: string[] = process.argv.slice(2)): Promis
   let pillar = "";
   let source = "queue";
   let dequeuedItemIndex = -1;
+  let briefing: PostBriefing | undefined;
 
   // 2. Check Queue First
   if (queue.length > 0) {
     console.log(`📥 Found ${queue.length} item(s) in priority queue (content/x-queue.json).`);
     const item = queue[0];
-    postText = item.text.trim();
+    postText = sanitizeGeneratedText(item.text);
     pillar = item.topic || "Queued Draft";
     source = "queue";
     dequeuedItemIndex = 0;
+    console.log("💡 Generating technical briefing and code example for queued post...");
+    briefing = await generateBriefingForExistingPost(postText, pillar);
   } else {
     // 3. Generate from Pillar Engine
-    console.log("📝 Queue is empty. Generating fresh post from day-of-week technical pillar...");
+    console.log("📝 Queue is empty. Generating fresh post & briefing from day-of-week technical pillar...");
     const historyTexts = history.map((h) => h.text);
     const result = await generateDailyPost(forceTopic, historyTexts);
-    postText = result.text.trim();
+    postText = sanitizeGeneratedText(result.text);
     pillar = result.pillar;
     source = result.source;
+    briefing = result.briefing;
+  }
+
+  if (!briefing) {
+    briefing = await generateBriefingForExistingPost(postText, pillar);
   }
 
   // 4. Strict Safety & Character Validation
@@ -99,10 +113,36 @@ export async function runXPoster(args: string[] = process.argv.slice(2)): Promis
     );
   }
 
+  // Write GitHub Step Summary if running in GitHub Actions
+  if (process.env.GITHUB_STEP_SUMMARY) {
+    try {
+      const summary = `### 🚀 X Daily Post (${isDryRun ? "DRY-RUN SIMULATION" : "PUBLISHED LIVE"})\n\n- **Pillar:** ${pillar} (${source.toUpperCase()})\n- **Length:** ${charCount} / 280 chars\n- **Timestamp:** ${new Date().toISOString()}\n\n\`\`\`text\n${postText}\n\`\`\`\n\n#### 🧠 Architectural Concept\n${briefing.concept}\n\n\`\`\`${briefing.example.language || "text"}\n${briefing.example.code}\n\`\`\`\n`;
+      fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, summary, "utf-8");
+    } catch {
+      // Ignore step summary errors
+    }
+  }
+
   // 5. Execute Post or Simulate Dry Run
   if (isDryRun) {
     console.log("✅ [DRY-RUN] Verification complete! Post is valid and formatted cleanly.");
-    console.log("✅ [DRY-RUN] No API call was made to X.");
+    console.log("\n--- TECHNICAL BRIEFING PREVIEW ---");
+    console.log(`Concept: ${briefing.concept}`);
+    console.log(`Why It Matters: ${briefing.whyItMatters}`);
+    console.log(`Code Example (${briefing.example.language}):\n${briefing.example.code}`);
+    console.log("----------------------------------\n");
+
+    if (process.env.SEND_EMAIL_IN_DRY_RUN === "true") {
+      await sendPostBriefingEmail({
+        tweetText: postText,
+        pillar,
+        source,
+        briefing,
+        isDryRun: true,
+      });
+    } else {
+      console.log("ℹ️ [DRY-RUN] Email dispatch simulated (set SEND_EMAIL_IN_DRY_RUN=true to test live email).");
+    }
     return;
   }
 
@@ -110,20 +150,31 @@ export async function runXPoster(args: string[] = process.argv.slice(2)): Promis
   const published = await postTweetToX(postText);
   console.log(`🎉 Successfully published tweet! Tweet ID: ${published.id}`);
 
-  // 6. Update History
+  // 6. Send Technical Briefing Email
+  console.log("✉️ Dispatching technical briefing email via Resend...");
+  await sendPostBriefingEmail({
+    tweetId: published.id,
+    tweetText: postText,
+    pillar,
+    source,
+    briefing,
+    isDryRun: false,
+  });
+
+  // 7. Update History
   const historyEntry: HistoryItem = {
     id: published.id,
     text: postText,
     pillar,
     source,
-    timestamp: new Date().toISOString(),
+    postedAt: new Date().toISOString(),
   };
 
   history.push(historyEntry);
   saveJson(HISTORY_PATH, history);
   console.log(`💾 Recorded tweet into ${HISTORY_PATH}`);
 
-  // 7. If from queue, remove it
+  // 8. If from queue, remove it
   if (dequeuedItemIndex !== -1) {
     queue.splice(dequeuedItemIndex, 1);
     saveJson(QUEUE_PATH, queue);

@@ -97,6 +97,7 @@ export async function postTweetToX(
       "Content-Type": "application/json",
       Accept: "application/json",
     },
+    signal: AbortSignal.timeout(10000),
     body: JSON.stringify({ text }),
   });
 
@@ -105,6 +106,11 @@ export async function postTweetToX(
     if (res.status === 402) {
       throw new Error(
         `X API error HTTP 402 (Payment Required / Credits Depleted): Your X Developer account has $0.00 credits balance. As of 2025/2026, X API v2 operates on a pay-as-you-go credit system ($0.015 per post). Please visit https://console.x.com/ and add a small prepaid balance ($5) under Billing -> Credits to enable automated posting. Raw response: ${errorBody}`,
+      );
+    }
+    if (res.status === 403) {
+      throw new Error(
+        `X API error HTTP 403 (Forbidden / Duplicate Status): The request was rejected by X. This usually occurs if the exact same tweet was posted recently, or if the Developer App lacks Write permissions. Raw response: ${errorBody}`,
       );
     }
     throw new Error(`X API error HTTP ${res.status}: ${errorBody}`);
