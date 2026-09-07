@@ -1,10 +1,6 @@
 import type { Metadata } from "next";
 import Script from "next/script";
-import { GoogleAnalytics } from "@next/third-parties/google";
-import { Analytics } from "@vercel/analytics/next";
-import { SpeedInsights } from "@vercel/speed-insights/next";
 import { ThemeProvider } from "@/components/theme-provider";
-import { GlobalErrorHandler } from "@/components/global-error-handler";
 import { ChatWidget } from "@/components/chat/chat-widget";
 import { getYearsOfExperience } from "@/lib/utils";
 import "./globals.css";
@@ -48,12 +44,12 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const gaId = process.env.NEXT_PUBLIC_GA_ID;
   const cfAnalyticsToken =
     process.env.NEXT_PUBLIC_CF_ANALYTICS_TOKEN ||
     (process.env.NODE_ENV === "production"
       ? "c23a74586cfb4b81adf2bda629859be6"
       : undefined);
+
   const structuredData = {
     "@context": "https://schema.org",
     "@graph": [
@@ -105,10 +101,6 @@ export default function RootLayout({
             <ChatWidget />
           </div>
         </ThemeProvider>
-        <GlobalErrorHandler />
-        <Analytics />
-        <SpeedInsights />
-        {gaId ? <GoogleAnalytics gaId={gaId} /> : null}
         {cfAnalyticsToken ? (
           <Script
             id="cloudflare-analytics"

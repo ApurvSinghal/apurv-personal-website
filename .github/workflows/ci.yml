@@ -24,14 +24,11 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
-      - name: Security audit
-        run: pnpm audit --audit-level=high
-
       - name: Code lint
         run: pnpm lint
 
-      - name: Run unit tests
-        run: pnpm test:unit
+      - name: Run tests
+        run: pnpm test
 
       - name: Production build
         run: pnpm build

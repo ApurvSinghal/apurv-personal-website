@@ -6,13 +6,23 @@ const contactRequestCounts = new Map<
   { count: number; windowStart: number }
 >();
 
-type RateLimitDecision = {
+export type RateLimitDecision = {
   currentCount: number;
   limited: boolean;
-  source: "upstash" | "memory" | "skipped";
+  source: "memory" | "skipped";
 };
 
-function runMemoryRateLimit(ip: string): RateLimitDecision {
+export async function getContactRateLimitDecision(
+  ip: string,
+): Promise<RateLimitDecision> {
+  if (ip === "unknown") {
+    return {
+      currentCount: 0,
+      limited: false,
+      source: "skipped",
+    };
+  }
+
   const now = Date.now();
   const entry = contactRequestCounts.get(ip);
 
@@ -27,7 +37,8 @@ function runMemoryRateLimit(ip: string): RateLimitDecision {
 
   entry.count += 1;
 
-  if (contactRequestCounts.size > 1000) {
+  // Prune expired entries if the map grows
+  if (contactRequestCounts.size > 500) {
     for (const [trackedIp, trackedEntry] of contactRequestCounts.entries()) {
       if (now - trackedEntry.windowStart >= CONTACT_RATE_LIMIT_WINDOW_MS) {
         contactRequestCounts.delete(trackedIp);
@@ -40,91 +51,4 @@ function runMemoryRateLimit(ip: string): RateLimitDecision {
     limited: entry.count > CONTACT_RATE_LIMIT_MAX_REQUESTS,
     source: "memory",
   };
-}
-
-async function callUpstashCommand(
-  baseUrl: string,
-  token: string,
-  command: string,
-  ...args: Array<string | number>
-) {
-  const url = new URL(
-    `${baseUrl}/${command}/${args.map((value) => encodeURIComponent(String(value))).join("/")}`,
-  );
-  const response = await fetch(url, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-    signal: AbortSignal.timeout(3000),
-  });
-
-  if (!response.ok) {
-    const body = await response.text().catch(() => "");
-    throw new Error(
-      `Upstash ${command} failed with status ${response.status}${body ? `: ${body}` : ""}`,
-    );
-  }
-
-  return response.json() as Promise<{ result?: number | string }>;
-}
-
-async function runUpstashRateLimit(ip: string): Promise<RateLimitDecision> {
-  const baseUrl =
-    process.env.KV_REST_API_URL ?? process.env.UPSTASH_REDIS_REST_URL;
-  const token =
-    process.env.KV_REST_API_TOKEN ?? process.env.UPSTASH_REDIS_REST_TOKEN;
-
-  if (!baseUrl || !token) {
-    throw new Error("Redis credentials not configured");
-  }
-
-  const key = `ratelimit:contact:${ip}`;
-  const increment = await callUpstashCommand(baseUrl, token, "incr", key);
-  const currentCount = Number(increment.result ?? 0);
-
-  if (!Number.isFinite(currentCount) || currentCount < 1) {
-    throw new Error("Upstash INCR returned an invalid count");
-  }
-
-  if (currentCount === 1) {
-    await callUpstashCommand(
-      baseUrl,
-      token,
-      "pexpire",
-      key,
-      CONTACT_RATE_LIMIT_WINDOW_MS,
-    );
-  }
-
-  return {
-    currentCount,
-    limited: currentCount > CONTACT_RATE_LIMIT_MAX_REQUESTS,
-    source: "upstash",
-  };
-}
-
-export async function getContactRateLimitDecision(
-  ip: string,
-): Promise<RateLimitDecision> {
-  if (ip === "unknown") {
-    return {
-      currentCount: 0,
-      limited: false,
-      source: "skipped",
-    };
-  }
-
-  if (
-    (process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN) ||
-    (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN)
-  ) {
-    try {
-      return await runUpstashRateLimit(ip);
-    } catch {
-      // Fall back to memory when Redis is unavailable.
-    }
-  }
-
-  return runMemoryRateLimit(ip);
 }

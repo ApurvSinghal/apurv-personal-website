@@ -1,17 +1,11 @@
-import dynamic from "next/dynamic";
 import { Header } from "@/components/header";
 import { HeroSection } from "@/components/hero-section";
 import { ExperienceSection } from "@/components/experience-section";
 import { SkillsSection } from "@/components/skills-section";
+import { ProjectsSection } from "@/components/projects-section";
+import { ContactSection } from "@/components/contact-section";
 import { Footer } from "@/components/footer";
-import { HomeEnhancements } from "@/components/home-enhancements";
-
-const ProjectsSection = dynamic(
-  () => import("@/components/projects-section").then((m) => m.ProjectsSection),
-);
-const ContactSection = dynamic(
-  () => import("@/components/contact-section").then((m) => m.ContactSection),
-);
+import { AnimateOnScroll } from "@/components/animate-on-scroll";
 
 export default function Home() {
   return (
@@ -21,7 +15,7 @@ export default function Home() {
         aria-hidden
       />
 
-      <HomeEnhancements />
+      <AnimateOnScroll />
       <Header />
       <main id="main-content">
         <HeroSection />
