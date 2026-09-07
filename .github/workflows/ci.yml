@@ -24,9 +24,17 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
-      - run: pnpm lint
+      - name: Security audit
+        run: pnpm audit --audit-level=high
 
-      - run: pnpm build
+      - name: Code lint
+        run: pnpm lint
+
+      - name: Run unit tests
+        run: pnpm test:unit
+
+      - name: Production build
+        run: pnpm build
         env:
           RESEND_API_KEY: placeholder
           RESEND_FROM_EMAIL: placeholder@example.com

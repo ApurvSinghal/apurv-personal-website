@@ -9,6 +9,8 @@
     "lint": "eslint --config config/eslint.config.mjs .",
     "start": "next start",
     "clean": "rm -rf .next .vercel test-results tsconfig.tsbuildinfo",
+    "audit": "pnpm audit --audit-level=high",
+    "check": "pnpm audit --audit-level=high && pnpm lint && pnpm test:unit",
     "test": "pnpm test:all",
     "test:all": "pnpm test:unit && pnpm test:api && pnpm test:component && pnpm test:smoke && pnpm test:e2e && pnpm test:a11y",
     "test:unit": "vitest --config config/vitest.config.ts run src/tests/unit",
