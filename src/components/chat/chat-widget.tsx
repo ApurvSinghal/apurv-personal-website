@@ -129,6 +129,13 @@ function FormattedText({ content }: { content: string }) {
   );
 }
 
+function createMessageId(prefix: "user" | "assistant"): string {
+  if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
+    return `${prefix}-${crypto.randomUUID()}`;
+  }
+  return `${prefix}-${Date.now()}`;
+}
+
 export function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([INITIAL_MESSAGE]);
@@ -227,7 +234,7 @@ export function ChatWidget() {
     setHasPrompted(true);
 
     const userMessage: Message = {
-      id: `user-${Date.now()}`,
+      id: createMessageId("user"),
       role: "user",
       content: text,
     };
@@ -236,7 +243,7 @@ export function ChatWidget() {
     setMessages(newHistory);
     setIsLoading(true);
 
-    const assistantMessageId = `assistant-${Date.now()}`;
+    const assistantMessageId = createMessageId("assistant");
     const initialAssistantMsg: Message = {
       id: assistantMessageId,
       role: "assistant",
@@ -266,19 +273,17 @@ export function ChatWidget() {
 
       const reader = response.body.getReader();
       const decoder = new TextDecoder();
-      let streamedContent = "";
 
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
 
         const chunk = decoder.decode(value, { stream: true });
-        streamedContent += chunk;
 
         setMessages((prev) =>
           prev.map((msg) =>
             msg.id === assistantMessageId
-              ? { ...msg, content: streamedContent }
+              ? { ...msg, content: msg.content + chunk }
               : msg,
           ),
         );
