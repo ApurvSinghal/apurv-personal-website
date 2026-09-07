@@ -131,6 +131,47 @@ export function buildBriefingEmailHtml(params: SendBriefingParams): string {
 `;
 }
 
+export function buildBriefingEmailText(params: SendBriefingParams): string {
+  const { tweetText, pillar, source, briefing, isDryRun } = params;
+  const talkingPoints =
+    briefing.talkingPoints && briefing.talkingPoints.length > 0
+      ? briefing.talkingPoints.map((tp) => `  • ${tp}`).join("\n")
+      : "  • Focus on practitioner experience and defensive production architecture.";
+
+  return `DAILY TECHNICAL BRIEFING: ${pillar.toUpperCase()}
+Source: ${source.toUpperCase()}${isDryRun ? " (Simulation)" : ""}
+Date: ${new Date().toLocaleDateString("en-AU", { weekday: "long", month: "short", day: "numeric" })}
+
+==================================================
+PUBLISHED POST (${tweetText.length}/280 chars):
+==================================================
+${tweetText}
+
+==================================================
+ARCHITECTURAL CONCEPT:
+==================================================
+${briefing.concept}
+
+Why It Matters in Enterprise:
+${briefing.whyItMatters}
+
+==================================================
+CODE IMPLEMENTATION (${briefing.example.language || "Code"}):
+==================================================
+${briefing.example.description}
+
+${briefing.example.code}
+
+==================================================
+ENGAGEMENT & TALKING POINTS:
+==================================================
+${talkingPoints}
+
+--------------------------------------------------
+Automated Daily Technical Briefing Engine · apurvsinghal.com
+`;
+}
+
 export interface EmailSendResult {
   success: boolean;
   skipped: boolean;
@@ -158,8 +199,10 @@ export async function sendPostBriefingEmail(params: SendBriefingParams): Promise
     };
   }
 
-  const subject = `🚀 X Daily Post: ${params.pillar} + Technical Briefing${params.isDryRun ? " (Simulation)" : ""}`;
+  // Clean, professional subject line without spam-trigger symbols
+  const subject = `Daily Technical Briefing: ${params.pillar}${params.isDryRun ? " [Test]" : ""}`;
   const html = buildBriefingEmailHtml(params);
+  const text = buildBriefingEmailText(params);
 
   async function postToResend(sender: string): Promise<{ ok: boolean; status: number; text: string; data?: { id?: string } }> {
     const response = await fetch("https://api.resend.com/emails", {
@@ -172,19 +215,21 @@ export async function sendPostBriefingEmail(params: SendBriefingParams): Promise
       body: JSON.stringify({
         from: sender,
         to: [toEmail],
+        replyTo: toEmail,
         subject,
         html,
+        text,
       }),
     });
 
-    const text = await response.text().catch(() => "");
+    const respText = await response.text().catch(() => "");
     let data: { id?: string } | undefined;
     try {
-      data = JSON.parse(text) as { id?: string };
+      data = JSON.parse(respText) as { id?: string };
     } catch {
       // ignore
     }
-    return { ok: response.ok, status: response.status, text, data };
+    return { ok: response.ok, status: response.status, text: respText, data };
   }
 
   try {

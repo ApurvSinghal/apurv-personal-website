@@ -7,7 +7,11 @@ import {
   EVERGREEN_TOPIC_BANK,
 } from "../../../scripts/x-poster/generator";
 import { generateOAuth1Header, percentEncode } from "../../../scripts/x-poster/x-client";
-import { buildBriefingEmailHtml, sendPostBriefingEmail } from "../../../scripts/x-poster/notifier";
+import {
+  buildBriefingEmailHtml,
+  buildBriefingEmailText,
+  sendPostBriefingEmail,
+} from "../../../scripts/x-poster/notifier";
 
 describe("X Poster Automation Engine", () => {
   describe("OAuth 1.0a Client", () => {
@@ -106,6 +110,26 @@ describe("X Poster Automation Engine", () => {
       expect(html).toContain("Shift-left architecture testing");
       expect(html).toContain("1234567890");
       expect(html).toContain("Architecture Guardrail Check");
+    });
+
+    it("renders clean plain-text email with all briefing sections", () => {
+      const briefing = createFallbackBriefing(
+        "Shift-left architecture testing saves weeks of rework. #DevOps",
+        "Azure Cloud & DevOps",
+      );
+      const text = buildBriefingEmailText({
+        tweetText: "Shift-left architecture testing saves weeks of rework. #DevOps",
+        pillar: "Azure Cloud & DevOps",
+        source: "queue",
+        briefing,
+        isDryRun: false,
+      });
+
+      expect(text).toContain("DAILY TECHNICAL BRIEFING: AZURE CLOUD & DEVOPS");
+      expect(text).toContain("Shift-left architecture testing");
+      expect(text).toContain("ARCHITECTURAL CONCEPT");
+      expect(text).toContain("CODE IMPLEMENTATION");
+      expect(text).toContain("ENGAGEMENT & TALKING POINTS");
     });
 
     it("gracefully skips email delivery when RESEND_API_KEY is not set", async () => {
