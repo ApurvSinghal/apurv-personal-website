@@ -5,5 +5,12 @@
     "text": "Most cloud migrations I've worked on don't stall from Kubernetes or databases.\n\nThey stall because multi-subscription governance wasn't locked in on Day 1.\n\nAutomating policy guardrails in Terraform before onboarding devs saved us months of rework. #Azure #PlatformEngineering",
     "source": "queue",
     "postedAt": "2026-09-05T15:41:00.000Z"
+  },
+  {
+    "id": "2096824840376500643",
+    "text": "CI/CD pipelines shouldn't just run unit tests; they should enforce architecture guardrails.\n\nIn our GitHub Actions, we reject PRs that introduce unpinned dependencies or drift from Bicep landing zone specs before code review starts. #DevOps",
+    "pillar": "Azure Cloud & DevOps",
+    "source": "queue",
+    "postedAt": "2026-09-07T04:56:13.877Z"
   }
 ]
