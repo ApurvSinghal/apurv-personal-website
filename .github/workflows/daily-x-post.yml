@@ -77,11 +77,11 @@ jobs:
       - name: Commit history and queue updates
         if: github.event.inputs.dry_run != 'true'
         run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "ApurvSinghal"
+          git config --global user.email "apurv.singhal28@gmail.com"
           git add content/x-history.json content/x-queue.json
           if ! git diff --cached --quiet; then
-            git commit -m "chore(bot): record published X post and update queue [skip ci]"
+            git commit -m "chore: record published X post and update queue [skip ci]"
             git pull --rebase origin main
             git push origin main
           else
