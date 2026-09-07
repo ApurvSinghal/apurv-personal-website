@@ -7,7 +7,7 @@ import {
   type PostBriefing,
 } from "./generator.ts";
 import { postTweetToX } from "./x-client.ts";
-import { sendPostBriefingEmail } from "./notifier.ts";
+import { sendPostBriefingEmail, type EmailSendResult } from "./notifier.ts";
 
 interface HistoryItem {
   id: string;
@@ -46,6 +46,40 @@ function saveJson<T>(filePath: string, data: T): void {
     fs.mkdirSync(dir, { recursive: true });
   }
   fs.writeFileSync(filePath, JSON.stringify(data, null, 2), "utf-8");
+}
+
+function appendStepSummary(
+  isDryRun: boolean,
+  pillar: string,
+  source: string,
+  charCount: number,
+  postText: string,
+  briefing: PostBriefing,
+  emailResult?: EmailSendResult,
+  tweetId?: string,
+): void {
+  if (!process.env.GITHUB_STEP_SUMMARY) return;
+  try {
+    const liveLink = tweetId
+      ? `\n\n[🔗 View Published Post on X](https://x.com/apurvsinghal28/status/${tweetId})`
+      : "";
+
+    let emailStatusMarkdown = "";
+    if (emailResult) {
+      if (emailResult.success) {
+        emailStatusMarkdown = `\n\n#### ✉️ Technical Briefing Email\n- **Status:** ✅ Sent successfully\n- **Recipient:** \`${emailResult.recipient}\`\n- **Sender:** \`${emailResult.from}\`\n- **Email ID:** \`${emailResult.emailId}\``;
+      } else if (emailResult.skipped) {
+        emailStatusMarkdown = `\n\n#### ✉️ Technical Briefing Email\n- **Status:** ⚠️ Skipped\n- **Reason:** ${emailResult.reason}\n\n> 💡 **How to fix:** Add \`RESEND_API_KEY\` to your [GitHub Repository Secrets](https://github.com/ApurvSinghal/apurv-personal-website/settings/secrets/actions).`;
+      } else {
+        emailStatusMarkdown = `\n\n#### ✉️ Technical Briefing Email\n- **Status:** ❌ Delivery Failed\n- **Recipient:** \`${emailResult.recipient}\`\n- **Sender:** \`${emailResult.from}\`\n- **Details:** \`${emailResult.reason}\``;
+      }
+    }
+
+    const summary = `### 🚀 X Daily Post (${isDryRun ? "DRY-RUN SIMULATION" : "PUBLISHED LIVE"})\n\n- **Pillar:** ${pillar} (${source.toUpperCase()})\n- **Length:** ${charCount} / 280 chars\n- **Timestamp:** ${new Date().toISOString()}${liveLink}\n\n\`\`\`text\n${postText}\n\`\`\`\n\n#### 🧠 Architectural Concept\n${briefing.concept}\n\n\`\`\`${briefing.example.language || "text"}\n${briefing.example.code}\n\`\`\`${emailStatusMarkdown}\n`;
+    fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, summary, "utf-8");
+  } catch {
+    // Ignore step summary errors
+  }
 }
 
 export async function runXPoster(args: string[] = process.argv.slice(2)): Promise<void> {
@@ -113,16 +147,6 @@ export async function runXPoster(args: string[] = process.argv.slice(2)): Promis
     );
   }
 
-  // Write GitHub Step Summary if running in GitHub Actions
-  if (process.env.GITHUB_STEP_SUMMARY) {
-    try {
-      const summary = `### 🚀 X Daily Post (${isDryRun ? "DRY-RUN SIMULATION" : "PUBLISHED LIVE"})\n\n- **Pillar:** ${pillar} (${source.toUpperCase()})\n- **Length:** ${charCount} / 280 chars\n- **Timestamp:** ${new Date().toISOString()}\n\n\`\`\`text\n${postText}\n\`\`\`\n\n#### 🧠 Architectural Concept\n${briefing.concept}\n\n\`\`\`${briefing.example.language || "text"}\n${briefing.example.code}\n\`\`\`\n`;
-      fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, summary, "utf-8");
-    } catch {
-      // Ignore step summary errors
-    }
-  }
-
   // 5. Execute Post or Simulate Dry Run
   if (isDryRun) {
     console.log("✅ [DRY-RUN] Verification complete! Post is valid and formatted cleanly.");
@@ -132,8 +156,11 @@ export async function runXPoster(args: string[] = process.argv.slice(2)): Promis
     console.log(`Code Example (${briefing.example.language}):\n${briefing.example.code}`);
     console.log("----------------------------------\n");
 
-    if (process.env.SEND_EMAIL_IN_DRY_RUN === "true") {
-      await sendPostBriefingEmail({
+    let emailResult: EmailSendResult | undefined;
+    const shouldSendEmail = process.env.SEND_EMAIL_IN_DRY_RUN === "true" || args.includes("--send-email");
+    if (shouldSendEmail) {
+      console.log("✉️ Dispatching technical briefing simulation email via Resend...");
+      emailResult = await sendPostBriefingEmail({
         tweetText: postText,
         pillar,
         source,
@@ -141,8 +168,10 @@ export async function runXPoster(args: string[] = process.argv.slice(2)): Promis
         isDryRun: true,
       });
     } else {
-      console.log("ℹ️ [DRY-RUN] Email dispatch simulated (set SEND_EMAIL_IN_DRY_RUN=true to test live email).");
+      console.log("ℹ️ [DRY-RUN] Email dispatch simulated (set SEND_EMAIL_IN_DRY_RUN=true or pass --send-email to test live email).");
     }
+
+    appendStepSummary(true, pillar, source, charCount, postText, briefing, emailResult);
     return;
   }
 
@@ -152,7 +181,7 @@ export async function runXPoster(args: string[] = process.argv.slice(2)): Promis
 
   // 6. Send Technical Briefing Email
   console.log("✉️ Dispatching technical briefing email via Resend...");
-  await sendPostBriefingEmail({
+  const emailResult = await sendPostBriefingEmail({
     tweetId: published.id,
     tweetText: postText,
     pillar,
@@ -160,6 +189,8 @@ export async function runXPoster(args: string[] = process.argv.slice(2)): Promis
     briefing,
     isDryRun: false,
   });
+
+  appendStepSummary(false, pillar, source, charCount, postText, briefing, emailResult, published.id);
 
   // 7. Update History
   const historyEntry: HistoryItem = {

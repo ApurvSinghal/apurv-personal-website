@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import {
   generateDailyPost,
   sanitizeGeneratedText,
@@ -7,7 +7,7 @@ import {
   EVERGREEN_TOPIC_BANK,
 } from "../../../scripts/x-poster/generator";
 import { generateOAuth1Header, percentEncode } from "../../../scripts/x-poster/x-client";
-import { buildBriefingEmailHtml } from "../../../scripts/x-poster/notifier";
+import { buildBriefingEmailHtml, sendPostBriefingEmail } from "../../../scripts/x-poster/notifier";
 
 describe("X Poster Automation Engine", () => {
   describe("OAuth 1.0a Client", () => {
@@ -106,6 +106,69 @@ describe("X Poster Automation Engine", () => {
       expect(html).toContain("Shift-left architecture testing");
       expect(html).toContain("1234567890");
       expect(html).toContain("Architecture Guardrail Check");
+    });
+
+    it("gracefully skips email delivery when RESEND_API_KEY is not set", async () => {
+      const originalKey = process.env.RESEND_API_KEY;
+      delete process.env.RESEND_API_KEY;
+
+      const briefing = createFallbackBriefing("Test tweet", "Azure Cloud & DevOps");
+      const result = await sendPostBriefingEmail({
+        tweetText: "Test tweet",
+        pillar: "Azure Cloud & DevOps",
+        source: "queue",
+        briefing,
+        isDryRun: true,
+      });
+
+      expect(result.success).toBe(false);
+      expect(result.skipped).toBe(true);
+      expect(result.reason).toContain("RESEND_API_KEY");
+
+      if (originalKey) process.env.RESEND_API_KEY = originalKey;
+    });
+
+    it("retries with onboarding@resend.dev when custom domain returns 403", async () => {
+      const originalKey = process.env.RESEND_API_KEY;
+      const originalFetch = global.fetch;
+      process.env.RESEND_API_KEY = "test_resend_key";
+
+      const calls: string[] = [];
+      global.fetch = vi.fn().mockImplementation(async (_url, options) => {
+        const body = JSON.parse((options as RequestInit).body as string);
+        calls.push(body.from);
+        if (body.from.includes("apurvsinghal.com")) {
+          return {
+            ok: false,
+            status: 403,
+            text: async () => JSON.stringify({ message: "The domain apurvsinghal.com is not verified." }),
+          };
+        }
+        return {
+          ok: true,
+          status: 200,
+          text: async () => JSON.stringify({ id: "re_mock_12345" }),
+        };
+      }) as unknown as typeof fetch;
+
+      const briefing = createFallbackBriefing("Test tweet", "Azure Cloud & DevOps");
+      const result = await sendPostBriefingEmail({
+        tweetText: "Test tweet",
+        pillar: "Azure Cloud & DevOps",
+        source: "queue",
+        briefing,
+        isDryRun: true,
+      });
+
+      expect(calls.length).toBe(2);
+      expect(calls[0]).toContain("apurvsinghal.com");
+      expect(calls[1]).toBe("onboarding@resend.dev");
+      expect(result.success).toBe(true);
+      expect(result.emailId).toBe("re_mock_12345");
+
+      global.fetch = originalFetch;
+      if (originalKey) process.env.RESEND_API_KEY = originalKey;
+      else delete process.env.RESEND_API_KEY;
     });
   });
 

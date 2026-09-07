@@ -131,20 +131,37 @@ export function buildBriefingEmailHtml(params: SendBriefingParams): string {
 `;
 }
 
-export async function sendPostBriefingEmail(params: SendBriefingParams): Promise<boolean> {
+export interface EmailSendResult {
+  success: boolean;
+  skipped: boolean;
+  reason?: string;
+  emailId?: string;
+  recipient: string;
+  from: string;
+}
+
+export async function sendPostBriefingEmail(params: SendBriefingParams): Promise<EmailSendResult> {
   const resendApiKey = process.env.RESEND_API_KEY;
   const toEmail = process.env.CONTACT_NOTIFICATION_EMAIL || "me@apurvsinghal.com";
-  const fromEmail = process.env.RESEND_FROM_EMAIL || "Portfolio <noreply@apurvsinghal.com>";
+  let fromEmail = process.env.RESEND_FROM_EMAIL || "Portfolio <noreply@apurvsinghal.com>";
 
   if (!resendApiKey) {
-    console.log("[notifier] Notice: RESEND_API_KEY not configured. Skipping briefing email dispatch.");
-    return false;
+    const reason = "RESEND_API_KEY secret is not configured in GitHub repository secrets.";
+    console.log(`\n[notifier] ⚠️ Notice: ${reason}`);
+    console.log("[notifier] 👉 Add RESEND_API_KEY to https://github.com/ApurvSinghal/apurv-personal-website/settings/secrets/actions to enable email briefings.\n");
+    return {
+      success: false,
+      skipped: true,
+      reason,
+      recipient: toEmail,
+      from: fromEmail,
+    };
   }
 
   const subject = `🚀 X Daily Post: ${params.pillar} + Technical Briefing${params.isDryRun ? " (Simulation)" : ""}`;
   const html = buildBriefingEmailHtml(params);
 
-  try {
+  async function postToResend(sender: string): Promise<{ ok: boolean; status: number; text: string; data?: { id?: string } }> {
     const response = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
@@ -153,27 +170,72 @@ export async function sendPostBriefingEmail(params: SendBriefingParams): Promise
       },
       signal: AbortSignal.timeout(10000),
       body: JSON.stringify({
-        from: fromEmail,
+        from: sender,
         to: [toEmail],
         subject,
         html,
       }),
     });
 
-    if (!response.ok) {
-      const errorText = await response.text().catch(() => "");
-      console.warn(`[notifier] Resend email delivery failed (${response.status}):`, errorText);
-      return false;
+    const text = await response.text().catch(() => "");
+    let data: { id?: string } | undefined;
+    try {
+      data = JSON.parse(text) as { id?: string };
+    } catch {
+      // ignore
+    }
+    return { ok: response.ok, status: response.status, text, data };
+  }
+
+  try {
+    let result = await postToResend(fromEmail);
+
+    // If custom domain is unverified (403/422), attempt automatic fallback to onboarding@resend.dev
+    if (!result.ok && fromEmail !== "onboarding@resend.dev" && (result.status === 403 || result.status === 422)) {
+      console.log(`[notifier] ⚠️ Custom domain sender '${fromEmail}' not accepted by Resend (${result.status}: ${result.text}).`);
+      console.log("[notifier] 🔄 Retrying with Resend fallback sender 'onboarding@resend.dev'...");
+      fromEmail = "onboarding@resend.dev";
+      result = await postToResend(fromEmail);
     }
 
-    const data = (await response.json()) as { id?: string };
-    console.log(`✉️ Technical briefing email sent to ${toEmail}! Email ID: ${data.id || "ok"}`);
-    return true;
+    if (!result.ok) {
+      console.warn(`[notifier] ❌ Resend email delivery failed (${result.status}):`, result.text);
+      let advice = "";
+      if (result.text.includes("verify your domain")) {
+        advice = "Verify apurvsinghal.com in your Resend dashboard (https://resend.com/domains) or use onboarding@resend.dev.";
+      } else if (result.text.includes("can only send testing emails to your own email address")) {
+        advice = "Testing emails from onboarding@resend.dev can only be sent to the email address registered with your Resend account. Set CONTACT_NOTIFICATION_EMAIL secret to match that email.";
+      }
+      if (advice) {
+        console.warn(`[notifier] 👉 Action needed: ${advice}`);
+      }
+      return {
+        success: false,
+        skipped: false,
+        reason: `HTTP ${result.status}: ${result.text} ${advice ? `(${advice})` : ""}`.trim(),
+        recipient: toEmail,
+        from: fromEmail,
+      };
+    }
+
+    const emailId = result.data?.id || "ok";
+    console.log(`✉️ Technical briefing email successfully delivered to ${toEmail} from ${fromEmail}! (Email ID: ${emailId})`);
+    return {
+      success: true,
+      skipped: false,
+      emailId,
+      recipient: toEmail,
+      from: fromEmail,
+    };
   } catch (error) {
-    console.warn(
-      "[notifier] Resend network error:",
-      error instanceof Error ? error.message : String(error),
-    );
-    return false;
+    const errorMsg = error instanceof Error ? error.message : String(error);
+    console.warn("[notifier] ❌ Resend network error:", errorMsg);
+    return {
+      success: false,
+      skipped: false,
+      reason: errorMsg,
+      recipient: toEmail,
+      from: fromEmail,
+    };
   }
 }

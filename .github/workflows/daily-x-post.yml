@@ -11,6 +11,11 @@ on:
         required: false
         type: boolean
         default: false
+      send_email:
+        description: "Send technical briefing email (even during dry-run simulation)"
+        required: false
+        type: boolean
+        default: true
       custom_topic:
         description: "Override topic pillar (e.g., 'Applied AI & Systems')"
         required: false
@@ -32,6 +37,21 @@ jobs:
         with:
           node-version: 24
 
+      - name: Verify Secret Configuration
+        run: |
+          echo "### 🔑 Actions Secrets Diagnostic" >> $GITHUB_STEP_SUMMARY
+          echo "| Secret | Status | Impact |" >> $GITHUB_STEP_SUMMARY
+          echo "|---|---|---|" >> $GITHUB_STEP_SUMMARY
+          [ -n "${{ secrets.X_API_KEY }}" ] && echo "| \`X_API_KEY\` | ✅ Configured | Live tweet publishing enabled |" >> $GITHUB_STEP_SUMMARY || echo "| \`X_API_KEY\` | ❌ Missing | Live tweet publishing disabled |" >> $GITHUB_STEP_SUMMARY
+          [ -n "${{ secrets.GEMINI_API_KEY }}" ] && echo "| \`GEMINI_API_KEY\` | ✅ Configured | Gemini 2.5 / 3.x generation active |" >> $GITHUB_STEP_SUMMARY || echo "| \`GEMINI_API_KEY\` | ⚠️ Missing | Using curated fallback posts |" >> $GITHUB_STEP_SUMMARY
+          [ -n "${{ secrets.RESEND_API_KEY }}" ] && echo "| \`RESEND_API_KEY\` | ✅ Configured | Email briefing delivery active |" >> $GITHUB_STEP_SUMMARY || echo "| \`RESEND_API_KEY\` | ⚠️ Missing | Briefing email will be skipped |" >> $GITHUB_STEP_SUMMARY
+          
+          echo "=== SECRETS DIAGNOSTIC ==="
+          [ -n "${{ secrets.X_API_KEY }}" ] && echo "✓ X_API_KEY: Configured" || echo "✗ X_API_KEY: Missing"
+          [ -n "${{ secrets.GEMINI_API_KEY }}" ] && echo "✓ GEMINI_API_KEY: Configured" || echo "⚠ GEMINI_API_KEY: Missing"
+          [ -n "${{ secrets.RESEND_API_KEY }}" ] && echo "✓ RESEND_API_KEY: Configured" || echo "⚠ RESEND_API_KEY: Missing"
+          echo "=========================="
+
       - name: Execute X Daily Poster
         run: |
           ARGS=""
@@ -52,6 +72,7 @@ jobs:
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
           RESEND_FROM_EMAIL: ${{ secrets.RESEND_FROM_EMAIL }}
           CONTACT_NOTIFICATION_EMAIL: ${{ secrets.CONTACT_NOTIFICATION_EMAIL }}
+          SEND_EMAIL_IN_DRY_RUN: ${{ github.event.inputs.send_email || 'true' }}
 
       - name: Commit history and queue updates
         if: github.event.inputs.dry_run != 'true'
