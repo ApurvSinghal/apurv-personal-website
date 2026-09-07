@@ -1,1 +1,8 @@
-[]
+[
+  {
+    "id": "queue-azure-cicd-20260907",
+    "topic": "Azure Cloud & DevOps",
+    "text": "CI/CD pipelines shouldn't just run unit tests; they should enforce architecture guardrails.\n\nIn our GitHub Actions, we reject PRs that introduce unpinned dependencies or drift from Bicep landing zone specs before code review starts. #DevOps",
+    "createdAt": "2026-09-07T00:50:00.000Z"
+  }
+]
