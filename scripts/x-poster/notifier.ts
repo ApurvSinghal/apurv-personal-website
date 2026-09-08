@@ -7,6 +7,7 @@ export interface SendBriefingParams {
   source: string;
   briefing: PostBriefing;
   isDryRun?: boolean;
+  toEmail?: string;
 }
 
 function escapeHtml(value: string): string {
@@ -183,7 +184,11 @@ export interface EmailSendResult {
 
 export async function sendPostBriefingEmail(params: SendBriefingParams): Promise<EmailSendResult> {
   const resendApiKey = process.env.RESEND_API_KEY;
-  const toEmail = process.env.CONTACT_NOTIFICATION_EMAIL || "me@apurvsinghal.com";
+  const toEmail =
+    params.toEmail ||
+    process.env.BRIEFING_NOTIFICATION_EMAIL ||
+    process.env.X_POST_NOTIFICATION_EMAIL ||
+    "apurv.singhal28@gmail.com";
   let fromEmail = process.env.RESEND_FROM_EMAIL || "Portfolio <noreply@apurvsinghal.com>";
 
   if (!resendApiKey) {
@@ -249,7 +254,7 @@ export async function sendPostBriefingEmail(params: SendBriefingParams): Promise
       if (result.text.includes("verify your domain")) {
         advice = "Verify apurvsinghal.com in your Resend dashboard (https://resend.com/domains) or use onboarding@resend.dev.";
       } else if (result.text.includes("can only send testing emails to your own email address")) {
-        advice = "Testing emails from onboarding@resend.dev can only be sent to the email address registered with your Resend account. Set CONTACT_NOTIFICATION_EMAIL secret to match that email.";
+        advice = "Testing emails from onboarding@resend.dev can only be sent to the email address registered with your Resend account (e.g., apurv.singhal28@gmail.com).";
       }
       if (advice) {
         console.warn(`[notifier] 👉 Action needed: ${advice}`);

@@ -189,6 +189,51 @@ describe("X Poster Automation Engine", () => {
       expect(calls[1]).toBe("onboarding@resend.dev");
       expect(result.success).toBe(true);
       expect(result.emailId).toBe("re_mock_12345");
+      expect(result.recipient).toBe("apurv.singhal28@gmail.com");
+
+      global.fetch = originalFetch;
+      if (originalKey) process.env.RESEND_API_KEY = originalKey;
+      else delete process.env.RESEND_API_KEY;
+    });
+
+    it("sends email to apurv.singhal28@gmail.com by default and supports custom overrides", async () => {
+      const originalKey = process.env.RESEND_API_KEY;
+      const originalFetch = global.fetch;
+      process.env.RESEND_API_KEY = "test_resend_key";
+
+      let capturedRecipient: string[] = [];
+      global.fetch = vi.fn().mockImplementation(async (_url, options) => {
+        const body = JSON.parse((options as RequestInit).body as string);
+        capturedRecipient = body.to;
+        return {
+          ok: true,
+          status: 200,
+          text: async () => JSON.stringify({ id: "re_default_test" }),
+        };
+      }) as unknown as typeof fetch;
+
+      const briefing = createFallbackBriefing("Test tweet", "Azure Cloud & DevOps");
+      const defaultResult = await sendPostBriefingEmail({
+        tweetText: "Test tweet",
+        pillar: "Azure Cloud & DevOps",
+        source: "queue",
+        briefing,
+        isDryRun: true,
+      });
+
+      expect(defaultResult.recipient).toBe("apurv.singhal28@gmail.com");
+      expect(capturedRecipient).toEqual(["apurv.singhal28@gmail.com"]);
+
+      // Test param override
+      await sendPostBriefingEmail({
+        tweetText: "Test tweet",
+        pillar: "Azure Cloud & DevOps",
+        source: "queue",
+        briefing,
+        isDryRun: true,
+        toEmail: "custom@example.com",
+      });
+      expect(capturedRecipient).toEqual(["custom@example.com"]);
 
       global.fetch = originalFetch;
       if (originalKey) process.env.RESEND_API_KEY = originalKey;

@@ -71,6 +71,7 @@ jobs:
           GEMINI_MODEL: ${{ secrets.GEMINI_MODEL }}
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
           RESEND_FROM_EMAIL: ${{ secrets.RESEND_FROM_EMAIL }}
+          BRIEFING_NOTIFICATION_EMAIL: ${{ secrets.BRIEFING_NOTIFICATION_EMAIL || 'apurv.singhal28@gmail.com' }}
           CONTACT_NOTIFICATION_EMAIL: ${{ secrets.CONTACT_NOTIFICATION_EMAIL }}
           SEND_EMAIL_IN_DRY_RUN: ${{ github.event.inputs.send_email || 'true' }}
 
