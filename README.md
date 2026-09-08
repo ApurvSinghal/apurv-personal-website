@@ -73,14 +73,16 @@ NEXT_PUBLIC_CF_ANALYTICS_TOKEN=your_cloudflare_analytics_token
 
 Cloudflare Web Analytics only loads in production builds (`NODE_ENV=production`) and only when `NEXT_PUBLIC_CF_ANALYTICS_TOKEN` is set. The token can be found in the Cloudflare Dashboard under **Analytics & Logs** > **Web Analytics** > **Manage Site**.
 
-### Optional for X (Twitter) automation bot
-
+### Optional for X (Twitter) automation bot & briefings
+ 
 ```bash
 X_API_KEY=your_key
 X_API_SECRET=your_secret
 X_ACCESS_TOKEN=your_token
 X_ACCESS_TOKEN_SECRET=your_token_secret
 GEMINI_API_KEY=your_gemini_key
+GEMINI_MODEL=gemini-2.5-flash # or gemini-3-flash
+BRIEFING_NOTIFICATION_EMAIL=apurv.singhal28@gmail.com
 ```
 
 ## Deployment

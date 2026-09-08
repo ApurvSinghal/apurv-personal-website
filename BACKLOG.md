@@ -14,10 +14,10 @@ Add AI projects as proof of new direction.
 - [x] Google Analytics — `NEXT_PUBLIC_GA_ID` env var already set, wired via `@next/third-parties`
 - [x] Vercel Speed Insights — always-on
 - [x] CSP updated — added `va.vercel-scripts.com` to `script-src` and `connect-src`
-- [x] Sitemap fixed — now includes all project pages (`/projects/*`)
-- [x] Second cron job — `/api/ping-sitemap` pings Google with sitemap daily at 2am UTC
+- [x] Sitemap & SEO — dynamic sitemap (`/sitemap.xml`) & robots (`/robots.txt`) covering all project pages
+- [x] X Automation Bot & Daily Briefings — automated daily posting engine with Gemini 2.5/3.x briefing generation & Resend email delivery to `apurv.singhal28@gmail.com`
 - [x] Vercel Firewall — basic attack protection enabled in dashboard
-- [x] Rate limiter updated — now reads `KV_REST_API_URL`/`KV_REST_API_TOKEN` (Vercel KV) with fallback to Upstash vars and in-memory
+- [x] Rate limiter updated — in-memory rate limiting with clean IP extraction and fallback
 
 ### AI Pivot — Design & Content
 - [x] Color palette changed — teal → violet (AI-forward)
