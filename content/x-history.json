@@ -12,5 +12,12 @@
     "pillar": "Azure Cloud & DevOps",
     "source": "queue",
     "postedAt": "2026-09-07T04:56:13.877Z"
+  },
+  {
+    "id": "2097127761227968975",
+    "text": "The secret to Platform Engineering:\nDon't build an internal developer portal nobody asked for.\n\nFind the 3 manual tickets filed every week (secret rotation, staging DB, preview envs) and automate them into a self-service CLI. #PlatformEngineering",
+    "pillar": "Platform Engineering",
+    "source": "curated",
+    "postedAt": "2026-09-08T00:59:56.042Z"
   }
 ]
