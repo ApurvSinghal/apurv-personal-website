@@ -19,5 +19,12 @@
     "pillar": "Platform Engineering",
     "source": "curated",
     "postedAt": "2026-09-08T00:59:56.042Z"
+  },
+  {
+    "id": "2097491575689384141",
+    "text": "The biggest pitfall in enterprise RAG isn't the vector DB or embedding model—it's chunk boundary quality and metadata filtering.\n\nWithout document hierarchy and access scopes, your LLM retrieves garbage with high confidence. #AppliedAI",
+    "pillar": "Applied AI & Systems",
+    "source": "curated",
+    "postedAt": "2026-09-09T01:05:36.169Z"
   }
 ]
