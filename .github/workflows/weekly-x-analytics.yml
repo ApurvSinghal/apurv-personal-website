@@ -1,0 +1,38 @@
+name: Weekly X Analytics Tracker
+
+on:
+  schedule:
+    # Runs at 00:00 UTC every Sunday (10:00 AM Melbourne / AEST)
+    - cron: "0 0 * * 0"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  track-analytics:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Collect Live X Engagement Metrics
+        run: |
+          node --no-warnings scripts/x-poster/tracker.ts
+
+      - name: Commit Updated Analytics
+        run: |
+          git config --global user.name "ApurvSinghal"
+          git config --global user.email "apurv.singhal28@gmail.com"
+          git add content/x-analytics.json
+          if ! git diff --cached --quiet; then
+            git commit -m "chore(analytics): update weekly X post metrics [skip ci]"
+            git push origin main || echo "::warning::Push was blocked by branch protection. Please allow bypass if needed."
+          else
+            echo "No analytics changes to commit."
+          fi

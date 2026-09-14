@@ -3,6 +3,7 @@ import { HeroSection } from "@/components/hero-section";
 import { ExperienceSection } from "@/components/experience-section";
 import { SkillsSection } from "@/components/skills-section";
 import { ProjectsSection } from "@/components/projects-section";
+import { InsightsSection } from "@/components/insights-section";
 import { ContactSection } from "@/components/contact-section";
 import { Footer } from "@/components/footer";
 import { AnimateOnScroll } from "@/components/animate-on-scroll";
@@ -27,6 +28,9 @@ export default function Home() {
         </div>
         <div data-animate>
           <ProjectsSection />
+        </div>
+        <div data-animate>
+          <InsightsSection />
         </div>
         <div data-animate>
           <ContactSection />

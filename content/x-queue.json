@@ -1,1 +1,86 @@
-[]
+[
+  {
+    "id": "q-1",
+    "topic": "Platform Engineering",
+    "text": "The fastest way to kill a Platform Engineering initiative:\n\nSpend 6 months building an Internal Developer Portal that developers didn't ask for.\n\nAutomate their top 3 Slack support tickets instead (preview DBs, secrets, DNS).\n\nWhat was your team's #1 platform win? #PlatformEngineering",
+    "createdAt": "2026-09-14T12:00:00.000Z"
+  },
+  {
+    "id": "q-2",
+    "topic": "Azure Cloud & DevOps",
+    "text": "90% of enterprise Azure migrations stall for the exact same reason:\n\nIt’s never Kubernetes.\nIt’s never the database.\nIt’s subscription governance on Day 1.\n\nAutomate landing zone guardrails in Terraform before writing a single service. #Azure",
+    "createdAt": "2026-09-14T12:01:00.000Z"
+  },
+  {
+    "id": "q-3",
+    "topic": "Applied AI & Systems",
+    "text": "The biggest pitfall in enterprise RAG isn't the vector DB or embedding model.\n\nIt's chunk boundary quality and metadata filtering.\n\nWithout document hierarchy and access scopes, your LLM retrieves garbage with high confidence.\n\nHow do you handle chunk overlaps? #AppliedAI",
+    "createdAt": "2026-09-14T12:02:00.000Z"
+  },
+  {
+    "id": "q-4",
+    "topic": "Founder & ADM Guard",
+    "text": "Under Australia's Privacy Act APP 1.7–1.9, companies automating decisions affecting individuals must evidence how decisions were made.\n\nStatic PDF policies won't protect you in an OAIC audit.\n\nYou need code-layer flight recorders.\n\nIs your AI audit-ready? #RegTech",
+    "createdAt": "2026-09-14T12:03:00.000Z"
+  },
+  {
+    "id": "q-5",
+    "topic": "Enterprise Delivery & Governance",
+    "text": "In enterprise consulting, the hardest problem is rarely technical architecture—it's organizational alignment.\n\nA simple architecture with 100% buy-in beats a 'flawless' system that teams resist using every single time.\n\nCulture eats architecture for breakfast. #TechLead",
+    "createdAt": "2026-09-14T12:04:00.000Z"
+  },
+  {
+    "id": "q-6",
+    "topic": "Community & IT Leadership",
+    "text": "Managing IT for community non-profits teaches you that security hygiene matters most where budgets are tightest.\n\nEnforcing strict Entra ID MFA and domain security protects vulnerable helplines from compromise with zero extra software cost. #Leadership",
+    "createdAt": "2026-09-14T12:05:00.000Z"
+  },
+  {
+    "id": "q-7",
+    "topic": "Engineer Reflections",
+    "text": "Early in your career, you measure progress by how much code you write.\n\nLater on, you measure progress by how much complexity you prevented from reaching production.\n\nWhat was the turning point for you? #Engineering",
+    "createdAt": "2026-09-14T12:06:00.000Z"
+  },
+  {
+    "id": "q-8",
+    "topic": "Azure Cloud & DevOps",
+    "text": "Clean Terraform pattern for Azure:\n\nSeparate state by lifecycle frequency, not by environment.\n\nVNet / Landing zones (yearly) ≠ AKS clusters (monthly) ≠ App deploys (daily).\n\nYour blast radius immediately shrinks to near zero. Bicep or Terraform in 2026? #DevOps",
+    "createdAt": "2026-09-14T12:07:00.000Z"
+  },
+  {
+    "id": "q-9",
+    "topic": "Platform Engineering",
+    "text": "Developer velocity isn't how fast developers type code.\n\nIt's how little friction stands between `git push` and production verification with zero fear of breaking the build.\n\nIf you have a 3-week QA sign-off phase, you don't have CI/CD. #Cloud",
+    "createdAt": "2026-09-14T12:08:00.000Z"
+  },
+  {
+    "id": "q-10",
+    "topic": "Applied AI & Systems",
+    "text": "Building AI agents that work in production requires treating tool calling like distributed systems RPC:\n\n1. Client idempotency keys\n2. Strict Zod/Pydantic validation\n3. Deterministic fallbacks when models hallucinate args.\n\nNever trust raw LLM JSON. #Architecture",
+    "createdAt": "2026-09-14T12:09:00.000Z"
+  },
+  {
+    "id": "q-11",
+    "topic": "Founder & ADM Guard",
+    "text": "When architecting ADM Guard, rule #1 was zero-PII by design.\n\nIf an API payload contains names, emails, or tax IDs, our gateway boundary rejects it with HTTP 422 before persistence.\n\nYou cannot leak data you never store. #RegTech #BuildInPublic",
+    "createdAt": "2026-09-14T12:10:00.000Z"
+  },
+  {
+    "id": "q-12",
+    "topic": "Enterprise Delivery & Governance",
+    "text": "After 8+ years shipping enterprise production systems, here is my golden rule:\n\nDesign for the failure mode first.\n\nIf you don't know what happens when downstream returns HTTP 504 or network partitions, you haven't finished designing. #SoftwareEngineering",
+    "createdAt": "2026-09-14T12:11:00.000Z"
+  },
+  {
+    "id": "q-13",
+    "topic": "Community & IT Leadership",
+    "text": "The highest-leverage IT work in the non-profit sector isn't migrating to fancy new SaaS tools.\n\nIt's deprecating legacy shadow IT, locking down phishing vectors, and giving volunteer case workers tools that never crash. #Leadership",
+    "createdAt": "2026-09-14T12:12:00.000Z"
+  },
+  {
+    "id": "q-14",
+    "topic": "Engineer Reflections",
+    "text": "Balancing enterprise consulting while building a tech startup:\n\nThe key is zero context-switching during focus blocks.\n\nEnterprise delivery builds discipline; startups demand speed. Both make you a significantly sharper engineer. #BuildingInPublic",
+    "createdAt": "2026-09-14T12:13:00.000Z"
+  }
+]

@@ -12,6 +12,7 @@ import {
   buildBriefingEmailText,
   sendPostBriefingEmail,
 } from "../../../scripts/x-poster/notifier";
+import { parseTweetMetricsFromHtml } from "../../../scripts/x-poster/tracker";
 
 describe("X Poster Automation Engine", () => {
   describe("OAuth 1.0a Client", () => {
@@ -272,4 +273,46 @@ describe("X Poster Automation Engine", () => {
       expect(result.pillar).toBe("Applied AI & Systems");
     });
   });
+
+  describe("Analytics & Engagement Tracker", () => {
+    it("parses views, likes, retweets, replies, and bookmarks from Relay markup", () => {
+      const sampleHtml = `
+        "client:VHdlZXQ6MjA5OTI5OTU5ODU1MjUwMjQxMA==:counts":$R[10]={__id:"...",bookmark_count:3,favorite_count:7,reply_count:2,retweet_count:1}
+        "client:VHdlZXQ6MjA5OTI5OTU5ODU1MjUwMjQxMA==:views":$R[11]={__id:"...",count:"150"}
+      `;
+
+      const metrics = parseTweetMetricsFromHtml(sampleHtml);
+      expect(metrics.size).toBe(1);
+
+      const postMetric = metrics.get("2099299598552502410");
+      expect(postMetric).toBeDefined();
+      expect(postMetric?.views).toBe(150);
+      expect(postMetric?.likes).toBe(7);
+      expect(postMetric?.retweets).toBe(1);
+      expect(postMetric?.replies).toBe(2);
+      expect(postMetric?.bookmarks).toBe(3);
+    });
+
+    it("handles multiple tweets in single timeline payload", () => {
+      const sampleHtml = `
+        "client:VHdlZXQ6MjA5OTI5OTU5ODU1MjUwMjQxMA==:counts":$R[10]={__id:"...",bookmark_count:0,favorite_count:5,reply_count:0,retweet_count:0}
+        "client:VHdlZXQ6MjA5OTI5OTU5ODU1MjUwMjQxMA==:views":$R[11]={__id:"...",count:"25"}
+        "client:VHdlZXQ6MjA5NjgyNDg0MDM3NjUwMDY0Mw==:counts":$R[20]={__id:"...",bookmark_count:1,favorite_count:2,reply_count:1,retweet_count:0}
+        "client:VHdlZXQ6MjA5NjgyNDg0MDM3NjUwMDY0Mw==:views":$R[21]={__id:"...",count:"90"}
+      `;
+
+      const metrics = parseTweetMetricsFromHtml(sampleHtml);
+      expect(metrics.size).toBe(2);
+
+      const m1 = metrics.get("2099299598552502410");
+      expect(m1?.views).toBe(25);
+      expect(m1?.likes).toBe(5);
+
+      const m2 = metrics.get("2096824840376500643");
+      expect(m2?.views).toBe(90);
+      expect(m2?.likes).toBe(2);
+      expect(m2?.bookmarks).toBe(1);
+    });
+  });
 });
+

@@ -67,31 +67,38 @@ export const EVERGREEN_TOPIC_BANK: Record<string, string[]> = {
     "Most enterprise cloud migrations stall not from containers or DBs, but because nobody designed landing zone governance on Day 1.\n\nAutomate policy guardrails with Terraform before granting developer access. Saves months of rework. #Azure",
     "CI/CD pipelines shouldn't just run unit tests; they should enforce architecture guardrails.\n\nIn our GitHub Actions, we reject PRs that introduce unpinned dependencies or drift from Bicep landing zone specs before code review starts. #DevOps",
     "Clean Terraform pattern for Azure:\nSeparate state by lifecycle frequency, not by environment.\n\nVNet/Landing zones (yearly) ≠ AKS clusters (monthly) ≠ App deploys (daily).\n\nBlast radius shrinks to near zero. #Azure #DevOps",
+    "The biggest mistake teams make with Azure Managed Identities:\nGranting Contributor at the Resource Group level.\n\nScope down to individual Key Vaults and Storage Queues with custom RBAC roles on Day 1. What's your lockdown default? #Azure",
   ],
   "Platform Engineering": [
     "The secret to Platform Engineering:\nDon't build an internal developer portal nobody asked for.\n\nFind the 3 manual tickets filed every week (secret rotation, staging DB, preview envs) and automate them into a self-service CLI. #PlatformEngineering",
     "Developer velocity isn't how fast developers type code.\n\nIt's how little friction stands between git push and production verification with zero fear of breaking the build. That is the true measure of platform quality. #Cloud",
     "Platform migrations fail when teams try a global cutover. Run traffic in parallel with dark launches and feature flags. If you can't observe both side-by-side in real-time, you're not migrating—you're gambling. #PlatformEngineering",
+    "Unpopular opinion on Platform Engineering:\nIf developers need a 40-page Notion doc to spin up an ephemeral test environment, your platform is just legacy ticket-ops with modern branding. #DevOps",
   ],
   "Applied AI & Systems": [
     "The biggest pitfall in enterprise RAG isn't the vector DB or embedding model—it's chunk boundary quality and metadata filtering.\n\nWithout document hierarchy and access scopes, your LLM retrieves garbage with high confidence. #AppliedAI",
     "Building AI agents that work in production requires treating tool calling like distributed systems RPC:\n\n1. Client idempotency keys\n2. Strict Zod/Pydantic validation\n3. Deterministic fallbacks when models hallucinate args. #Architecture",
     "Prompt caching on Azure OpenAI and Claude is the highest ROI win in production AI.\n\nCaching multi-shot system prompts cut our prompt evaluation latency by ~70% and slashed API token costs dramatically. #AppliedAI",
+    "Stop benchmarking LLMs on synthetic puzzles.\nTest them on dirty production data: half-empty JSON payloads, malformed markdown, and ambiguous user prompts.\n\nThat's where architectures either shine or silently collapse. #AppliedAI",
   ],
   "Founder & ADM Guard": [
     "Under Australia's Privacy Act APP 1.7–1.9, companies automating decisions affecting individuals must evidence how decisions were made.\n\nStatic PDF policies won't protect you in an OAIC audit. You need code-layer flight recorders. #RegTech",
     "When architecting ADM Guard, rule #1 was zero-PII by design.\n\nIf an API payload contains names, emails, or tax IDs, the boundary rejects it with HTTP 422 before persistence.\n\nYou cannot leak data you never store. #RegTech #BuildInPublic",
     "Why standard DBs fail for decision audit logs:\nIf an admin or DBA can run UPDATE or DELETE, it cannot pass cryptographic muster.\n\nThat's why ADM Guard chains decisions in SHA-256 Merkle trees anchored to Azure Australia East WORM. #Azure",
+    "Automating high-stakes decisions without cryptographic audit trails is a ticking liability bomb.\nWhen regulators ask 'Why was this customer flagged?', 'The AI model outputted it' won't hold up in court. #RegTech",
   ],
   "Enterprise Delivery & Governance": [
     "In enterprise consulting, the hardest problem is rarely technical architecture—it's organizational alignment.\n\nA simple architecture with 100% buy-in beats a 'flawless' system that teams resist using every single time. #TechLead",
     "After 8+ years shipping enterprise production systems, my golden rule:\n\nDesign for the failure mode first. If you don't know what happens when downstream returns HTTP 504, you haven't finished designing. #SoftwareEngineering",
+    "Technical debt is never paid off in 'refactoring sprints'.\nYou pay it down incrementally by making the clean path easier than the shortcut on every single PR. How does your team enforce this? #TechLead",
   ],
   "Community & IT Leadership": [
     "Managing IT for community non-profits reminds me that tech hygiene matters most where budgets are tightest.\n\nEnforcing strict Entra ID MFA and domain security protects vulnerable community helplines from compromise. #Leadership",
+    "The best non-profit tech leadership isn't introducing fancy new stacks.\nIt's deprecating legacy shadow IT, locking down phishing vectors, and giving volunteers tools that just work. #Leadership",
   ],
   "Engineer Reflections": [
     "Balancing enterprise consulting while building a tech startup:\n\nThe key is zero context-switching during focus blocks.\n\nEnterprise delivery builds discipline; startups demand speed. Both make you a sharper engineer. #BuildingInPublic",
+    "Early in your career, you measure progress by how much code you write.\nLater on, you measure progress by how much complexity you prevented from reaching production. What made that shift for you? #Engineering",
   ],
 };
 
@@ -236,9 +243,9 @@ export async function generateDailyPost(
   const geminiKey = process.env.GEMINI_API_KEY;
 
   if (geminiKey) {
-    const prompt = `You are Apurv Singhal, a hands-on Cloud, Platform, and AI engineer with 7-8 years of experience shipping production systems in Melbourne, Australia. Founder of ADM Guard.
+    const prompt = `You are Apurv Singhal, a hands-on Cloud, Platform, and AI systems engineer with 7-8 years of experience shipping production systems in Melbourne, Australia. Founder of ADM Guard.
 You write like a curious, practical builder in the trenches who loves testing new tools, learning in public, and sharing what actually works.
-You are NOT a lecturing 20+ year corporate architect. You are relatable, humble, and eager to implement and experiment.
+You are NOT a lecturing corporate theorist. You are relatable, humble, and eager to implement and experiment.
 
 Generate a single authentic, high-signal technical tweet for @apurvsinghal28 along with an educational technical briefing and concrete code example.
 
@@ -248,7 +255,7 @@ Previously posted topics to avoid repeating: ${historyTexts.slice(-10).join(" | 
 
 Return a strict JSON object with this exact structure:
 {
-  "tweet": "The raw tweet text strictly between 40 and 240 characters total with 1 hashtag at the end (${pillarConfig.hashtags.split(" ")[0]})",
+  "tweet": "The raw tweet text strictly between 60 and 250 characters total with 1 hashtag at the end (${pillarConfig.hashtags.split(" ")[0]})",
   "concept": "2-3 sentences explaining the core architectural concept clearly and simply.",
   "whyItMatters": "2-3 sentences on why enterprise systems or startups need this in production.",
   "example": {
@@ -263,10 +270,15 @@ Return a strict JSON object with this exact structure:
 }
 
 Rules for the tweet:
-1. Max length: 240 characters total (strict limit so it fits in 280 chars easily).
-2. Voice: Hands-on engineer with 7-8 years experience. Practical, real-world, sharing what you've learned and implemented. No preaching, no gatekeeping, no corporate jargon.
-3. NEVER mention any employer names, company names, enterprise client names, or specific non-profit names. Keep all references completely generic.
-4. Exactly 1 clean hashtag at the end: ${pillarConfig.hashtags.split(" ")[0]}.`;
+1. Max length: 250 characters total (strict limit to leave ample breathing room).
+2. Format for high dwell time: Use clean line breaks between thoughts. NEVER write a dense wall of text.
+3. Structure:
+   - Line 1: Strong, contrarian, or curiosity-inducing hook (stop the scroll).
+   - Middle: Concrete practitioner reality (e.g. Terraform blast radius, Bicep drift, OAIC compliance, RAG chunking).
+   - Ending: An engaging question or conversation starter to spark replies (replies are the highest-weighted signal in X's algorithm).
+4. Tone: Practical builder sharing lessons from shipping. No preaching, no buzzword stuffing.
+5. NEVER mention any employer names, company names, enterprise client names, or specific non-profit names. Keep all references completely generic.
+6. Exactly 1 clean hashtag at the end: ${pillarConfig.hashtags.split(" ")[0]}.`;
 
     try {
       const rawJson = await callGeminiApi(prompt, geminiKey);

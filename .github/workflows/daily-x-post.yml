@@ -2,8 +2,8 @@ name: Daily X (Twitter) Post
 
 on:
   schedule:
-    # Runs at 23:00 UTC every day (9:00 AM Melbourne / AEST)
-    - cron: "0 23 * * *"
+    # Runs at 22:30 UTC every day (8:30 AM Melbourne / AEST)
+    - cron: "30 22 * * *"
   workflow_dispatch:
     inputs:
       dry_run:
