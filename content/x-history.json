@@ -54,5 +54,12 @@
     "pillar": "Engineer Reflections",
     "source": "curated",
     "postedAt": "2026-09-13T00:40:17.750Z"
+  },
+  {
+    "id": "2099299598552502410",
+    "text": "Most enterprise cloud migrations stall not from containers or DBs, but because nobody designed landing zone governance on Day 1.\n\nAutomate policy guardrails with Terraform before granting developer access. Saves months of rework. #Azure",
+    "pillar": "Azure Cloud & DevOps",
+    "source": "curated",
+    "postedAt": "2026-09-14T00:50:02.688Z"
   }
 ]
