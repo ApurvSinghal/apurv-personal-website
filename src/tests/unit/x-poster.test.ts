@@ -162,7 +162,7 @@ describe("X Poster Automation Engine", () => {
       global.fetch = vi.fn().mockImplementation(async (_url, options) => {
         const body = JSON.parse((options as RequestInit).body as string);
         calls.push(body.from);
-        if (body.from.includes("apurvsinghal.com")) {
+        if (body.from.endsWith("@apurvsinghal.com>") || body.from.endsWith("apurvsinghal.com")) {
           return {
             ok: false,
             status: 403,

@@ -9,13 +9,27 @@ export function generateMetadata(): Metadata {
   const years = getYearsOfExperience();
   const description = `Enterprise engineer going deep on AI. I build AI agents and automation for real businesses — backed by ${years} years shipping production systems on Azure.`;
   return {
-    metadataBase: new URL("https://apurvsinghal.com"),
+    metadataBase: new URL("https://www.apurvsinghal.com"),
     title: "Apurv Singhal — AI Engineer & Builder",
     description,
+    keywords: [
+      "Apurv Singhal",
+      "AI Engineer",
+      "Azure Cloud",
+      "Platform Engineering",
+      "DevOps",
+      "AI Agents",
+      "ADM Guard",
+      "Melbourne",
+      "Australia",
+    ],
+    alternates: {
+      canonical: "https://www.apurvsinghal.com",
+    },
     openGraph: {
       title: "Apurv Singhal — AI Engineer & Builder",
       description,
-      url: "https://apurvsinghal.com",
+      url: "https://www.apurvsinghal.com",
       images: ["/opengraph-image"],
       siteName: "Apurv Singhal",
       locale: "en_AU",
@@ -55,26 +69,39 @@ export default function RootLayout({
     "@graph": [
       {
         "@type": "Person",
-        "@id": "https://apurvsinghal.com/#person",
+        "@id": "https://www.apurvsinghal.com/#person",
         name: "Apurv Singhal",
-        url: "https://apurvsinghal.com",
+        url: "https://www.apurvsinghal.com",
         sameAs: [
           "https://github.com/ApurvSinghal",
           "https://www.linkedin.com/in/apurvsinghal28",
           "https://x.com/apurvsinghal28",
         ],
-        jobTitle: "AI Engineer",
+        jobTitle: "Lead Consultant (Cloud & Platform) & AI Engineer",
+        worksFor: {
+          "@type": "Organization",
+          name: "Capgemini",
+        },
+        knowsAbout: [
+          "Azure Cloud Architecture",
+          "Platform Engineering",
+          "DevOps & CI/CD",
+          "Applied AI Systems",
+          "AI Agents",
+          "Model Context Protocol (MCP)",
+        ],
+        image: "https://www.apurvsinghal.com/opengraph-image",
         email: "mailto:me@apurvsinghal.com",
       },
       {
         "@type": "WebSite",
-        "@id": "https://apurvsinghal.com/#website",
+        "@id": "https://www.apurvsinghal.com/#website",
         name: "Apurv Singhal",
-        url: "https://apurvsinghal.com",
+        url: "https://www.apurvsinghal.com",
         description:
-          "Software engineer building digital experiences. Portfolio showcasing projects, skills, and experience.",
+          "Enterprise engineer going deep on AI. Portfolio showcasing AI agents, Azure platform architecture, and production case studies.",
         publisher: {
-          "@id": "https://apurvsinghal.com/#person",
+          "@id": "https://www.apurvsinghal.com/#person",
         },
       },
     ],

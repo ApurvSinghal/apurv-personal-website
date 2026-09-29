@@ -65,7 +65,7 @@ export const projects: Project[] = [
       "Vercel",
     ],
     categories: ["AI", "Frontend", "Backend", "Observability"],
-    liveUrl: "https://apurvsinghal.com",
+    liveUrl: "https://www.apurvsinghal.com",
     githubUrl: "https://github.com/ApurvSinghal/apurv-personal-website",
     highlights: [
       "Zero-cost production architecture delivering sub-second streaming responses without cloud billing overhead.",
@@ -84,7 +84,7 @@ export const projects: Project[] = [
       "Built with Next.js App Router, TypeScript, and Tailwind CSS using reusable UI primitives and route-level SEO. The architecture includes a monitored contact pipeline, generated Open Graph assets, structured data, and a layered testing strategy to keep product quality high as the site evolves.",
     technologies: ["Next.js", "TypeScript", "Tailwind CSS", "Resend", "Vercel"],
     categories: ["Frontend", "Backend", "Cloud", "Observability"],
-    liveUrl: "https://apurvsinghal.com",
+    liveUrl: "https://www.apurvsinghal.com",
     githubUrl: "https://github.com/ApurvSinghal/apurv-personal-website",
     highlights: [
       "Implemented content-driven projects and dynamic case-study pages to improve storytelling and SEO coverage.",
@@ -103,7 +103,7 @@ export const projects: Project[] = [
       "Implemented as a serverless workflow with strict schema validation, anti-spam controls, and staged failure handling. Notification delivery is handled via Resend with defensive API behavior to protect against message loss.",
     technologies: ["Next.js", "TypeScript", "Zod", "Resend", "Vercel"],
     categories: ["Cloud", "Backend", "Frontend", "Observability"],
-    liveUrl: "https://apurvsinghal.com/#contact",
+    liveUrl: "https://www.apurvsinghal.com/#contact",
     githubUrl: "https://github.com/ApurvSinghal/apurv-personal-website",
     highlights: [
       "Applied strict input contracts and bounded payload rules to protect API reliability.",

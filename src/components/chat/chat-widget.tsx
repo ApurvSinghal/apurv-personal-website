@@ -28,6 +28,10 @@ const INITIAL_MESSAGE: Message = {
     "Hi there! 👋 I'm **Apurv's AI representative**.\n\nI can answer questions about his **8+ years shipping enterprise Azure systems**, his **AI engineering projects**, architecture patterns, or how to get in touch.",
 };
 
+function isSafeUrl(url: string): boolean {
+  return /^(https?:\/\/|\/|#|mailto:)/i.test(url.trim());
+}
+
 // Simple lightweight markdown formatter for chat bubbles
 function FormattedText({ content }: { content: string }) {
   // Split by line breaks
@@ -71,12 +75,13 @@ function FormattedText({ content }: { content: string }) {
             );
           } else if (token.startsWith("[") && token.includes("](")) {
             const linkText = token.slice(1, token.indexOf("]("));
-            const linkHref = token.slice(token.indexOf("](") + 2, -1);
+            const rawHref = token.slice(token.indexOf("](") + 2, -1).trim();
+            const safeHref = isSafeUrl(rawHref) ? rawHref : "#";
             parts.push(
               <a
                 key={match.index}
-                href={linkHref}
-                target={linkHref.startsWith("http") ? "_blank" : undefined}
+                href={safeHref}
+                target={safeHref.startsWith("http") ? "_blank" : undefined}
                 rel="noopener noreferrer"
                 className="text-primary underline hover:text-primary/80 transition-colors"
               >
