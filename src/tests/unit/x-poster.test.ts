@@ -185,7 +185,7 @@ describe("X Poster Automation Engine", () => {
         calls.push(body.from);
         if (
           body.from.endsWith("@apurvsinghal.com>") ||
-          body.from.endsWith("apurvsinghal.com")
+          body.from.endsWith("@apurvsinghal.com")
         ) {
           return {
             ok: false,
