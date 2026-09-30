@@ -118,6 +118,14 @@ export function ResumeView() {
                 <MapPin size={11} className="print:hidden text-primary" />
                 {RESUME_DATA.location}
               </span>
+              {RESUME_DATA.workRights && (
+                <>
+                  <span className="text-border print:text-slate-300">•</span>
+                  <span className="font-medium text-foreground print:text-purple-900">
+                    {RESUME_DATA.workRights}
+                  </span>
+                </>
+              )}
               <span className="text-border print:text-slate-300">•</span>
               <a
                 href={`mailto:${RESUME_DATA.email}`}

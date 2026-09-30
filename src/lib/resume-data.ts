@@ -32,6 +32,7 @@ export interface ResumeData {
   name: string;
   title: string;
   location: string;
+  workRights?: string;
   email: string;
   website: string;
   linkedin: string;
@@ -58,6 +59,7 @@ export const RESUME_DATA: ResumeData = {
   name: "Apurv Singhal",
   title: "Lead Cloud & Platform Consultant · AI Engineer · Founder",
   location: "Melbourne, Victoria, Australia",
+  workRights: "Full Australian Working Rights",
   email: "me@apurvsinghal.com",
   website: "https://www.apurvsinghal.com",
   linkedin: "https://www.linkedin.com/in/apurvsinghal28",
