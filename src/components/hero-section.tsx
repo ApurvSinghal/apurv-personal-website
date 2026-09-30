@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { MapPin } from "lucide-react";
+import { MapPin, FileText } from "lucide-react";
 import { socialLinks } from "@/lib/constants";
 import { getYearsOfExperience } from "@/lib/utils";
 
@@ -19,11 +19,8 @@ export function HeroSection() {
               Apurv Singhal
             </h1>
             <p className="mt-3 text-xl text-primary font-medium">
-              Azure Cloud + DevOps · Platform Engineer · AI
-            </p>
-            <p className="mt-3 text-sm text-muted-foreground leading-relaxed max-w-xs">
-              Lead Consultant at Capgemini · Founder of ADM Guard · Enterprise
-              Scale
+              Azure Cloud & Platform Architect · AI Engineer · Founder of ADM
+              Guard
             </p>
 
             {/* Availability Badge */}
@@ -32,12 +29,23 @@ export function HeroSection() {
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
                 <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
               </span>
-              Available for Cloud, Platform & AI Consulting
+              Open to permanent & consulting roles
             </div>
 
             <div className="mt-3 flex items-center gap-1.5 text-xs text-muted-foreground">
               <MapPin size={12} />
               Melbourne, Australia
+            </div>
+
+            {/* Download CV */}
+            <div className="mt-6">
+              <Link
+                href="/resume"
+                className="inline-flex items-center gap-2 rounded-lg border border-primary/30 bg-primary/10 px-4 py-2 text-sm font-medium text-primary hover:bg-primary/15 hover:border-primary/50 transition-colors"
+              >
+                <FileText size={16} />
+                Download CV
+              </Link>
             </div>
 
             {/* Social Links */}
@@ -61,7 +69,7 @@ export function HeroSection() {
           <div id="about" className="scroll-mt-28 space-y-6">
             <p className="text-muted-foreground leading-relaxed text-lg">
               {
-                "Most enterprise platforms don't fail from lack of code; they fail from deployment friction, unobservable distributed systems, and compliance debt. I'm an enterprise engineer with "
+                "Most enterprise platforms don't fail from lack of code; they fail from deployment friction, unobservable distributed systems, and compliance debt. I'm an enterprise cloud & platform architect with "
               }
               {`${getYearsOfExperience()}+ years shipping mission-critical systems across `}
               <span className="text-foreground font-medium">

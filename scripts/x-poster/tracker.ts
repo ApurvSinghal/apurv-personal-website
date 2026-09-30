@@ -23,6 +23,8 @@ export interface AnalyticsSummary {
   totalReplies: number;
   totalBookmarks: number;
   avgViewsPerPost: number;
+  dataAvailable: boolean;
+  note?: string;
   topPostByViews?: {
     id: string;
     views: number;
@@ -43,20 +45,34 @@ const ANALYTICS_PATH = path.join(ROOT_DIR, "content", "x-analytics.json");
 const USER_AGENT =
   "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36";
 
-export function parseTweetMetricsFromHtml(html: string): Map<string, {
-  views: number;
-  likes: number;
-  retweets: number;
-  replies: number;
-  bookmarks: number;
-}> {
-  const results = new Map<string, {
+// X serves logged-out requests a login wall with no embedded metrics.
+export function isLoginWall(html: string): boolean {
+  return (
+    /JavaScript is not available/i.test(html) ||
+    /Log in to X|Sign in to X/i.test(html)
+  );
+}
+
+export function parseTweetMetricsFromHtml(html: string): Map<
+  string,
+  {
     views: number;
     likes: number;
     retweets: number;
     replies: number;
     bookmarks: number;
-  }>();
+  }
+> {
+  const results = new Map<
+    string,
+    {
+      views: number;
+      likes: number;
+      retweets: number;
+      replies: number;
+      bookmarks: number;
+    }
+  >();
 
   // Pattern for counts: "client:VHdlZXQ6([A-Za-z0-9+/=]+):counts":$R[\d+]=({[^}]+})
   const countsPattern =
@@ -87,9 +103,15 @@ export function parseTweetMetricsFromHtml(html: string): Map<string, {
       };
 
       existing.likes = favMatch ? parseInt(favMatch[1], 10) : existing.likes;
-      existing.retweets = rtMatch ? parseInt(rtMatch[1], 10) : existing.retweets;
-      existing.replies = repMatch ? parseInt(repMatch[1], 10) : existing.replies;
-      existing.bookmarks = bmMatch ? parseInt(bmMatch[1], 10) : existing.bookmarks;
+      existing.retweets = rtMatch
+        ? parseInt(rtMatch[1], 10)
+        : existing.retweets;
+      existing.replies = repMatch
+        ? parseInt(repMatch[1], 10)
+        : existing.replies;
+      existing.bookmarks = bmMatch
+        ? parseInt(bmMatch[1], 10)
+        : existing.bookmarks;
 
       results.set(id, existing);
     } catch {
@@ -104,7 +126,9 @@ export function parseTweetMetricsFromHtml(html: string): Map<string, {
       const dataStr = match[2];
 
       const countMatch = /count:"([^"]+)"/.exec(dataStr);
-      const countVal = countMatch ? parseInt(countMatch[1].replace(/,/g, ""), 10) || 0 : 0;
+      const countVal = countMatch
+        ? parseInt(countMatch[1].replace(/,/g, ""), 10) || 0
+        : 0;
 
       const existing = results.get(id) || {
         views: 0,
@@ -129,7 +153,8 @@ export async function fetchHtmlWithRetry(url: string): Promise<string | null> {
     const res = await fetch(url, {
       headers: {
         "User-Agent": USER_AGENT,
-        Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        Accept:
+          "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
         "Accept-Language": "en-US,en;q=0.9",
       },
       signal: AbortSignal.timeout(15000),
@@ -144,7 +169,9 @@ export async function fetchHtmlWithRetry(url: string): Promise<string | null> {
   return null;
 }
 
-export async function collectXAnalytics(historyPath: string = HISTORY_PATH): Promise<AnalyticsReport> {
+export async function collectXAnalytics(
+  historyPath: string = HISTORY_PATH,
+): Promise<AnalyticsReport> {
   if (!fs.existsSync(historyPath)) {
     throw new Error(`History file not found at ${historyPath}`);
   }
@@ -162,23 +189,33 @@ export async function collectXAnalytics(historyPath: string = HISTORY_PATH): Pro
 
   console.log(`[tracker] Found ${validHistory.length} live post(s) to track.`);
 
-  const metricMap = new Map<string, {
-    views: number;
-    likes: number;
-    retweets: number;
-    replies: number;
-    bookmarks: number;
-  }>();
+  const metricMap = new Map<
+    string,
+    {
+      views: number;
+      likes: number;
+      retweets: number;
+      replies: number;
+      bookmarks: number;
+    }
+  >();
 
   // 1. First fetch profile timeline (covers most recent 5-10 tweets in 1 request)
+  const parsedIds = new Set<string>();
+  let sawLoginWall = false;
+
   console.log("[tracker] Fetching profile timeline for @apurvsinghal28...");
   const profileHtml = await fetchHtmlWithRetry("https://x.com/apurvsinghal28");
   if (profileHtml) {
+    if (isLoginWall(profileHtml)) sawLoginWall = true;
     const timelineMetrics = parseTweetMetricsFromHtml(profileHtml);
     for (const [id, m] of timelineMetrics.entries()) {
       metricMap.set(id, m);
+      parsedIds.add(id);
     }
-    console.log(`[tracker] Profile scan extracted metrics for ${timelineMetrics.size} post(s).`);
+    console.log(
+      `[tracker] Profile scan extracted metrics for ${timelineMetrics.size} post(s).`,
+    );
   }
 
   // 2. Fetch any missing tweets individually
@@ -186,21 +223,36 @@ export async function collectXAnalytics(historyPath: string = HISTORY_PATH): Pro
     const id = String(item.id);
     if (!metricMap.has(id)) {
       console.log(`[tracker] Fetching status page for post ${id}...`);
-      const statusHtml = await fetchHtmlWithRetry(`https://x.com/i/status/${id}`);
+      const statusHtml = await fetchHtmlWithRetry(
+        `https://x.com/i/status/${id}`,
+      );
       if (statusHtml) {
+        if (isLoginWall(statusHtml)) sawLoginWall = true;
         const statusMetrics = parseTweetMetricsFromHtml(statusHtml);
-        const metrics = statusMetrics.get(id) || {
-          views: 0,
-          likes: 0,
-          retweets: 0,
-          replies: 0,
-          bookmarks: 0,
-        };
-        metricMap.set(id, metrics);
+        const parsed = statusMetrics.get(id);
+        if (parsed) parsedIds.add(id);
+        metricMap.set(
+          id,
+          parsed || {
+            views: 0,
+            likes: 0,
+            retweets: 0,
+            replies: 0,
+            bookmarks: 0,
+          },
+        );
       }
       // Small pause to be gentle with rate limits
       await new Promise((r) => setTimeout(r, 800));
     }
+  }
+
+  // No post parsed while posts exist = X blocked the scrape (login wall).
+  const dataAvailable = validHistory.length === 0 || parsedIds.size > 0;
+  if (!dataAvailable) {
+    console.warn(
+      `[tracker] ⚠️ No metrics parsed for ${validHistory.length} post(s). Login wall detected: ${sawLoginWall}.`,
+    );
   }
 
   // 3. Assemble PostMetric array
@@ -229,7 +281,9 @@ export async function collectXAnalytics(historyPath: string = HISTORY_PATH): Pro
   });
 
   // Sort newest first
-  posts.sort((a, b) => new Date(b.postedAt).getTime() - new Date(a.postedAt).getTime());
+  posts.sort(
+    (a, b) => new Date(b.postedAt).getTime() - new Date(a.postedAt).getTime(),
+  );
 
   // 4. Calculate Summary Aggregates
   const totalPostsTracked = posts.length;
@@ -239,7 +293,9 @@ export async function collectXAnalytics(historyPath: string = HISTORY_PATH): Pro
   const totalReplies = posts.reduce((sum, p) => sum + p.replies, 0);
   const totalBookmarks = posts.reduce((sum, p) => sum + p.bookmarks, 0);
   const avgViewsPerPost =
-    totalPostsTracked > 0 ? Math.round((totalViews / totalPostsTracked) * 10) / 10 : 0;
+    totalPostsTracked > 0
+      ? Math.round((totalViews / totalPostsTracked) * 10) / 10
+      : 0;
 
   const topPost = [...posts].sort((a, b) => b.views - a.views)[0];
 
@@ -253,6 +309,10 @@ export async function collectXAnalytics(historyPath: string = HISTORY_PATH): Pro
       totalReplies,
       totalBookmarks,
       avgViewsPerPost,
+      dataAvailable,
+      note: dataAvailable
+        ? undefined
+        : "X served a logged-out login wall; public metrics could not be scraped. These zeros are NOT real engagement data. Use the X API (Basic tier) or x.com Analytics for real numbers.",
       topPostByViews: topPost
         ? {
             id: topPost.id,
@@ -268,7 +328,10 @@ export async function collectXAnalytics(historyPath: string = HISTORY_PATH): Pro
   return report;
 }
 
-export function saveAnalyticsReport(report: AnalyticsReport, outputPath: string = ANALYTICS_PATH): void {
+export function saveAnalyticsReport(
+  report: AnalyticsReport,
+  outputPath: string = ANALYTICS_PATH,
+): void {
   const dir = path.dirname(outputPath);
   if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir, { recursive: true });
@@ -281,6 +344,13 @@ export function appendAnalyticsStepSummary(report: AnalyticsReport): void {
   if (!process.env.GITHUB_STEP_SUMMARY) return;
   try {
     const { summary, posts } = report;
+    if (!summary.dataAvailable) {
+      let warn = `## ⚠️ X Analytics Unavailable\n\n`;
+      warn += `${summary.note}\n\n`;
+      warn += `Tracked ${summary.totalPostsTracked} post(s), but X returned a logged-out login wall, so no real metrics could be read.\n`;
+      fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, warn, "utf-8");
+      return;
+    }
     let md = `## 📊 X Weekly Analytics & Engagement Report\n\n`;
     md += `*Updated at: ${new Date(summary.trackedAt).toUTCString()}*\n\n`;
     md += `| Metric | Value |\n`;
@@ -324,6 +394,16 @@ export async function runTracker(): Promise<void> {
 
   try {
     const report = await collectXAnalytics();
+
+    if (!report.summary.dataAvailable) {
+      console.warn(
+        "[tracker] ⚠️ X blocked the metrics scrape (login wall). Skipping write to avoid overwriting analytics with misleading zeros.",
+      );
+      console.warn(`[tracker] ${report.summary.note}`);
+      appendAnalyticsStepSummary(report);
+      return;
+    }
+
     saveAnalyticsReport(report);
     appendAnalyticsStepSummary(report);
 
@@ -333,7 +413,9 @@ export async function runTracker(): Promise<void> {
     console.log(`Total Likes: ${report.summary.totalLikes}`);
     console.log(`Avg Views/Post: ${report.summary.avgViewsPerPost}`);
     if (report.summary.topPostByViews) {
-      console.log(`Top Post: "${report.summary.topPostByViews.text}" (${report.summary.topPostByViews.views} views)`);
+      console.log(
+        `Top Post: "${report.summary.topPostByViews.text}" (${report.summary.topPostByViews.views} views)`,
+      );
     }
     console.log("==========================================\n");
   } catch (err) {

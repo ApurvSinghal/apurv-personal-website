@@ -388,13 +388,11 @@ export function ResumeView() {
               </div>
             ))}
 
-            <div className="pt-1">
-              <span className="font-semibold text-foreground print:text-purple-900 block mb-0.5">
-                Industry Certifications:
-              </span>
-              <p className="text-muted-foreground print:text-slate-700">
-                {RESUME_DATA.certifications.join(" · ")}
-              </p>
+            <div className="pt-1 text-[11px] text-muted-foreground print:text-slate-500">
+              <span className="font-medium text-foreground/80 print:text-slate-700">
+                Certifications:
+              </span>{" "}
+              {RESUME_DATA.certifications.join(" · ")}
             </div>
           </div>
         </section>

@@ -57,7 +57,7 @@ export interface ResumeData {
 
 export const RESUME_DATA: ResumeData = {
   name: "Apurv Singhal",
-  title: "Lead Cloud & Platform Consultant · AI Engineer · Founder",
+  title: "Lead Cloud & Platform Architect · AI Engineer · Founder",
   location: "Melbourne, Victoria, Australia",
   workRights: "Full Australian Working Rights",
   email: "me@apurvsinghal.com",
@@ -70,7 +70,7 @@ export const RESUME_DATA: ResumeData = {
     "Applied AI & Systems",
   ],
   summary:
-    "Enterprise platform and cloud engineer with 8+ years architecting and shipping mission-critical systems across enterprise clients including Bank of Queensland (BOQ), AGIG, Toyota Australia, EPA Victoria, and HPCA. Currently Lead Consultant at Capgemini and Founder of ADM Guard (the compliance flight recorder for automated decisions). Proven track record executing enterprise platform migrations (VMware Tanzu to Azure Container Apps), architecting Infrastructure as Code (Terraform/Bicep), driving full-stack observability (Dynatrace, New Relic), and building resilient, observable systems at scale.",
+    "Enterprise cloud and platform architect with 8+ years architecting and shipping mission-critical systems across enterprise clients including Bank of Queensland (BOQ), AGIG, Toyota Australia, EPA Victoria, and HPCA. Currently Lead Consultant at Capgemini and Founder of ADM Guard (the compliance flight recorder for automated decisions). Proven track record executing enterprise platform migrations (VMware Tanzu to Azure Container Apps), architecting Infrastructure as Code (Terraform/Bicep), driving full-stack observability (Dynatrace, New Relic), and building resilient, observable systems at scale.",
   skills: [
     {
       category: "Azure Cloud & DevOps",
@@ -310,6 +310,5 @@ export const RESUME_DATA: ResumeData = {
   certifications: [
     "Microsoft Certified: Azure Fundamentals (AZ-900)",
     "Applied Skills: Microsoft Azure",
-    "Japanese Language Proficiency Test (JLPT N5)",
   ],
 };

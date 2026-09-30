@@ -38,3 +38,7 @@ Thumbs.db
 
 # Archives & exports
 *.zip
+
+# Personal data exports & local documents (contains PII — never commit)
+/linkedIn-improvements/
+/*.pdf

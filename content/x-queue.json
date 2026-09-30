@@ -2,85 +2,85 @@
   {
     "id": "q-1",
     "topic": "Platform Engineering",
-    "text": "The fastest way to kill a Platform Engineering initiative:\n\nSpend 6 months building an Internal Developer Portal that developers didn't ask for.\n\nAutomate their top 3 Slack support tickets instead (preview DBs, secrets, DNS).\n\nWhat was your team's #1 platform win? #PlatformEngineering",
+    "text": "The fastest way to kill a Platform Engineering initiative:\n\nSpend 6 months building an Internal Developer Portal nobody asked for.\n\nAutomate their top 3 Slack tickets instead: preview DBs, secrets, DNS.\n\nWhat's the one thing your devs keep asking for?",
     "createdAt": "2026-09-14T12:00:00.000Z"
   },
   {
     "id": "q-2",
     "topic": "Azure Cloud & DevOps",
-    "text": "90% of enterprise Azure migrations stall for the exact same reason:\n\nIt’s never Kubernetes.\nIt’s never the database.\nIt’s subscription governance on Day 1.\n\nAutomate landing zone guardrails in Terraform before writing a single service. #Azure",
+    "text": "Enterprise Azure migrations don't stall on Kubernetes or the database.\n\nThey stall on subscription governance in week one.\n\nShip the landing zone guardrails in Terraform before a single service goes live.\n\nWhat blew up the timeline on your last migration?",
     "createdAt": "2026-09-14T12:01:00.000Z"
   },
   {
     "id": "q-3",
     "topic": "Applied AI & Systems",
-    "text": "The biggest pitfall in enterprise RAG isn't the vector DB or embedding model.\n\nIt's chunk boundary quality and metadata filtering.\n\nWithout document hierarchy and access scopes, your LLM retrieves garbage with high confidence.\n\nHow do you handle chunk overlaps? #AppliedAI",
+    "text": "Enterprise RAG rarely fails on the vector DB or the embedding model.\n\nIt fails on chunk boundaries and metadata filtering.\n\nNo document hierarchy, no access scopes, and the LLM serves you garbage with total confidence.\n\nHow are you chunking yours?",
     "createdAt": "2026-09-14T12:02:00.000Z"
   },
   {
     "id": "q-4",
     "topic": "Founder & ADM Guard",
-    "text": "Under Australia's Privacy Act APP 1.7–1.9, companies automating decisions affecting individuals must evidence how decisions were made.\n\nStatic PDF policies won't protect you in an OAIC audit.\n\nYou need code-layer flight recorders.\n\nIs your AI audit-ready? #RegTech",
+    "text": "From December 2026, Australian law says you must show how an automated decision was made.\n\nA PDF policy won't survive an OAIC audit.\n\nYou need a tamper-evident log at the code layer.\n\nIs your AI actually audit-ready, or does it just look compliant?",
     "createdAt": "2026-09-14T12:03:00.000Z"
   },
   {
     "id": "q-5",
     "topic": "Enterprise Delivery & Governance",
-    "text": "In enterprise consulting, the hardest problem is rarely technical architecture—it's organizational alignment.\n\nA simple architecture with 100% buy-in beats a 'flawless' system that teams resist using every single time.\n\nCulture eats architecture for breakfast. #TechLead",
+    "text": "I've watched technically 'perfect' architectures die in enterprise rollouts.\n\nNot because the design was wrong.\n\nBecause nobody on the team wanted to use it.\n\nA simple system with 100% buy-in wins every time. Where have you seen this play out?",
     "createdAt": "2026-09-14T12:04:00.000Z"
   },
   {
     "id": "q-6",
     "topic": "Community & IT Leadership",
-    "text": "Managing IT for community non-profits teaches you that security hygiene matters most where budgets are tightest.\n\nEnforcing strict Entra ID MFA and domain security protects vulnerable helplines from compromise with zero extra software cost. #Leadership",
+    "text": "Non-profit IT taught me more about security than any enterprise budget did.\n\nWith no money, you can't buy your way out of a threat.\n\nStrict Entra ID MFA and domain lockdown protect vulnerable helplines for $0 in extra tooling.\n\nYour highest-ROI security control?",
     "createdAt": "2026-09-14T12:05:00.000Z"
   },
   {
     "id": "q-7",
     "topic": "Engineer Reflections",
-    "text": "Early in your career, you measure progress by how much code you write.\n\nLater on, you measure progress by how much complexity you prevented from reaching production.\n\nWhat was the turning point for you? #Engineering",
+    "text": "Early on, you measure yourself by how much code you write.\n\nLater, by how much complexity you kept out of production.\n\nThe best PRs I review now delete more than they add.\n\nWhen did that shift click for you?",
     "createdAt": "2026-09-14T12:06:00.000Z"
   },
   {
     "id": "q-8",
     "topic": "Azure Cloud & DevOps",
-    "text": "Clean Terraform pattern for Azure:\n\nSeparate state by lifecycle frequency, not by environment.\n\nVNet / Landing zones (yearly) ≠ AKS clusters (monthly) ≠ App deploys (daily).\n\nYour blast radius immediately shrinks to near zero. Bicep or Terraform in 2026? #DevOps",
+    "text": "A Terraform pattern that shrinks your blast radius to near zero:\n\nSplit state by how often things change, not by environment.\n\nLanding zones (yearly) ≠ AKS (monthly) ≠ app deploys (daily).\n\nBicep or Terraform for you in 2026?",
     "createdAt": "2026-09-14T12:07:00.000Z"
   },
   {
     "id": "q-9",
     "topic": "Platform Engineering",
-    "text": "Developer velocity isn't how fast developers type code.\n\nIt's how little friction stands between `git push` and production verification with zero fear of breaking the build.\n\nIf you have a 3-week QA sign-off phase, you don't have CI/CD. #Cloud",
+    "text": "Developer velocity isn't how fast your team types code.\n\nIt's how little stands between `git push` and verified-in-production, with zero fear of breaking the build.\n\nIf QA sign-off takes 3 weeks, that's not CI/CD. It's a queue.\n\nWhat's your lead time?",
     "createdAt": "2026-09-14T12:08:00.000Z"
   },
   {
     "id": "q-10",
     "topic": "Applied AI & Systems",
-    "text": "Building AI agents that work in production requires treating tool calling like distributed systems RPC:\n\n1. Client idempotency keys\n2. Strict Zod/Pydantic validation\n3. Deterministic fallbacks when models hallucinate args.\n\nNever trust raw LLM JSON. #Architecture",
+    "text": "Treat LLM tool calling like distributed systems RPC, or it bites you in production:\n\n1. Client idempotency keys\n2. Strict Zod/Pydantic validation\n3. Deterministic fallbacks when the model hallucinates args\n\nNever trust raw LLM JSON. What's burned you here?",
     "createdAt": "2026-09-14T12:09:00.000Z"
   },
   {
     "id": "q-11",
     "topic": "Founder & ADM Guard",
-    "text": "When architecting ADM Guard, rule #1 was zero-PII by design.\n\nIf an API payload contains names, emails, or tax IDs, our gateway boundary rejects it with HTTP 422 before persistence.\n\nYou cannot leak data you never store. #RegTech #BuildInPublic",
+    "text": "The first rule when I architected ADM Guard: zero PII by design.\n\nIf a payload carries a name, email, or tax ID, the gateway rejects it with HTTP 422 before anything is stored.\n\nYou can't leak data you never hold.\n\nWould you trust this boundary?",
     "createdAt": "2026-09-14T12:10:00.000Z"
   },
   {
     "id": "q-12",
     "topic": "Enterprise Delivery & Governance",
-    "text": "After 8+ years shipping enterprise production systems, here is my golden rule:\n\nDesign for the failure mode first.\n\nIf you don't know what happens when downstream returns HTTP 504 or network partitions, you haven't finished designing. #SoftwareEngineering",
+    "text": "8+ years shipping enterprise systems taught me one golden rule:\n\nDesign for the failure mode first.\n\nIf you can't say what happens when a downstream call returns 504 or the network partitions, the design isn't done.\n\nWhat failure mode do most teams ignore?",
     "createdAt": "2026-09-14T12:11:00.000Z"
   },
   {
     "id": "q-13",
     "topic": "Community & IT Leadership",
-    "text": "The highest-leverage IT work in the non-profit sector isn't migrating to fancy new SaaS tools.\n\nIt's deprecating legacy shadow IT, locking down phishing vectors, and giving volunteer case workers tools that never crash. #Leadership",
+    "text": "The highest-leverage IT work in a non-profit isn't a shiny new SaaS.\n\nIt's killing shadow IT, closing phishing vectors, and giving volunteers tools that simply never crash.\n\nBoring reliability beats features here.\n\nMost underrated 'boring' fix you've shipped?",
     "createdAt": "2026-09-14T12:12:00.000Z"
   },
   {
     "id": "q-14",
     "topic": "Engineer Reflections",
-    "text": "Balancing enterprise consulting while building a tech startup:\n\nThe key is zero context-switching during focus blocks.\n\nEnterprise delivery builds discipline; startups demand speed. Both make you a significantly sharper engineer. #BuildingInPublic",
+    "text": "Running enterprise consulting and building a startup at once comes down to one thing:\n\nZero context-switching inside a focus block.\n\nConsulting builds discipline. The startup demands speed. Together they sharpen you.\n\nHow do you protect deep work?",
     "createdAt": "2026-09-14T12:13:00.000Z"
   }
 ]
