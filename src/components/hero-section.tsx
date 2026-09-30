@@ -60,7 +60,10 @@ export function HeroSection() {
           {/* Right Column - About Content */}
           <div id="about" className="scroll-mt-28 space-y-6">
             <p className="text-muted-foreground leading-relaxed text-lg">
-              {`I'm an enterprise engineer with ${getYearsOfExperience()}+ years architecting and shipping mission-critical systems across `}
+              {
+                "Most enterprise platforms don't fail from lack of code; they fail from deployment friction, unobservable distributed systems, and compliance debt. I'm an enterprise engineer with "
+              }
+              {`${getYearsOfExperience()}+ years shipping mission-critical systems across `}
               <span className="text-foreground font-medium">
                 Azure Cloud + DevOps
               </span>
@@ -85,7 +88,7 @@ export function HeroSection() {
             </p>
             <p className="text-muted-foreground leading-relaxed text-lg">
               {
-                "From architecting enterprise observability across 10,000+ endpoints at Bank of Queensland and modernizing container platforms at Toyota Australia to enforcing zero-downtime cutovers, I build systems engineered for production reality: clear failure modes, observable architecture, and measurable outcomes."
+                "Over my career, I've architected cloud platforms and full-stack telemetry across regulated banking, energy, and automotive environments—from monitoring 10,000+ microservices and endpoints at Bank of Queensland and modernizing container platforms at Toyota Australia, to cutting environment setup from days to under 30 minutes at EPA Victoria."
               }
             </p>
             <p className="text-muted-foreground leading-relaxed text-lg">
