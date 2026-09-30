@@ -1,34 +1,38 @@
+import { Cloud, Layers, Bot, Database, Users } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 const skillGroups = [
   {
     category: "Azure Cloud + DevOps",
+    icon: Cloud,
     skills: [
       "Microsoft Azure",
-      "CI/CD Pipelines",
-      "GitHub Actions",
-      "Docker",
-      "Terraform / Bicep",
+      "Azure Integration Services (APIM, Logic Apps)",
+      "Azure Container Apps & Tanzu",
+      "CI/CD (Azure DevOps & GitHub Actions)",
+      "Terraform / Bicep IaC",
+      "Full-Stack Observability (New Relic, Dynatrace)",
       "Azure Functions (Serverless)",
-      "Telemetry & Log Analytics",
-      "Cloud Cost Optimization",
+      "Cloud Cost Governance & FinOps",
     ],
   },
   {
     category: "Platform Engineering",
+    icon: Layers,
     skills: [
-      "Platform Migration",
-      "Enterprise Landing Zones",
-      "Developer Platform Velocity",
-      "Infrastructure as Code",
+      "Enterprise Platform Modernization",
+      "Internal Developer Platforms & Golden Paths",
+      "Salesforce DevOps (SFDX)",
+      "Azure Policy-as-Code & Guardrails",
       "Microservices Architecture",
-      "Zero-Trust & Security",
-      "SRE & Reliability",
+      "Zero-Downtime Release Automation",
+      "SRE & Reliability Metrics (MTTD/MTTR)",
       "System Design",
     ],
   },
   {
     category: "Applied AI & Agents",
+    icon: Bot,
     skills: [
       "Azure AI Foundry",
       "Azure OpenAI",
@@ -43,6 +47,7 @@ const skillGroups = [
   },
   {
     category: "Backend & Systems",
+    icon: Database,
     skills: [
       ".NET / ASP.NET Core",
       "C#",
@@ -56,6 +61,7 @@ const skillGroups = [
   },
   {
     category: "Engineering Leadership",
+    icon: Users,
     skills: [
       "Technical Mentoring",
       "Architecture Governance",
@@ -74,32 +80,44 @@ export function SkillsSection() {
           Skills
         </h2>
         <p className="text-muted-foreground max-w-3xl leading-relaxed mb-12">
-          Core technical competencies across Azure Cloud + DevOps, Platform Engineering,
-          Applied AI systems, and enterprise architectures.
+          Core technical competencies across Azure Cloud + DevOps, Platform
+          Engineering, Applied AI systems, and enterprise architectures.
         </p>
 
-        <div className="grid sm:grid-cols-2 gap-4">
-          {skillGroups.map((group) => (
-            <div
-              key={group.category}
-              className="rounded-xl border border-black/[0.08] dark:border-white/[0.08] bg-white/60 dark:bg-white/[0.04] p-5 hover:border-primary/40 dark:hover:border-primary/30 hover:shadow-lg hover:shadow-primary/8 transition-[border-color,box-shadow] duration-200"
-            >
-              <h3 className="text-xs font-semibold text-primary uppercase tracking-wider mb-3">
-                {group.category}
-              </h3>
-              <div className="flex flex-wrap gap-1.5">
-                {group.skills.map((skill) => (
-                  <Badge
-                    key={skill}
-                    variant="secondary"
-                    className="bg-secondary text-secondary-foreground hover:bg-secondary/90 border-0 text-xs"
-                  >
-                    {skill}
-                  </Badge>
-                ))}
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {skillGroups.map((group, idx) => {
+            const Icon = group.icon;
+            const isFullWidthOnTablet =
+              idx === 4 ? "sm:col-span-2 lg:col-span-1" : "";
+
+            return (
+              <div
+                key={group.category}
+                className={`rounded-xl border border-black/[0.08] dark:border-white/[0.08] bg-card/50 p-5 hover:border-primary/40 dark:hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 transition-[border-color,box-shadow,background-color] duration-200 flex flex-col justify-between ${isFullWidthOnTablet}`}
+              >
+                <div>
+                  <div className="flex items-center gap-2 mb-3">
+                    <Icon size={15} className="text-primary shrink-0" />
+                    <h3 className="text-xs font-semibold text-foreground uppercase tracking-wider">
+                      {group.category}
+                    </h3>
+                  </div>
+
+                  <div className="flex flex-wrap gap-1.5">
+                    {group.skills.map((skill) => (
+                      <Badge
+                        key={skill}
+                        variant="secondary"
+                        className="bg-secondary/80 text-secondary-foreground hover:bg-secondary border-0 text-xs py-0.5 px-2"
+                      >
+                        {skill}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>

@@ -2,7 +2,15 @@
 
 import React, { useEffect } from "react";
 import Link from "next/link";
-import { ArrowLeft, Download, Printer, ExternalLink, Globe, Mail, MapPin } from "lucide-react";
+import {
+  ArrowLeft,
+  Download,
+  Printer,
+  ExternalLink,
+  Globe,
+  Mail,
+  MapPin,
+} from "lucide-react";
 import { RESUME_DATA } from "@/lib/resume-data";
 
 export function ResumeView() {
@@ -42,20 +50,28 @@ export function ResumeView() {
       company: "TechCompiler Data Systems",
       period: "2018 — 2020",
       companyUrl: "https://www.techcompiler.com",
-      roles: RESUME_DATA.experience.filter((e) => e.company === "TechCompiler Data Systems"),
+      roles: RESUME_DATA.experience.filter(
+        (e) => e.company === "TechCompiler Data Systems",
+      ),
     },
   ];
 
   return (
     <div className="min-h-screen bg-muted/30 text-foreground py-6 px-4 sm:px-6 lg:px-8 print:p-0 print:bg-white print:text-black">
       {/* Top Action Toolbar (Hidden in Print) */}
-      <aside aria-label="Resume Actions" className="max-w-4xl mx-auto mb-6 print:hidden">
+      <aside
+        aria-label="Resume Actions"
+        className="max-w-4xl mx-auto mb-6 print:hidden"
+      >
         <div className="bg-background/90 backdrop-blur-md border border-border/80 rounded-xl p-3 sm:p-4 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-3">
           <Link
             href="/"
             className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors group"
           >
-            <ArrowLeft size={16} className="group-hover:-translate-x-0.5 transition-transform" />
+            <ArrowLeft
+              size={16}
+              className="group-hover:-translate-x-0.5 transition-transform"
+            />
             Back to Portfolio
           </Link>
 
@@ -188,9 +204,16 @@ export function ResumeView() {
               <div key={gIdx} className="break-inside-avoid">
                 {/* Company Header */}
                 <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1 pb-1 border-b border-border/30 print:border-black/15">
-                  <h3 className="text-sm font-bold text-foreground print:text-black">
-                    {group.company}
-                  </h3>
+                  <div className="flex items-baseline gap-2">
+                    <h3 className="text-sm font-bold text-foreground print:text-black">
+                      {group.company}
+                    </h3>
+                    {group.company === "Capgemini" && (
+                      <span className="text-xs font-medium text-muted-foreground print:text-neutral-600">
+                        (Lead Consultant)
+                      </span>
+                    )}
+                  </div>
                   <span className="text-xs font-mono text-muted-foreground print:text-neutral-600 tabular-nums">
                     {group.period}
                   </span>
@@ -201,8 +224,16 @@ export function ResumeView() {
                   {group.roles.map((role, rIdx) => (
                     <div key={rIdx} className="break-inside-avoid">
                       <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1">
-                        <h4 className="text-xs font-semibold text-foreground print:text-black">
-                          {role.role}
+                        <h4 className="text-xs font-semibold text-foreground print:text-black flex flex-wrap items-center gap-1">
+                          <span>{role.role}</span>
+                          {role.client && (
+                            <span className="font-normal text-muted-foreground print:text-neutral-700">
+                              ·{" "}
+                              <span className="font-medium text-foreground print:text-black">
+                                Client: {role.client}
+                              </span>
+                            </span>
+                          )}
                         </h4>
                         <div className="text-[11px] font-mono text-muted-foreground print:text-neutral-600 tabular-nums">
                           {role.period} | {role.location}
@@ -327,13 +358,17 @@ export function ResumeView() {
 
           <div className="space-y-2.5 text-xs">
             {RESUME_DATA.education.map((edu, idx) => (
-              <div key={idx} className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1">
+              <div
+                key={idx}
+                className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1"
+              >
                 <div>
                   <span className="font-semibold text-foreground print:text-black">
                     {edu.degree}
                   </span>
                   <span className="text-muted-foreground print:text-neutral-600">
-                    {" "}— {edu.institution}
+                    {" "}
+                    — {edu.institution}
                   </span>
                 </div>
                 <div className="font-mono text-muted-foreground print:text-neutral-600 tabular-nums">

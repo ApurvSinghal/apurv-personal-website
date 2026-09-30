@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { MapPin } from "lucide-react";
-import { socialLinks, navItems } from "@/lib/constants";
+import { socialLinks } from "@/lib/constants";
 import { getYearsOfExperience } from "@/lib/utils";
 
 export function HeroSection() {
@@ -22,7 +22,8 @@ export function HeroSection() {
               Azure Cloud + DevOps · Platform Engineer · AI
             </p>
             <p className="mt-3 text-sm text-muted-foreground leading-relaxed max-w-xs">
-              Lead Consultant at Capgemini · Founder of ADM Guard · Enterprise Scale
+              Lead Consultant at Capgemini · Founder of ADM Guard · Enterprise
+              Scale
             </p>
 
             {/* Availability Badge */}
@@ -39,34 +40,8 @@ export function HeroSection() {
               Melbourne, Australia
             </div>
 
-            {/* Navigation Links */}
-            <nav className="mt-12 hidden md:block">
-              <ul className="space-y-3">
-                {navItems.map((item) => (
-                  <li key={item.href}>
-                    <Link
-                      href={item.href}
-                      className="group flex items-center text-sm text-muted-foreground hover:text-foreground transition-colors"
-                    >
-                      <span className="w-8 h-px bg-muted-foreground group-hover:w-16 group-hover:bg-foreground transition-all duration-300 mr-4" />
-                      {item.label.toUpperCase()}
-                    </Link>
-                  </li>
-                ))}
-                <li>
-                  <Link
-                    href="/resume"
-                    className="group flex items-center text-sm text-muted-foreground hover:text-foreground transition-colors"
-                  >
-                    <span className="w-8 h-px bg-muted-foreground group-hover:w-16 group-hover:bg-foreground transition-all duration-300 mr-4" />
-                    RESUME
-                  </Link>
-                </li>
-              </ul>
-            </nav>
-
             {/* Social Links */}
-            <div className="mt-12 flex items-center gap-5">
+            <div className="mt-8 flex items-center gap-5">
               {socialLinks.map((social) => (
                 <Link
                   key={social.label}
@@ -83,11 +58,19 @@ export function HeroSection() {
           </div>
 
           {/* Right Column - About Content */}
-          <div id="about" className="scroll-mt-28">
+          <div id="about" className="scroll-mt-28 space-y-6">
             <p className="text-muted-foreground leading-relaxed text-lg">
-              {
-                `I'm an engineer with ${getYearsOfExperience()}+ years shipping production systems at enterprise scale. I currently lead cloud and platform initiatives at Capgemini, and I'm the founder of `
-              }
+              {`I'm an enterprise engineer with ${getYearsOfExperience()}+ years architecting and shipping mission-critical systems across `}
+              <span className="text-foreground font-medium">
+                Azure Cloud + DevOps
+              </span>
+              {", "}
+              <span className="text-foreground font-medium">
+                Platform Engineering
+              </span>
+              {", and "}
+              <span className="text-foreground font-medium">Applied AI</span>
+              {". Currently Lead Consultant at Capgemini and Founder of "}
               <Link
                 href="https://www.admguard.com.au"
                 target="_blank"
@@ -100,24 +83,15 @@ export function HeroSection() {
                 " — the compliance flight recorder for automated decisions (APP 1.7–1.9)."
               }
             </p>
-            <p className="mt-6 text-muted-foreground leading-relaxed text-lg">
-              {"My work centers on three core pillars: "}
-              <span className="text-foreground font-medium">Azure Cloud + DevOps</span>
-              {", "}
-              <span className="text-foreground font-medium">Platform Engineering</span>
-              {", and "}
-              <span className="text-foreground font-medium">Applied AI</span>
+            <p className="text-muted-foreground leading-relaxed text-lg">
               {
-                ". That background — automating delivery pipelines, migrating mission-critical platforms, navigating enterprise governance, and designing resilient infrastructure — is what shapes everything I build."
+                "From architecting enterprise observability across 10,000+ endpoints at Bank of Queensland and modernizing container platforms at Toyota Australia to enforcing zero-downtime cutovers, I build systems engineered for production reality: clear failure modes, observable architecture, and measurable outcomes."
               }
             </p>
-            <p className="mt-6 text-muted-foreground leading-relaxed text-lg">
+            <p className="text-muted-foreground leading-relaxed text-lg">
               {
-                "Whether it's architecting cloud landing zones, driving internal developer velocity, implementing AI compliance gateways, or deploying production RAG and agent workflows, I care about systems that actually work in production: clear failure modes, observable architecture, and measurable business outcomes."
+                "Beyond enterprise consulting, I serve as Head of IT (Volunteer) for "
               }
-            </p>
-            <p className="mt-6 text-muted-foreground leading-relaxed text-lg">
-              {"Beyond enterprise architecture, I believe in using engineering skills for community impact — serving as Head of IT (Volunteer) for "}
               <Link
                 href="https://www.indiancare.org.au"
                 target="_blank"
@@ -126,11 +100,8 @@ export function HeroSection() {
               >
                 IndianCare Inc.
               </Link>
-              {", a Melbourne-based welfare non-profit, managing their complete end-to-end IT infrastructure."}
-            </p>
-            <p className="mt-6 text-muted-foreground leading-relaxed text-lg">
               {
-                "If you have a problem in Azure cloud, platform engineering, or AI systems — or you're planning your next architectural milestone — I'm happy to talk through it."
+                ", managing digital infrastructure for Victorian community welfare. If you're planning your next cloud, platform, or AI milestone, let's talk."
               }
             </p>
           </div>
