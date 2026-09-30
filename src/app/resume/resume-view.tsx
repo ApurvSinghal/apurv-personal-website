@@ -399,13 +399,16 @@ export function ResumeView() {
             @media print {
               @page {
                 size: A4 portrait;
-                margin: 10mm 12mm 10mm 12mm;
+                margin: 0;
               }
               html, body {
                 background-color: #ffffff !important;
                 color: #000000 !important;
                 -webkit-print-color-adjust: exact !important;
                 print-color-adjust: exact !important;
+              }
+              body {
+                padding: 10mm 12mm 10mm 12mm !important;
               }
               a {
                 text-decoration: none !important;
