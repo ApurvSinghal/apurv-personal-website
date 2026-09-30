@@ -83,6 +83,13 @@ He focuses on systems that actually work in production: clear failure modes, obs
    - Manages complete end-to-end IT infrastructure, cloud administration, and digital operations for a registered Victorian community welfare non-profit supporting individuals and families.
    - Oversees Microsoft 365 and Entra ID identity governance, domain security, website operations, and digital safeguarding for sensitive community helpline and welfare workflows.
 
+# EDUCATION & CERTIFICATIONS
+- Education: Bachelor of Technology in Computer Science & Engineering — Guru Gobind Singh Indraprastha University (GGSIPU), Amity School of Engineering and Technology, New Delhi (2014 — 2018)
+- Certifications:
+  * Microsoft Certified: Azure Fundamentals (AZ-900)
+  * Applied Skills: Microsoft Azure
+  * Japanese Language Proficiency Test (JLPT N5)
+
 # FEATURED PROJECTS
 1. ADM Guard (https://www.admguard.com.au) — Compliance Flight Recorder for Automated Decisions
    - Live commercial SaaS platform for Australian Privacy Act APP 1.7–1.9 compliance.
