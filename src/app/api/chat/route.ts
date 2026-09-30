@@ -61,14 +61,17 @@ Key Highlights:
 Visit [www.admguard.com.au](https://www.admguard.com.au) or explore the case study in the [Projects](#projects) section!`;
   }
 
-  if (lower.includes("project") || lower.includes("built") || lower.includes("portfolio")) {
-    return `Apurv has built several notable production systems and AI products:
+  if (
+    lower.includes("project") ||
+    lower.includes("built") ||
+    lower.includes("portfolio")
+  ) {
+    return `Apurv's flagship product and venture is **ADM Guard** ([www.admguard.com.au](https://www.admguard.com.au)):
+- **What it does**: The compliance flight recorder for automated decisions, engineered specifically to solve Australia's mandatory Privacy Act APP 1.7–1.9 transparency obligations before December 2026.
+- **Architecture**: Zero-PII ingestion firewall (HTTP 422 pre-persistence rejection), cryptographic SHA-256 Merkle hash chains, and Azure Australia East WORM immutable locked storage.
+- **Developer Experience**: Multi-language SDKs (Python, Node, Go) with client-generated idempotency keys.
 
-1. **ADM Guard** ([www.admguard.com.au](https://www.admguard.com.au)): The compliance flight recorder for automated decisions. Solves Australia's Privacy Act APP 1.7–1.9 with zero-PII boundary validation, Merkle hash chains, and Azure WORM storage.
-2. **Interactive RAG Portfolio Agent** (this website!): Built with Next.js 16 (App Router & Turbopack), Tailwind CSS, streaming AI assistant integration, and in-chat lead capture.
-3. **Contact Pipeline Observability System**: A resilient lead-intake pipeline with strict Zod validation, honeypot defenses, Upstash rate limiting, and end-to-end Sentry telemetry.
-
-You can explore detailed case studies in the [Projects](#projects) section!`;
+You can explore the detailed case study in the [Projects](#projects) section!`;
   }
 
   if (
@@ -88,7 +91,13 @@ You can explore detailed case studies in the [Projects](#projects) section!`;
 His deep platform and DevOps background ensures that the cloud infrastructure and AI systems he builds are rock-solid, automated, and observable.`;
   }
 
-  if (lower.includes("skill") || lower.includes("tech") || lower.includes("stack") || lower.includes("pillar") || lower.includes("area")) {
+  if (
+    lower.includes("skill") ||
+    lower.includes("tech") ||
+    lower.includes("stack") ||
+    lower.includes("pillar") ||
+    lower.includes("area")
+  ) {
     return `Apurv's core work area centers on three foundational pillars:
 
 1. **Azure Cloud + DevOps**: Microsoft Azure, GitHub Actions CI/CD pipelines, Docker containerization, Terraform / Bicep IaC, Azure Functions (Serverless), monitoring & telemetry.
@@ -115,7 +124,11 @@ Check out the interactive [Skills](#skills) section for the complete breakdown!`
 You can learn more in the [Experience](#experience) section!`;
   }
 
-  if (lower.includes("resume") || lower.includes("cv") || lower.includes("curriculum vitae")) {
+  if (
+    lower.includes("resume") ||
+    lower.includes("cv") ||
+    lower.includes("curriculum vitae")
+  ) {
     return `You can view and download Apurv's dynamic, ATS-compliant executive resume directly:
 
 - **Dynamic Resume & PDF**: [View Apurv's Resume](/resume)
@@ -123,7 +136,12 @@ You can learn more in the [Experience](#experience) section!`;
 - Click **Download / Save as PDF** on the page for a clean, vector-sharp PDF!`;
   }
 
-  if (lower.includes("hire") || lower.includes("contact") || lower.includes("work") || lower.includes("email")) {
+  if (
+    lower.includes("hire") ||
+    lower.includes("contact") ||
+    lower.includes("work") ||
+    lower.includes("email")
+  ) {
     return `You can get in touch with Apurv directly:
 
 - **Email**: [me@apurvsinghal.com](mailto:me@apurvsinghal.com)
@@ -153,7 +171,10 @@ export async function POST(req: NextRequest) {
 
     if (!checkRateLimit(ip)) {
       return NextResponse.json(
-        { error: "Too many messages. Please wait a minute before sending another." },
+        {
+          error:
+            "Too many messages. Please wait a minute before sending another.",
+        },
         { status: 429 },
       );
     }
@@ -163,7 +184,10 @@ export async function POST(req: NextRequest) {
 
     if (!parseResult.success) {
       return NextResponse.json(
-        { error: "Invalid request payload", details: parseResult.error.flatten() },
+        {
+          error: "Invalid request payload",
+          details: parseResult.error.flatten(),
+        },
         { status: 400 },
       );
     }
@@ -257,8 +281,7 @@ export async function POST(req: NextRequest) {
 
               try {
                 const parsed = JSON.parse(dataStr);
-                const text =
-                  parsed?.candidates?.[0]?.content?.parts?.[0]?.text;
+                const text = parsed?.candidates?.[0]?.content?.parts?.[0]?.text;
                 if (text) {
                   controller.enqueue(new TextEncoder().encode(text));
                 }

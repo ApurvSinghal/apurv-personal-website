@@ -1,4 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
+import fs from "node:fs";
+import path from "node:path";
 import {
   generateDailyPost,
   sanitizeGeneratedText,
@@ -6,7 +8,10 @@ import {
   PILLAR_SCHEDULE,
   EVERGREEN_TOPIC_BANK,
 } from "../../../scripts/x-poster/generator";
-import { generateOAuth1Header, percentEncode } from "../../../scripts/x-poster/x-client";
+import {
+  generateOAuth1Header,
+  percentEncode,
+} from "../../../scripts/x-poster/x-client";
 import {
   buildBriefingEmailHtml,
   buildBriefingEmailText,
@@ -52,9 +57,9 @@ describe("X Poster Automation Engine", () => {
       expect(sanitizeGeneratedText('"Designing for failure first."')).toBe(
         "Designing for failure first.",
       );
-      expect(sanitizeGeneratedText('“Zero-PII architecture is critical.”')).toBe(
-        "Zero-PII architecture is critical.",
-      );
+      expect(
+        sanitizeGeneratedText("“Zero-PII architecture is critical.”"),
+      ).toBe("Zero-PII architecture is critical.");
       expect(sanitizeGeneratedText("'Single quotes wrapped.'")).toBe(
         "Single quotes wrapped.",
       );
@@ -62,19 +67,27 @@ describe("X Poster Automation Engine", () => {
 
     it("strips conversational LLM intros", () => {
       expect(
-        sanitizeGeneratedText("Here is a tweet: Cloud landing zones save months of rework. #Azure"),
+        sanitizeGeneratedText(
+          "Here is a tweet: Cloud landing zones save months of rework. #Azure",
+        ),
       ).toBe("Cloud landing zones save months of rework. #Azure");
       expect(
-        sanitizeGeneratedText("Here's a thought: Prompt caching cuts latency by 70%."),
+        sanitizeGeneratedText(
+          "Here's a thought: Prompt caching cuts latency by 70%.",
+        ),
       ).toBe("Prompt caching cuts latency by 70%.");
       expect(
-        sanitizeGeneratedText('Here is a post: "Immutable WORM storage ensures compliance."'),
+        sanitizeGeneratedText(
+          'Here is a post: "Immutable WORM storage ensures compliance."',
+        ),
       ).toBe("Immutable WORM storage ensures compliance.");
     });
 
     it("strips markdown code blocks and normalizes excessive whitespace", () => {
       expect(
-        sanitizeGeneratedText("```\nAutomate policy guardrails with Terraform.\n```"),
+        sanitizeGeneratedText(
+          "```\nAutomate policy guardrails with Terraform.\n```",
+        ),
       ).toBe("Automate policy guardrails with Terraform.");
       expect(
         sanitizeGeneratedText("First paragraph.\n\n\n\nSecond paragraph."),
@@ -84,7 +97,10 @@ describe("X Poster Automation Engine", () => {
 
   describe("Technical Briefing & Email Dispatch", () => {
     it("creates a well-structured fallback briefing for any post", () => {
-      const briefing = createFallbackBriefing("Test tweet content", "Azure Cloud & DevOps");
+      const briefing = createFallbackBriefing(
+        "Test tweet content",
+        "Azure Cloud & DevOps",
+      );
       expect(briefing.tweet).toBe("Test tweet content");
       expect(briefing.concept).toBeTruthy();
       expect(briefing.whyItMatters).toBeTruthy();
@@ -99,7 +115,8 @@ describe("X Poster Automation Engine", () => {
       );
       const html = buildBriefingEmailHtml({
         tweetId: "1234567890",
-        tweetText: "Shift-left architecture testing saves weeks of rework. #DevOps",
+        tweetText:
+          "Shift-left architecture testing saves weeks of rework. #DevOps",
         pillar: "Azure Cloud & DevOps",
         source: "queue",
         briefing,
@@ -119,7 +136,8 @@ describe("X Poster Automation Engine", () => {
         "Azure Cloud & DevOps",
       );
       const text = buildBriefingEmailText({
-        tweetText: "Shift-left architecture testing saves weeks of rework. #DevOps",
+        tweetText:
+          "Shift-left architecture testing saves weeks of rework. #DevOps",
         pillar: "Azure Cloud & DevOps",
         source: "queue",
         briefing,
@@ -137,7 +155,10 @@ describe("X Poster Automation Engine", () => {
       const originalKey = process.env.RESEND_API_KEY;
       delete process.env.RESEND_API_KEY;
 
-      const briefing = createFallbackBriefing("Test tweet", "Azure Cloud & DevOps");
+      const briefing = createFallbackBriefing(
+        "Test tweet",
+        "Azure Cloud & DevOps",
+      );
       const result = await sendPostBriefingEmail({
         tweetText: "Test tweet",
         pillar: "Azure Cloud & DevOps",
@@ -162,11 +183,17 @@ describe("X Poster Automation Engine", () => {
       global.fetch = vi.fn().mockImplementation(async (_url, options) => {
         const body = JSON.parse((options as RequestInit).body as string);
         calls.push(body.from);
-        if (body.from.endsWith("@apurvsinghal.com>") || body.from.endsWith("apurvsinghal.com")) {
+        if (
+          body.from.endsWith("@apurvsinghal.com>") ||
+          body.from.endsWith("@apurvsinghal.com")
+        ) {
           return {
             ok: false,
             status: 403,
-            text: async () => JSON.stringify({ message: "The domain apurvsinghal.com is not verified." }),
+            text: async () =>
+              JSON.stringify({
+                message: "The domain apurvsinghal.com is not verified.",
+              }),
           };
         }
         return {
@@ -176,7 +203,10 @@ describe("X Poster Automation Engine", () => {
         };
       }) as unknown as typeof fetch;
 
-      const briefing = createFallbackBriefing("Test tweet", "Azure Cloud & DevOps");
+      const briefing = createFallbackBriefing(
+        "Test tweet",
+        "Azure Cloud & DevOps",
+      );
       const result = await sendPostBriefingEmail({
         tweetText: "Test tweet",
         pillar: "Azure Cloud & DevOps",
@@ -213,7 +243,10 @@ describe("X Poster Automation Engine", () => {
         };
       }) as unknown as typeof fetch;
 
-      const briefing = createFallbackBriefing("Test tweet", "Azure Cloud & DevOps");
+      const briefing = createFallbackBriefing(
+        "Test tweet",
+        "Azure Cloud & DevOps",
+      );
       const defaultResult = await sendPostBriefingEmail({
         tweetText: "Test tweet",
         pillar: "Azure Cloud & DevOps",
@@ -262,6 +295,22 @@ describe("X Poster Automation Engine", () => {
           ).toBeLessThanOrEqual(280);
           expect(post.length).toBeGreaterThanOrEqual(30);
         }
+      }
+    });
+
+    it("keeps every queued draft within the 280 character limit", () => {
+      const queuePath = path.resolve(process.cwd(), "content", "x-queue.json");
+      const queue = JSON.parse(fs.readFileSync(queuePath, "utf-8")) as {
+        id: string;
+        text: string;
+      }[];
+      expect(queue.length).toBeGreaterThan(0);
+      for (const item of queue) {
+        const length = sanitizeGeneratedText(item.text).length;
+        expect(
+          length,
+          `Queued draft '${item.id}' exceeds 280 chars (${length} chars)`,
+        ).toBeLessThanOrEqual(280);
       }
     });
 
@@ -315,4 +364,3 @@ describe("X Poster Automation Engine", () => {
     });
   });
 });
-

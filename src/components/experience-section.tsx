@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 interface Role {
   period: string;
   title: string;
+  client?: string;
   location: string;
   description: string;
   technologies: string[];
@@ -14,6 +15,7 @@ interface ExperienceGroup {
   company: string;
   companyUrl: string;
   period: string;
+  roleBadge?: string;
   roles: Role[];
 }
 
@@ -32,50 +34,78 @@ const experiences: ExperienceGroup[] = [
     company: "Capgemini",
     companyUrl: "https://www.capgemini.com",
     period: "2021 — Present",
+    roleBadge: "Lead Consultant · 5 Client Engagements",
     roles: [
       {
-        period: "2023 — Present",
-        title: "Lead Consultant (Azure Cloud, DevOps & Platform)",
+        period: "Aug 2026 — Present",
+        title: "Platform Engineer (Observability)",
+        client: "Bank of Queensland (BOQ)",
         location: "Melbourne, Australia",
         description:
-          "Leading platform engineering teams and enterprise cloud architecture across client engagements on Azure. Designed automated DevOps CI/CD pipelines, optimized deployment velocity, and improved system reliability and security standards. Mentoring teams on cloud architecture, containerization, and production AI readiness.",
+          "Leading enterprise Dynatrace full-stack observability implementation across banking cloud and platform infrastructure, monitoring 10,000+ microservices and endpoints across multi-cloud environments and enterprise data centers. Architecting custom dashboards, distributed tracing, synthetic transaction monitors, and automated anomaly alert policies to accelerate incident triage and reduce MTTD/MTTR.",
+        technologies: ["Dynatrace", "Full-Stack Observability", "Azure", "SRE"],
+      },
+      {
+        period: "Feb 2026 — Aug 2026",
+        title: "Lead Cloud DevOps Engineer",
+        client: "Australian Gas Infrastructure Group (AGIG)",
+        location: "Melbourne, Australia",
+        description:
+          "Spearheaded Azure DevOps architecture for migrating mission-critical integration workloads to Azure Integration Services (APIM, Logic Apps, Azure Functions) with zero-downtime cutovers. Designed repeatable YAML CI/CD automation pipelines, automated SAST security scanning, and enforced IaC governance.",
         technologies: [
-          "Azure Cloud",
-          "DevOps",
-          "Platform Engineering",
-          "CI/CD Pipelines",
-          "Docker",
-          ".NET",
-          "System Architecture",
+          "Azure Integration Services",
+          "APIM",
+          "Azure DevOps",
+          "DevSecOps",
         ],
       },
       {
-        period: "2021 — 2023",
-        title: "Consultant (Platform & Cloud Migration)",
-        location: "New Delhi, India",
+        period: "Jun 2025 — Present",
+        title: "Salesforce DevOps Lead",
+        client: "HPCA",
+        location: "Melbourne, Australia",
         description:
-          "Led platform migration and cloud reliability initiatives on Azure. Focused on infrastructure automation, developer platform scalability, and automated continuous delivery across multiple enterprise client environments.",
+          "Engineered automated CI/CD release pipelines utilizing SFDX, Git, and Azure DevOps, eliminating manual deployment overhead across release cycles. Automated multi-sandbox tracking and code promotion workflows, preventing configuration drift and establishing automated quality gates across delivery teams.",
         technologies: [
-          "Azure",
-          "Platform Migration",
-          "DevOps",
-          "Infrastructure Automation",
-          ".NET",
+          "Salesforce SFDX",
+          "Azure DevOps",
+          "CI/CD Automation",
+          "Release Engineering",
         ],
       },
       {
-        period: "2021",
-        title: "Contractor",
-        location: "New Delhi, India",
+        period: "May 2025 — Jan 2026",
+        title: "Senior DevOps Engineer (IaC & Integration)",
+        client: "EPA Victoria",
+        location: "Melbourne, Australia",
         description:
-          "Azure cloud and backend systems delivery during a 6-month contract, supporting reliable and scalable solutions.",
-        technologies: ["Azure", "Backend Systems", ".NET"],
+          "Architected end-to-end Infrastructure as Code (IaC) modules using Terraform and ARM for Azure Integration Services (APIM, Logic Apps, Azure Functions), cutting environment provisioning times from days to under 30 minutes. Enforced enterprise CI/CD templates and Azure Policy security guardrails.",
+        technologies: [
+          "Terraform",
+          "ARM Templates",
+          "Azure Integration",
+          "Azure Policy",
+        ],
+      },
+      {
+        period: "Jun 2021 — May 2025",
+        title: "Platform Engineer",
+        client: "Toyota Australia",
+        location: "Melbourne, Australia",
+        description:
+          "Executed enterprise platform modernization, transitioning containerized workloads and API delivery from legacy VMware Tanzu to Azure Container Apps. Configured full-stack New Relic observability across hybrid environments (custom NRQL dashboards, synthetic checks, distributed tracing) to reduce MTTD/MTTR. Standardized reusable Azure DevOps YAML pipelines, IaC modules, and cloud cost governance.",
+        technologies: [
+          "Azure Container Apps",
+          "VMware Tanzu",
+          "New Relic One",
+          "Terraform",
+        ],
       },
     ],
   },
   {
     company: "Willow.ai",
-    companyUrl: "https://www.willow.ai",
+    companyUrl: "https://www.willowinc.com",
     period: "2020 — 2021",
     roles: [
       {
@@ -83,12 +113,8 @@ const experiences: ExperienceGroup[] = [
         title: "Software Developer",
         location: "New Delhi, India",
         description:
-          "Developed responsive mobile applications with a focus on performance optimization. Streamlined back-end processes to enhance data processing efficiency and improve overall application responsiveness.",
-        technologies: [
-          "Mobile Development",
-          "Backend Optimization",
-          "Data Processing",
-        ],
+          "Built and optimized scalable .NET microservices and RESTful APIs for smart building and digital twin platforms within Agile sprint cadences. Diagnosed backend bottlenecks to improve application uptime and response times by ~35%. Initiated early CI/CD pipeline automation and developer enablement.",
+        technologies: [".NET Core", "C#", "Microservices", "REST APIs"],
       },
     ],
   },
@@ -102,8 +128,8 @@ const experiences: ExperienceGroup[] = [
         title: "Software Developer",
         location: "New Delhi, India",
         description:
-          "Built and maintained reliable, scalable .NET applications. Collaborated with cross-functional teams to deliver software solutions that met business requirements.",
-        technologies: [".NET", "C#", "SQL Server", "Web Applications"],
+          "Built and maintained robust RESTful APIs and backend microservices using .NET, C#, and relational database systems. Refactored complex SQL schemas, stored procedures, and data pipelines, boosting throughput and cutting latency by ~50%. Configured automated build and test quality checks.",
+        technologies: [".NET", "C#", "SQL Server", "Data Pipelines"],
       },
     ],
   },
@@ -119,10 +145,8 @@ const volunteerExperiences: VolunteerExperience[] = [
     description:
       "Managing complete end-to-end IT infrastructure, cloud administration, and digital operations for a Victoria-based community welfare non-profit. Overseeing Microsoft 365 and Entra ID identity governance, domain security, website operations, and digital safeguarding for sensitive community helpline and family welfare support services.",
     technologies: [
-      "End-to-End IT Operations",
       "Microsoft 365 / Entra ID",
-      "Cloud & Web Infrastructure",
-      "Cyber Hygiene",
+      "Cloud Infrastructure",
       "Identity Governance",
     ],
   },
@@ -132,63 +156,80 @@ export function ExperienceSection() {
   return (
     <section id="experience" className="py-24 scroll-mt-20">
       <div className="mx-auto max-w-5xl px-6">
-        <h2 className="text-sm font-semibold text-primary uppercase tracking-wider mb-12 sr-only md:not-sr-only">
+        <h2 className="text-sm font-semibold text-primary uppercase tracking-wider mb-4">
           Experience
         </h2>
+        <p className="text-muted-foreground max-w-3xl leading-relaxed mb-12">
+          Enterprise cloud architecture, platform modernization, and backend
+          systems engineered across regulated industries.
+        </p>
 
-        <div className="space-y-10">
+        <div className="space-y-6">
           {experiences.map((expGroup, groupIndex) => {
             const isGrouped = expGroup.roles.length > 1;
 
-            if (isGrouped) {
-              return (
-                <div
-                  key={groupIndex}
-                  className="rounded-xl p-5 -mx-5 bg-card/40 border border-border/40 transition-colors duration-200"
-                >
-                  {/* Group Header */}
-                  <div className="grid md:grid-cols-[140px_1fr] gap-4 md:gap-8 pb-4 border-b border-border/40">
-                    <div className="text-xs text-muted-foreground font-mono pt-0.5 tabular-nums">
-                      {expGroup.period}
-                    </div>
+            return (
+              <div
+                key={groupIndex}
+                className="rounded-2xl p-6 sm:p-7 bg-card/50 border border-black/[0.08] dark:border-white/[0.08] hover:border-primary/30 transition-[border-color,box-shadow] duration-200"
+              >
+                {/* Company Header */}
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4 border-b border-border/40">
+                  <div className="flex flex-wrap items-center gap-3">
+                    <Link
+                      href={expGroup.companyUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group/link inline-flex items-center gap-1.5"
+                    >
+                      <h3 className="text-foreground text-lg font-bold group-hover/link:text-primary transition-colors inline-flex items-center gap-1">
+                        {expGroup.company}
+                        <ArrowUpRight
+                          size={15}
+                          className="opacity-0 -translate-y-1 translate-x-1 group-hover/link:opacity-100 group-hover/link:translate-y-0 group-hover/link:translate-x-0 transition-transform"
+                        />
+                      </h3>
+                    </Link>
 
-                    <div className="flex flex-wrap items-center justify-between gap-2">
-                      <Link
-                        href={expGroup.companyUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="group/link inline-flex items-center gap-1.5"
+                    {expGroup.roleBadge && (
+                      <Badge
+                        variant="secondary"
+                        className="text-xs font-medium text-foreground/80 bg-secondary/80 border-0"
                       >
-                        <h3 className="text-foreground text-base font-semibold group-hover/link:text-primary transition-colors inline-flex items-center gap-1">
-                          {expGroup.company}
-                          <ArrowUpRight
-                            size={15}
-                            className="opacity-0 -translate-y-1 translate-x-1 group-hover/link:opacity-100 group-hover/link:translate-y-0 group-hover/link:translate-x-0 transition-transform"
-                          />
-                        </h3>
-                      </Link>
-
-                      <span className="text-[11px] font-mono text-muted-foreground bg-secondary/80 px-2 py-0.5 rounded">
-                        {expGroup.roles.length} Roles · Promoted & Contract
-                      </span>
-                    </div>
+                        {expGroup.roleBadge}
+                      </Badge>
+                    )}
                   </div>
 
-                  {/* Sub-Roles Timeline */}
-                  <div className="mt-4 md:ml-[140px] md:pl-8 space-y-6 border-l-2 border-primary/30 ml-2 pl-4">
-                    {expGroup.roles.map((role, roleIndex) => (
-                      <div
-                        key={roleIndex}
-                        className="group/role relative rounded-lg p-3 -mx-3 hover:bg-muted/40 transition-colors"
-                      >
-                        {/* Timeline Node */}
-                        <div className="absolute -left-[23px] md:-left-[39px] top-4 w-2.5 h-2.5 rounded-full bg-primary border-2 border-background ring-2 ring-primary/20" />
+                  <span className="text-xs font-mono text-muted-foreground tabular-nums">
+                    {expGroup.period}
+                  </span>
+                </div>
 
-                        {/* Title & Metadata */}
-                        <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1">
-                          <h4 className="text-foreground font-medium text-sm group-hover/role:text-primary transition-colors">
-                            {role.title}
-                          </h4>
+                {/* Body Content */}
+                {isGrouped ? (
+                  /* Nested Client Engagements Timeline */
+                  <div className="mt-5 space-y-6 border-l-2 border-primary/25 ml-2 sm:ml-3 pl-4 sm:pl-5">
+                    {expGroup.roles.map((role, roleIndex) => (
+                      <div key={roleIndex} className="relative group/role">
+                        {/* Timeline Node */}
+                        <div className="absolute -left-[23px] sm:-left-[27px] top-1.5 w-2.5 h-2.5 rounded-full bg-primary border-2 border-background ring-2 ring-primary/20" />
+
+                        {/* Role Header */}
+                        <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1.5">
+                          <div className="flex flex-wrap items-center gap-2">
+                            <h4 className="text-foreground font-semibold text-sm sm:text-base group-hover/role:text-primary transition-colors">
+                              {role.title}
+                            </h4>
+                            {role.client && (
+                              <Badge
+                                variant="outline"
+                                className="text-[11px] font-semibold text-primary border-primary/30 bg-primary/5 py-0 px-2"
+                              >
+                                Client: {role.client}
+                              </Badge>
+                            )}
+                          </div>
                           <div className="flex items-center gap-2 text-xs text-muted-foreground font-mono tabular-nums">
                             <span>{role.period}</span>
                             <span>•</span>
@@ -210,7 +251,7 @@ export function ExperienceSection() {
                             <Badge
                               key={tech}
                               variant="secondary"
-                              className="bg-secondary text-secondary-foreground hover:bg-secondary/90 border-0 text-xs"
+                              className="bg-secondary/70 text-secondary-foreground hover:bg-secondary border-0 text-xs py-0.5 px-2"
                             >
                               {tech}
                             </Badge>
@@ -219,121 +260,105 @@ export function ExperienceSection() {
                       </div>
                     ))}
                   </div>
-                </div>
-              );
-            }
+                ) : (
+                  /* Single Role Employer */
+                  <div className="mt-4">
+                    {expGroup.roles.map((role, rIndex) => (
+                      <div key={rIndex}>
+                        <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1">
+                          <h4 className="text-foreground font-semibold text-base">
+                            {role.title}
+                          </h4>
+                          <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
+                            <MapPin size={11} className="text-primary" />
+                            {role.location}
+                          </span>
+                        </div>
 
-            // Single Role Entry
-            const singleRole = expGroup.roles[0];
-            return (
-              <div
-                key={groupIndex}
-                className="group relative grid md:grid-cols-[140px_1fr] gap-4 md:gap-8 rounded-lg p-4 -mx-4 hover:bg-muted/40 transition-colors duration-200"
-              >
-                {/* Period */}
-                <div className="text-xs text-muted-foreground font-mono pt-1 tabular-nums">
-                  {singleRole.period}
-                </div>
+                        <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
+                          {role.description}
+                        </p>
 
-                {/* Content */}
-                <div className="relative">
-                  <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1">
-                    <Link
-                      href={expGroup.companyUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="group/link"
-                    >
-                      <h3 className="text-foreground font-medium group-hover/link:text-primary transition-colors inline-flex items-center gap-1">
-                        {singleRole.title} · {expGroup.company}
-                        <ArrowUpRight
-                          size={14}
-                          className="opacity-0 -translate-y-1 translate-x-1 group-hover/link:opacity-100 group-hover/link:translate-y-0 group-hover/link:translate-x-0 transition-transform"
-                        />
-                      </h3>
-                    </Link>
-
-                    <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
-                      <MapPin size={11} className="text-primary" />
-                      {singleRole.location}
-                    </span>
-                  </div>
-
-                  <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
-                    {singleRole.description}
-                  </p>
-
-                  <div className="mt-3 flex flex-wrap gap-1.5">
-                    {singleRole.technologies.map((tech) => (
-                      <Badge
-                        key={tech}
-                        variant="secondary"
-                        className="bg-secondary text-secondary-foreground hover:bg-secondary/90 border-0 text-xs"
-                      >
-                        {tech}
-                      </Badge>
+                        <div className="mt-3 flex flex-wrap gap-1.5">
+                          {role.technologies.map((tech) => (
+                            <Badge
+                              key={tech}
+                              variant="secondary"
+                              className="bg-secondary/70 text-secondary-foreground hover:bg-secondary border-0 text-xs py-0.5 px-2"
+                            >
+                              {tech}
+                            </Badge>
+                          ))}
+                        </div>
+                      </div>
                     ))}
                   </div>
-                </div>
+                )}
               </div>
             );
           })}
         </div>
 
         {/* Community & Pro Bono Leadership */}
-        <div className="mt-16 pt-12 border-t border-black/[0.08] dark:border-white/[0.08]">
-          <h3 className="text-xs font-semibold text-primary uppercase tracking-wider mb-8">
+        <div className="mt-12 pt-8 border-t border-black/[0.08] dark:border-white/[0.08]">
+          <h3 className="text-xs font-semibold text-primary uppercase tracking-wider mb-6">
             Community & Pro Bono Leadership
           </h3>
 
-          <div className="space-y-2">
+          <div className="space-y-4">
             {volunteerExperiences.map((item, index) => (
               <div
                 key={index}
-                className="group relative grid md:grid-cols-[140px_1fr] gap-4 md:gap-8 rounded-lg p-4 -mx-4 hover:bg-muted/40 transition-colors duration-200"
+                className="rounded-2xl p-6 bg-card/50 border border-black/[0.08] dark:border-white/[0.08] hover:border-primary/30 transition-[border-color,box-shadow] duration-200"
               >
-                <div className="text-xs text-muted-foreground font-mono pt-1 tabular-nums">
-                  {item.period}
-                </div>
-
-                <div className="relative">
-                  <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-border/40">
+                  <div className="flex flex-wrap items-center gap-3">
                     <Link
                       href={item.organizationUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="group/link"
+                      className="group/link inline-flex items-center gap-1.5"
                     >
-                      <h4 className="text-foreground font-medium group-hover/link:text-primary transition-colors inline-flex items-center gap-1">
-                        {item.title} · {item.organization}
+                      <h4 className="text-foreground text-base font-bold group-hover/link:text-primary transition-colors inline-flex items-center gap-1">
+                        {item.organization}
                         <ArrowUpRight
-                          size={14}
+                          size={15}
                           className="opacity-0 -translate-y-1 translate-x-1 group-hover/link:opacity-100 group-hover/link:translate-y-0 group-hover/link:translate-x-0 transition-transform"
                         />
                       </h4>
                     </Link>
+                    <Badge
+                      variant="outline"
+                      className="text-[11px] font-semibold text-primary border-primary/30 bg-primary/5 py-0 px-2"
+                    >
+                      {item.title}
+                    </Badge>
+                  </div>
 
-                    <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground font-mono tabular-nums">
+                    <span>{item.period}</span>
+                    <span>•</span>
+                    <span className="inline-flex items-center gap-0.5 text-foreground/80 font-sans">
                       <MapPin size={11} className="text-primary" />
                       {item.location}
                     </span>
                   </div>
+                </div>
 
-                  <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
-                    {item.description}
-                  </p>
+                <p className="mt-3 text-sm text-muted-foreground leading-relaxed">
+                  {item.description}
+                </p>
 
-                  <div className="mt-3 flex flex-wrap gap-1.5">
-                    {item.technologies.map((tech) => (
-                      <Badge
-                        key={tech}
-                        variant="secondary"
-                        className="bg-secondary text-secondary-foreground hover:bg-secondary/90 border-0 text-xs"
-                      >
-                        {tech}
-                      </Badge>
-                    ))}
-                  </div>
+                <div className="mt-3 flex flex-wrap gap-1.5">
+                  {item.technologies.map((tech) => (
+                    <Badge
+                      key={tech}
+                      variant="secondary"
+                      className="bg-secondary/70 text-secondary-foreground hover:bg-secondary border-0 text-xs py-0.5 px-2"
+                    >
+                      {tech}
+                    </Badge>
+                  ))}
                 </div>
               </div>
             ))}
@@ -341,15 +366,15 @@ export function ExperienceSection() {
         </div>
 
         {/* Resume Link */}
-        <div className="mt-12 ml-4">
+        <div className="mt-10 pt-4 flex justify-start">
           <Link
             href="/resume"
-            className="group inline-flex items-center gap-2 text-sm text-foreground font-medium hover:text-primary transition-colors"
+            className="group inline-flex items-center gap-2 text-sm text-foreground font-semibold hover:text-primary transition-colors"
           >
-            View Full Resume
+            <span>View Full Resume</span>
             <ArrowUpRight
               size={16}
-              className="group-hover:-translate-y-0.5 group-hover:translate-x-0.5 transition-transform"
+              className="group-hover:-translate-y-0.5 group-hover:translate-x-0.5 transition-transform text-primary"
             />
           </Link>
         </div>
