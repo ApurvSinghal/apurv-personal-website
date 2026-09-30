@@ -201,9 +201,12 @@ export function ResumeView() {
 
           <div className="space-y-5 print:space-y-3.5">
             {groupedExperience.map((group, gIdx) => (
-              <div key={gIdx} className="break-inside-avoid">
+              <div
+                key={gIdx}
+                className={group.roles.length > 1 ? "" : "break-inside-avoid"}
+              >
                 {/* Company Header */}
-                <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1 pb-1 border-b border-border/30 print:border-black/15">
+                <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1 pb-1 border-b border-border/30 print:border-black/15 print:break-after-avoid">
                   <div className="flex items-baseline gap-2">
                     <h3 className="text-sm font-bold text-foreground print:text-black">
                       {group.company}
@@ -411,6 +414,10 @@ export function ResumeView() {
               .break-inside-avoid {
                 break-inside: avoid;
                 page-break-inside: avoid;
+              }
+              .print\\:break-after-avoid {
+                break-after: avoid;
+                page-break-after: avoid;
               }
             }
           `,

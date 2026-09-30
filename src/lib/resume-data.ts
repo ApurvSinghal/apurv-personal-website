@@ -298,7 +298,7 @@ export const RESUME_DATA: ResumeData = {
   ],
   education: [
     {
-      degree: "Bachelor of Technology / Engineering in Computer Science",
+      degree: "Bachelor of Technology in Computer Science & Engineering",
       institution: "Rajasthan Technical University",
       period: "2014 — 2018",
       details:
