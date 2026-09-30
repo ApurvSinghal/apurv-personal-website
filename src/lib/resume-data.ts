@@ -301,17 +301,15 @@ export const RESUME_DATA: ResumeData = {
   education: [
     {
       degree: "Bachelor of Technology in Computer Science & Engineering",
-      institution: "Rajasthan Technical University",
+      institution: "Guru Gobind Singh Indraprastha University (GGSIPU)",
       period: "2014 — 2018",
       details:
-        "Focus on Computer Science, Distributed Systems, Software Engineering, and Algorithms.",
+        "Amity School of Engineering and Technology, New Delhi. Focus on Computer Science, Distributed Systems, Software Engineering, and Algorithms.",
     },
   ],
   certifications: [
-    "Microsoft Certified: Azure Solutions Architect Expert",
-    "Microsoft Certified: Azure DevOps Engineer Expert",
-    "Microsoft Certified: Azure Administrator Associate",
-    "Microsoft Certified: Azure Fundamentals",
+    "Microsoft Certified: Azure Fundamentals (AZ-900)",
+    "Applied Skills: Microsoft Azure",
     "Japanese Language Proficiency Test (JLPT N5)",
   ],
 };
