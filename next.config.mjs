@@ -1,8 +1,5 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  experimental: {
-    instrumentationHook: true,
-  },
   allowedDevOrigins: ["127.0.0.1"],
 
   async headers() {
