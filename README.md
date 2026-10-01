@@ -17,7 +17,8 @@ Personal portfolio built with Next.js 16, React 19, TypeScript, and Tailwind CSS
 - Responsive desktop and mobile layout
 - Resume download from `public/documents/resume.pdf`
 - Contact form posting to `/api/contact` with in-memory rate limiting and honeypot spam protection
-- Optional Cloudflare Web Analytics through `NEXT_PUBLIC_CF_ANALYTICS_TOKEN` (production builds only)
+- AI chat widget backed by `/api/chat` (Gemini, with a grounded offline fallback when no key is set)
+- Cloudflare Web Analytics in production builds (override the token with `NEXT_PUBLIC_CF_ANALYTICS_TOKEN`)
 
 ## Getting Started
 
@@ -71,10 +72,19 @@ CONTACT_NOTIFICATION_EMAIL=me@apurvsinghal.com
 NEXT_PUBLIC_CF_ANALYTICS_TOKEN=your_cloudflare_analytics_token
 ```
 
-Cloudflare Web Analytics only loads in production builds (`NODE_ENV=production`) and only when `NEXT_PUBLIC_CF_ANALYTICS_TOKEN` is set. The token can be found in the Cloudflare Dashboard under **Analytics & Logs** > **Web Analytics** > **Manage Site**.
+Cloudflare Web Analytics only loads in production builds (`NODE_ENV=production`). The production site token is baked into `src/app/layout.tsx`; set `NEXT_PUBLIC_CF_ANALYTICS_TOKEN` to override it. The token can be found in the Cloudflare Dashboard under **Analytics & Logs** > **Web Analytics** > **Manage Site**.
+
+### Optional for the AI chat widget
+
+```bash
+GEMINI_API_KEY=your_gemini_key
+GEMINI_MODEL=gemini-2.5-flash # shared with the X poster
+```
+
+Without `GEMINI_API_KEY` the widget serves curated, grounded answers from `src/lib/agent-knowledge.ts`.
 
 ### Optional for X (Twitter) automation bot & briefings
- 
+
 ```bash
 X_API_KEY=your_key
 X_API_SECRET=your_secret
@@ -85,6 +95,9 @@ GEMINI_MODEL=gemini-2.5-flash # or gemini-3-flash
 BRIEFING_NOTIFICATION_EMAIL=apurv.singhal28@gmail.com
 ```
 
+The weekly analytics tracker uses the same `X_*` credentials to read `public_metrics` from the X API v2, and falls back to scraping public pages only if they are missing.
+
 ## Deployment
 
-This project is designed for deployment on Vercel. For production deploys, configure the same environment variables in your Vercel project settings.
+The site is a standard Next.js app and deploys to Vercel or any Node host. Configure the same environment variables in the hosting provider's project settings. GitHub Actions run CI on `main` plus the scheduled X poster and analytics jobs.
+ 
