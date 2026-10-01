@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  serverExternalPackages: ["newrelic"],
   allowedDevOrigins: ["127.0.0.1"],
 
   async headers() {

@@ -1,3 +1,6 @@
 allowBuilds:
+  '@newrelic/fn-inspect': true
+  '@newrelic/native-metrics': true
+  protobufjs: true
   sharp: true
   unrs-resolver: true
