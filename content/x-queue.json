@@ -1,11 +1,5 @@
 [
   {
-    "id": "q-1",
-    "topic": "Platform Engineering",
-    "text": "The fastest way to kill a Platform Engineering initiative:\n\nSpend 6 months building an Internal Developer Portal nobody asked for.\n\nAutomate their top 3 Slack tickets instead: preview DBs, secrets, DNS.\n\nWhat's the one thing your devs keep asking for?",
-    "createdAt": "2026-09-14T12:00:00.000Z"
-  },
-  {
     "id": "q-2",
     "topic": "Azure Cloud & DevOps",
     "text": "Enterprise Azure migrations don't stall on Kubernetes or the database.\n\nThey stall on subscription governance in week one.\n\nShip the landing zone guardrails in Terraform before a single service goes live.\n\nWhat blew up the timeline on your last migration?",
