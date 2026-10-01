@@ -6,8 +6,8 @@ const nextConfig = {
   async headers() {
     const csp = [
       "default-src 'self'",
-      "script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com",
-      "connect-src 'self' https://cloudflareinsights.com",
+      "script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com https://js-agent.newrelic.com",
+      "connect-src 'self' https://cloudflareinsights.com https://*.nr-data.net",
       `img-src 'self' data: blob:`,
       `style-src 'self' 'unsafe-inline'`,
       `font-src 'self'`,
