@@ -68,5 +68,12 @@
     "pillar": "Platform Engineering",
     "source": "queue",
     "postedAt": "2026-10-01T01:25:52.711Z"
+  },
+  {
+    "id": "2105836684260643244",
+    "text": "Enterprise Azure migrations don't stall on Kubernetes or the database.\n\nThey stall on subscription governance in week one.\n\nShip the landing zone guardrails in Terraform before a single service goes live.\n\nWhat blew up the timeline on your last migration?",
+    "pillar": "Azure Cloud & DevOps",
+    "source": "queue",
+    "postedAt": "2026-10-02T01:46:05.227Z"
   }
 ]

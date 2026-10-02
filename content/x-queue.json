@@ -1,11 +1,5 @@
 [
   {
-    "id": "q-2",
-    "topic": "Azure Cloud & DevOps",
-    "text": "Enterprise Azure migrations don't stall on Kubernetes or the database.\n\nThey stall on subscription governance in week one.\n\nShip the landing zone guardrails in Terraform before a single service goes live.\n\nWhat blew up the timeline on your last migration?",
-    "createdAt": "2026-09-14T12:01:00.000Z"
-  },
-  {
     "id": "q-3",
     "topic": "Applied AI & Systems",
     "text": "Enterprise RAG rarely fails on the vector DB or the embedding model.\n\nIt fails on chunk boundaries and metadata filtering.\n\nNo document hierarchy, no access scopes, and the LLM serves you garbage with total confidence.\n\nHow are you chunking yours?",
