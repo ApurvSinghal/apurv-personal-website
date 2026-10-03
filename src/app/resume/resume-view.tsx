@@ -412,27 +412,12 @@ export function ResumeView() {
                 color: #0f172a !important;
                 -webkit-print-color-adjust: exact !important;
                 print-color-adjust: exact !important;
-                font-size: 11.5px !important;
-                line-height: 1.36 !important;
+                height: auto !important;
+                min-height: 0 !important;
               }
               body {
-                padding: 7mm 10mm 7mm 10mm !important;
-              }
-              section {
-                margin-top: 10px !important;
-              }
-              header {
-                padding-bottom: 6px !important;
-              }
-              ul {
-                margin-top: 2px !important;
-              }
-              li {
-                margin-bottom: 2px !important;
-                line-height: 1.36 !important;
-              }
-              p {
-                line-height: 1.36 !important;
+                padding: 6mm 10mm 0 10mm !important;
+                margin: 0 !important;
               }
               a {
                 text-decoration: none !important;
