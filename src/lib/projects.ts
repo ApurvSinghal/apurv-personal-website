@@ -48,7 +48,7 @@ export const projects: Project[] = [
     ],
   },
   {
-    slug: "apurv-personal-website",
+    slug: "apurv-website",
     title: "Apurv Singhal - Personal Website",
     status: "Live",
     summary:
@@ -64,7 +64,7 @@ export const projects: Project[] = [
     ],
     categories: ["Frontend", "Backend", "Cloud", "Observability"],
     liveUrl: "https://apurvsinghal.com",
-    githubUrl: "https://github.com/apurvsinghal/apurv-personal-website",
+    githubUrl: "https://github.com/apurvsinghal/apurv-website",
     highlights: [
       "Implemented content-driven projects and dynamic case-study pages to improve storytelling and SEO coverage.",
       "Instrumented critical user and API flows to track submission conversion and reliability bottlenecks.",

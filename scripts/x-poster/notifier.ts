@@ -200,7 +200,7 @@ export async function sendPostBriefingEmail(
       "RESEND_API_KEY secret is not configured in GitHub repository secrets.";
     console.log(`\n[notifier] ⚠️ Notice: ${reason}`);
     console.log(
-      "[notifier] 👉 Add RESEND_API_KEY to https://github.com/apurvsinghal/apurv-personal-website/settings/secrets/actions to enable email briefings.\n",
+      "[notifier] 👉 Add RESEND_API_KEY to https://github.com/apurvsinghal/apurv-website/settings/secrets/actions to enable email briefings.\n",
     );
     return {
       success: false,
