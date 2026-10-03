@@ -4,7 +4,7 @@ export function NewRelicSnippet() {
   return (
     <Script
       id="new-relic-browser-agent"
-      strategy="beforeInteractive"
+      strategy="afterInteractive"
       src="/newrelic.js"
     />
   );

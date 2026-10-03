@@ -5,7 +5,7 @@ const nextPlugin = require("eslint-config-next");
 
 const eslintConfig = [
   {
-    ignores: [".next/*", "node_modules/*"],
+    ignores: [".next/*", "node_modules/*", ".vercel/*", "test-results/*"],
   },
   ...nextPlugin,
 ];
