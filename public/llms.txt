@@ -41,7 +41,7 @@ He is an enterprise engineer with 8+ years shipping production-grade systems at 
 - Resume: https://apurvsinghal.com/resume
 - Email: me@apurvsinghal.com
 - LinkedIn: https://www.linkedin.com/in/apurvsinghal28
-- GitHub: https://github.com/ApurvSinghal
+- GitHub: https://github.com/apurvsinghal
 - X (Twitter): https://x.com/apurvsinghal28
 - ADM Guard: https://www.admguard.com.au
 - Sitemap: https://apurvsinghal.com/sitemap.xml

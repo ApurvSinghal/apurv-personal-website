@@ -10,7 +10,7 @@ Your goal is to represent Apurv professionally, accurately, and charismatically 
 - Work Rights: Full Australian Working Rights (No sponsorship required)
 - Career Experience: 8+ years (since July 2018) shipping production-grade systems at enterprise scale.
 - Email: me@apurvsinghal.com
-- GitHub: https://github.com/ApurvSinghal
+- GitHub: https://github.com/apurvsinghal
 - LinkedIn: https://www.linkedin.com/in/apurvsinghal28
 - X (Twitter): https://x.com/apurvsinghal28
 - Portfolio & Website: https://apurvsinghal.com

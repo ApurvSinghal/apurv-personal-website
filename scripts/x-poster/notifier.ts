@@ -25,14 +25,15 @@ export function buildBriefingEmailHtml(params: SendBriefingParams): string {
     ? `https://x.com/apurvsinghal28/status/${tweetId}`
     : "https://x.com/apurvsinghal28";
 
-  const talkingPointsHtml = briefing.talkingPoints && briefing.talkingPoints.length > 0
-    ? briefing.talkingPoints
-        .map(
-          (point) =>
-            `<li style="margin-bottom: 8px; color: #cbd5e1; line-height: 1.5;">${escapeHtml(point)}</li>`,
-        )
-        .join("")
-    : "<li style=\"color: #94a3b8;\">Focus on practitioner experience and defensive production architecture.</li>";
+  const talkingPointsHtml =
+    briefing.talkingPoints && briefing.talkingPoints.length > 0
+      ? briefing.talkingPoints
+          .map(
+            (point) =>
+              `<li style="margin-bottom: 8px; color: #cbd5e1; line-height: 1.5;">${escapeHtml(point)}</li>`,
+          )
+          .join("")
+      : '<li style="color: #94a3b8;">Focus on practitioner experience and defensive production architecture.</li>';
 
   return `
 <!DOCTYPE html>
@@ -44,7 +45,7 @@ export function buildBriefingEmailHtml(params: SendBriefingParams): string {
 </head>
 <body style="margin: 0; padding: 24px; background-color: #0b0f19; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #f8fafc;">
   <div style="max-width: 640px; margin: 0 auto; background-color: #0f172a; border-radius: 12px; border: 1px solid #1e293b; overflow: hidden;">
-    
+
     <!-- Top Header Banner -->
     <div style="padding: 24px 28px; background: linear-gradient(135deg, #1e1b4b 0%, #0f172a 100%); border-bottom: 1px solid #1e293b;">
       <div style="display: inline-block; padding: 4px 10px; border-radius: 9999px; background-color: rgba(99, 102, 241, 0.2); border: 1px solid rgba(99, 102, 241, 0.4); color: #a5b4fc; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 12px;">
@@ -59,7 +60,7 @@ export function buildBriefingEmailHtml(params: SendBriefingParams): string {
     </div>
 
     <div style="padding: 24px 28px;">
-      
+
       <!-- Card 1: The Published Tweet -->
       <div style="margin-bottom: 24px;">
         <h2 style="font-size: 14px; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em; margin: 0 0 10px 0;">
@@ -182,19 +183,25 @@ export interface EmailSendResult {
   from: string;
 }
 
-export async function sendPostBriefingEmail(params: SendBriefingParams): Promise<EmailSendResult> {
+export async function sendPostBriefingEmail(
+  params: SendBriefingParams,
+): Promise<EmailSendResult> {
   const resendApiKey = process.env.RESEND_API_KEY;
   const toEmail =
     params.toEmail ||
     process.env.BRIEFING_NOTIFICATION_EMAIL ||
     process.env.X_POST_NOTIFICATION_EMAIL ||
     "apurv.singhal28@gmail.com";
-  let fromEmail = process.env.RESEND_FROM_EMAIL || "Portfolio <noreply@apurvsinghal.com>";
+  let fromEmail =
+    process.env.RESEND_FROM_EMAIL || "Portfolio <noreply@apurvsinghal.com>";
 
   if (!resendApiKey) {
-    const reason = "RESEND_API_KEY secret is not configured in GitHub repository secrets.";
+    const reason =
+      "RESEND_API_KEY secret is not configured in GitHub repository secrets.";
     console.log(`\n[notifier] ⚠️ Notice: ${reason}`);
-    console.log("[notifier] 👉 Add RESEND_API_KEY to https://github.com/ApurvSinghal/apurv-personal-website/settings/secrets/actions to enable email briefings.\n");
+    console.log(
+      "[notifier] 👉 Add RESEND_API_KEY to https://github.com/apurvsinghal/apurv-personal-website/settings/secrets/actions to enable email briefings.\n",
+    );
     return {
       success: false,
       skipped: true,
@@ -209,7 +216,14 @@ export async function sendPostBriefingEmail(params: SendBriefingParams): Promise
   const html = buildBriefingEmailHtml(params);
   const text = buildBriefingEmailText(params);
 
-  async function postToResend(sender: string): Promise<{ ok: boolean; status: number; text: string; data?: { id?: string } }> {
+  async function postToResend(
+    sender: string,
+  ): Promise<{
+    ok: boolean;
+    status: number;
+    text: string;
+    data?: { id?: string };
+  }> {
     const response = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
@@ -241,20 +255,37 @@ export async function sendPostBriefingEmail(params: SendBriefingParams): Promise
     let result = await postToResend(fromEmail);
 
     // If custom domain is unverified (403/422), attempt automatic fallback to onboarding@resend.dev
-    if (!result.ok && fromEmail !== "onboarding@resend.dev" && (result.status === 403 || result.status === 422)) {
-      console.log(`[notifier] ⚠️ Custom domain sender '${fromEmail}' not accepted by Resend (${result.status}: ${result.text}).`);
-      console.log("[notifier] 🔄 Retrying with Resend fallback sender 'onboarding@resend.dev'...");
+    if (
+      !result.ok &&
+      fromEmail !== "onboarding@resend.dev" &&
+      (result.status === 403 || result.status === 422)
+    ) {
+      console.log(
+        `[notifier] ⚠️ Custom domain sender '${fromEmail}' not accepted by Resend (${result.status}: ${result.text}).`,
+      );
+      console.log(
+        "[notifier] 🔄 Retrying with Resend fallback sender 'onboarding@resend.dev'...",
+      );
       fromEmail = "onboarding@resend.dev";
       result = await postToResend(fromEmail);
     }
 
     if (!result.ok) {
-      console.warn(`[notifier] ❌ Resend email delivery failed (${result.status}):`, result.text);
+      console.warn(
+        `[notifier] ❌ Resend email delivery failed (${result.status}):`,
+        result.text,
+      );
       let advice = "";
       if (result.text.includes("verify your domain")) {
-        advice = "Verify apurvsinghal.com in your Resend dashboard (https://resend.com/domains) or use onboarding@resend.dev.";
-      } else if (result.text.includes("can only send testing emails to your own email address")) {
-        advice = "Testing emails from onboarding@resend.dev can only be sent to the email address registered with your Resend account (e.g., apurv.singhal28@gmail.com).";
+        advice =
+          "Verify apurvsinghal.com in your Resend dashboard (https://resend.com/domains) or use onboarding@resend.dev.";
+      } else if (
+        result.text.includes(
+          "can only send testing emails to your own email address",
+        )
+      ) {
+        advice =
+          "Testing emails from onboarding@resend.dev can only be sent to the email address registered with your Resend account (e.g., apurv.singhal28@gmail.com).";
       }
       if (advice) {
         console.warn(`[notifier] 👉 Action needed: ${advice}`);
@@ -262,14 +293,17 @@ export async function sendPostBriefingEmail(params: SendBriefingParams): Promise
       return {
         success: false,
         skipped: false,
-        reason: `HTTP ${result.status}: ${result.text} ${advice ? `(${advice})` : ""}`.trim(),
+        reason:
+          `HTTP ${result.status}: ${result.text} ${advice ? `(${advice})` : ""}`.trim(),
         recipient: toEmail,
         from: fromEmail,
       };
     }
 
     const emailId = result.data?.id || "ok";
-    console.log(`✉️ Technical briefing email successfully delivered to ${toEmail} from ${fromEmail}! (Email ID: ${emailId})`);
+    console.log(
+      `✉️ Technical briefing email successfully delivered to ${toEmail} from ${fromEmail}! (Email ID: ${emailId})`,
+    );
     return {
       success: true,
       skipped: false,

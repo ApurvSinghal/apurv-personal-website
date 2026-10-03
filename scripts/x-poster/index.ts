@@ -70,7 +70,7 @@ function appendStepSummary(
       if (emailResult.success) {
         emailStatusMarkdown = `\n\n#### ✉️ Technical Briefing Email\n- **Status:** ✅ Sent successfully\n- **Recipient:** \`${emailResult.recipient}\`\n- **Sender:** \`${emailResult.from}\`\n- **Email ID:** \`${emailResult.emailId}\``;
       } else if (emailResult.skipped) {
-        emailStatusMarkdown = `\n\n#### ✉️ Technical Briefing Email\n- **Status:** ⚠️ Skipped\n- **Reason:** ${emailResult.reason}\n\n> 💡 **How to fix:** Add \`RESEND_API_KEY\` to your [GitHub Repository Secrets](https://github.com/ApurvSinghal/apurv-personal-website/settings/secrets/actions).`;
+        emailStatusMarkdown = `\n\n#### ✉️ Technical Briefing Email\n- **Status:** ⚠️ Skipped\n- **Reason:** ${emailResult.reason}\n\n> 💡 **How to fix:** Add \`RESEND_API_KEY\` to your [GitHub Repository Secrets](https://github.com/apurvsinghal/apurv-personal-website/settings/secrets/actions).`;
       } else {
         emailStatusMarkdown = `\n\n#### ✉️ Technical Briefing Email\n- **Status:** ❌ Delivery Failed\n- **Recipient:** \`${emailResult.recipient}\`\n- **Sender:** \`${emailResult.from}\`\n- **Details:** \`${emailResult.reason}\``;
       }

@@ -16,8 +16,12 @@ export const navItems = [
 ];
 
 export const socialLinks = [
-  { icon: Github, href: "https://github.com/ApurvSinghal", label: "GitHub" },
-  { icon: Linkedin, href: "https://www.linkedin.com/in/apurvsinghal28", label: "LinkedIn" },
+  { icon: Github, href: "https://github.com/apurvsinghal", label: "GitHub" },
+  {
+    icon: Linkedin,
+    href: "https://www.linkedin.com/in/apurvsinghal28",
+    label: "LinkedIn",
+  },
   { icon: Twitter, href: "https://x.com/apurvsinghal28", label: "X (Twitter)" },
   { icon: Mail, href: `mailto:${CONTACT_EMAIL}`, label: "Email" },
 ];

@@ -63,7 +63,7 @@ export const RESUME_DATA: ResumeData = {
   email: "me@apurvsinghal.com",
   website: "https://apurvsinghal.com",
   linkedin: "https://www.linkedin.com/in/apurvsinghal28",
-  github: "https://github.com/ApurvSinghal",
+  github: "https://github.com/apurvsinghal",
   pillars: [
     "Azure Cloud + DevOps",
     "Platform Engineering",

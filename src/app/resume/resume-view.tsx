@@ -161,7 +161,7 @@ export function ResumeView() {
                 rel="noopener noreferrer"
                 className="hover:text-foreground print:text-purple-700 hover:underline"
               >
-                github.com/ApurvSinghal
+                github.com/apurvsinghal
               </a>
               <span className="text-border print:text-slate-300">•</span>
               <a
@@ -207,7 +207,7 @@ export function ResumeView() {
             Professional Experience
           </h2>
 
-          <div className="space-y-5 print:space-y-3.5">
+          <div className="space-y-5 print:space-y-1.5">
             {groupedExperience.map((group, gIdx) => (
               <div
                 key={gIdx}
@@ -231,32 +231,85 @@ export function ResumeView() {
                 </div>
 
                 {/* Sub-Roles */}
-                <div className="mt-2 space-y-3 print:space-y-2.5 sm:pl-2">
+                <div className="mt-2 space-y-3 print:space-y-1.5 sm:pl-2">
                   {group.roles.map((role, rIdx) => (
-                    <div key={rIdx} className="break-inside-avoid">
-                      <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1">
-                        <h4 className="text-xs font-semibold text-foreground print:text-slate-900 flex flex-wrap items-center gap-1">
-                          <span>{role.role}</span>
-                          {role.client && (
-                            <span className="font-normal text-muted-foreground print:text-slate-600">
-                              ·{" "}
-                              <span className="font-semibold text-foreground print:text-purple-900">
-                                Client: {role.client}
+                    <React.Fragment key={rIdx}>
+                      {/* Page Break & Running Header/Footer before Toyota Australia (Page 2 start) */}
+                      {group.company === "Capgemini" &&
+                        role.client === "Toyota Australia" && (
+                          <>
+                            {/* Page 1 Footer */}
+                            <div className="hidden print:flex items-center justify-between pt-1.5 mt-3 border-t border-purple-200/80 text-[10px] text-muted-foreground print:text-slate-500">
+                              <span>
+                                apurvsinghal.com • me@apurvsinghal.com •
+                                Melbourne, Australia
                               </span>
-                            </span>
-                          )}
-                        </h4>
-                        <div className="text-[11px] font-mono text-muted-foreground print:text-slate-500 tabular-nums">
-                          {role.period} | {role.location}
-                        </div>
-                      </div>
+                              <span className="font-medium text-slate-700">
+                                Page 1 of 2
+                              </span>
+                            </div>
 
-                      <ul className="mt-1 space-y-1 text-xs text-muted-foreground print:text-slate-700 list-disc list-outside pl-4 leading-relaxed">
-                        {role.highlights.map((item, hIdx) => (
-                          <li key={hIdx}>{item}</li>
-                        ))}
-                      </ul>
-                    </div>
+                            {/* Explicit Print Page Break */}
+                            <div
+                              className="hidden print:block page-break-after-always"
+                              style={{
+                                pageBreakAfter: "always",
+                                breakAfter: "page",
+                              }}
+                            />
+
+                            {/* Page 2 Running Header */}
+                            <div className="hidden print:flex items-center justify-between pb-0.5 mb-1.5 border-b border-purple-200/80 text-[10px] text-muted-foreground print:text-slate-600">
+                              <span className="font-semibold print:text-purple-950 uppercase tracking-wider">
+                                Apurv Singhal · Lead Cloud & Platform Architect
+                              </span>
+                              <span className="font-medium print:text-purple-700">
+                                Executive Resume · Page 2
+                              </span>
+                            </div>
+
+                            {/* Capgemini Continued Banner */}
+                            <div className="hidden print:flex items-baseline justify-between gap-1 pb-0.5 border-b border-border/30 print:border-slate-200 mb-1">
+                              <div className="flex items-baseline gap-2">
+                                <h3 className="text-sm font-bold text-foreground print:text-purple-950">
+                                  Capgemini
+                                </h3>
+                                <span className="text-xs font-medium text-muted-foreground print:text-purple-800/80">
+                                  (Lead Consultant — Continued)
+                                </span>
+                              </div>
+                              <span className="text-xs font-mono text-muted-foreground print:text-slate-500 tabular-nums">
+                                {group.period}
+                              </span>
+                            </div>
+                          </>
+                        )}
+
+                      <div className="break-inside-avoid">
+                        <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1">
+                          <h4 className="text-xs font-semibold text-foreground print:text-slate-900 flex flex-wrap items-center gap-1">
+                            <span>{role.role}</span>
+                            {role.client && (
+                              <span className="font-normal text-muted-foreground print:text-slate-600">
+                                ·{" "}
+                                <span className="font-semibold text-foreground print:text-purple-900">
+                                  Client: {role.client}
+                                </span>
+                              </span>
+                            )}
+                          </h4>
+                          <div className="text-[11px] font-mono text-muted-foreground print:text-slate-500 tabular-nums">
+                            {role.period} | {role.location}
+                          </div>
+                        </div>
+
+                        <ul className="mt-1 space-y-1 text-xs text-muted-foreground print:text-slate-700 list-disc list-outside pl-4 leading-relaxed">
+                          {role.highlights.map((item, hIdx) => (
+                            <li key={hIdx}>{item}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    </React.Fragment>
                   ))}
                 </div>
               </div>
@@ -265,12 +318,12 @@ export function ResumeView() {
         </section>
 
         {/* Community & Pro Bono Leadership */}
-        <section className="mt-7 print:mt-4 break-inside-avoid">
-          <h2 className="text-xs font-bold uppercase tracking-wider text-primary print:text-purple-700 mb-3 print:mb-2 border-b border-border/40 pb-1 print:border-purple-200">
+        <section className="mt-7 print:mt-1.5 break-inside-avoid">
+          <h2 className="text-xs font-bold uppercase tracking-wider text-primary print:text-purple-700 mb-3 print:mb-1 border-b border-border/40 pb-1 print:pb-0.5 print:border-purple-200">
             Community & Pro Bono Leadership
           </h2>
 
-          <div className="space-y-3 print:space-y-2">
+          <div className="space-y-3 print:space-y-1.5">
             {RESUME_DATA.volunteer.map((item, idx) => (
               <div key={idx} className="break-inside-avoid">
                 <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1">
@@ -287,7 +340,7 @@ export function ResumeView() {
                   </div>
                 </div>
 
-                <ul className="mt-1.5 space-y-1 text-xs text-muted-foreground print:text-slate-700 list-disc list-outside pl-4 leading-relaxed">
+                <ul className="mt-1 space-y-1 text-xs text-muted-foreground print:text-slate-700 list-disc list-outside pl-4 leading-relaxed">
                   {item.highlights.map((h, hIdx) => (
                     <li key={hIdx}>{h}</li>
                   ))}
@@ -298,12 +351,12 @@ export function ResumeView() {
         </section>
 
         {/* Key Products & Architectures */}
-        <section className="mt-7 print:mt-4 break-inside-avoid">
-          <h2 className="text-xs font-bold uppercase tracking-wider text-primary print:text-purple-700 mb-3 print:mb-2 border-b border-border/40 pb-1 print:border-purple-200">
+        <section className="mt-7 print:mt-1.5 break-inside-avoid">
+          <h2 className="text-xs font-bold uppercase tracking-wider text-primary print:text-purple-700 mb-3 print:mb-1 border-b border-border/40 pb-1 print:pb-0.5 print:border-purple-200">
             Featured Commercial Venture & Systems
           </h2>
 
-          <div className="space-y-4 print:space-y-3">
+          <div className="space-y-4 print:space-y-1.5">
             {RESUME_DATA.projects.map((proj, idx) => (
               <div key={idx} className="break-inside-avoid">
                 <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1">
@@ -342,18 +395,18 @@ export function ResumeView() {
         </section>
 
         {/* Technical Competencies Matrix */}
-        <section className="mt-7 print:mt-4 break-inside-avoid">
-          <h2 className="text-xs font-bold uppercase tracking-wider text-primary print:text-purple-700 mb-3 print:mb-2 border-b border-border/40 pb-1 print:border-purple-200">
+        <section className="mt-7 print:mt-1.5">
+          <h2 className="text-xs font-bold uppercase tracking-wider text-primary print:text-purple-700 mb-3 print:mb-1 border-b border-border/40 pb-1 print:pb-0.5 print:border-purple-200">
             Technical Competencies & Tooling
           </h2>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 print:gap-2">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 print:gap-x-3 print:gap-y-1">
             {RESUME_DATA.skills.map((skillGroup, idx) => (
               <div key={idx} className="text-xs break-inside-avoid">
                 <span className="font-semibold text-foreground print:text-purple-900 block mb-0.5">
                   {skillGroup.category}:
                 </span>
-                <p className="text-muted-foreground print:text-slate-700 leading-relaxed">
+                <p className="text-muted-foreground print:text-slate-700 leading-relaxed print:leading-snug">
                   {skillGroup.items.join(" · ")}
                 </p>
               </div>
@@ -362,12 +415,12 @@ export function ResumeView() {
         </section>
 
         {/* Education & Certifications */}
-        <section className="mt-7 print:mt-4 break-inside-avoid">
-          <h2 className="text-xs font-bold uppercase tracking-wider text-primary print:text-purple-700 mb-3 print:mb-2 border-b border-border/40 pb-1 print:border-purple-200">
+        <section className="mt-7 print:mt-1 break-inside-avoid">
+          <h2 className="text-xs font-bold uppercase tracking-wider text-primary print:text-purple-700 mb-3 print:mb-1 border-b border-border/40 pb-1 print:pb-0.5 print:border-purple-200">
             Education & Certifications
           </h2>
 
-          <div className="space-y-2.5 text-xs">
+          <div className="space-y-2 print:space-y-0.5 text-xs">
             {RESUME_DATA.education.map((edu, idx) => (
               <div
                 key={idx}
@@ -388,7 +441,7 @@ export function ResumeView() {
               </div>
             ))}
 
-            <div className="pt-1 text-[11px] text-muted-foreground print:text-slate-500">
+            <div className="pt-0.5 text-[11px] text-muted-foreground print:text-slate-500">
               <span className="font-medium text-foreground/80 print:text-slate-700">
                 Certifications:
               </span>{" "}
@@ -396,6 +449,14 @@ export function ResumeView() {
             </div>
           </div>
         </section>
+
+        {/* Page 2 Print Footer */}
+        <div className="hidden print:flex items-center justify-between pt-1 mt-1 border-t border-purple-200/80 text-[10px] text-muted-foreground print:text-slate-500">
+          <span>
+            apurvsinghal.com • me@apurvsinghal.com • Melbourne, Australia
+          </span>
+          <span className="font-medium text-slate-700">Page 2 of 2</span>
+        </div>
       </main>
 
       {/* Embedded Print CSS Rules for ATS Perfection & Executive Styling */}
@@ -405,7 +466,7 @@ export function ResumeView() {
             @media print {
               @page {
                 size: A4 portrait;
-                margin: 0;
+                margin: 4.5mm 10mm 4.5mm 10mm;
               }
               html, body {
                 background-color: #ffffff !important;
@@ -416,7 +477,7 @@ export function ResumeView() {
                 min-height: 0 !important;
               }
               body {
-                padding: 6mm 10mm 0 10mm !important;
+                padding: 0 !important;
                 margin: 0 !important;
               }
               a {
@@ -429,6 +490,10 @@ export function ResumeView() {
               .print\\:break-after-avoid {
                 break-after: avoid;
                 page-break-after: avoid;
+              }
+              .page-break-after-always {
+                break-after: page !important;
+                page-break-after: always !important;
               }
             }
           `,
