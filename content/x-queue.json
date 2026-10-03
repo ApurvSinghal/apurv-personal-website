@@ -1,11 +1,5 @@
 [
   {
-    "id": "q-3",
-    "topic": "Applied AI & Systems",
-    "text": "Enterprise RAG rarely fails on the vector DB or the embedding model.\n\nIt fails on chunk boundaries and metadata filtering.\n\nNo document hierarchy, no access scopes, and the LLM serves you garbage with total confidence.\n\nHow are you chunking yours?",
-    "createdAt": "2026-09-14T12:02:00.000Z"
-  },
-  {
     "id": "q-4",
     "topic": "Founder & ADM Guard",
     "text": "From December 2026, Australian law says you must show how an automated decision was made.\n\nA PDF policy won't survive an OAIC audit.\n\nYou need a tamper-evident log at the code layer.\n\nIs your AI actually audit-ready, or does it just look compliant?",

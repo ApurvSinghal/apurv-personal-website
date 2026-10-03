@@ -75,5 +75,12 @@
     "pillar": "Azure Cloud & DevOps",
     "source": "queue",
     "postedAt": "2026-10-02T01:46:05.227Z"
+  },
+  {
+    "id": "2106192220068237734",
+    "text": "Enterprise RAG rarely fails on the vector DB or the embedding model.\n\nIt fails on chunk boundaries and metadata filtering.\n\nNo document hierarchy, no access scopes, and the LLM serves you garbage with total confidence.\n\nHow are you chunking yours?",
+    "pillar": "Applied AI & Systems",
+    "source": "queue",
+    "postedAt": "2026-10-03T01:18:51.459Z"
   }
 ]
