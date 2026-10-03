@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json.schemastore.org/staticwebapp.config.json",
+  "navigationFallback": {
+    "rewrite": "/index.html",
+    "exclude": ["/api/*", "/_next/*", "/static/*", "*.{png,jpg,jpeg,gif,svg,ico,css,js,json,txt,pdf}"]
+  },
+  "globalHeaders": {
+    "X-Content-Type-Options": "nosniff",
+    "X-Frame-Options": "DENY",
+    "Referrer-Policy": "strict-origin-when-cross-origin",
+    "Permissions-Policy": "camera=(), microphone=(), geolocation=()",
+    "Strict-Transport-Security": "max-age=63072000; includeSubDomains; preload"
+  },
+  "mimeTypes": {
+    ".json": "application/json",
+    ".txt": "text/plain",
+    ".xml": "application/xml"
+  },
+  "platform": {
+    "apiRuntime": "node:20"
+  }
+}

@@ -620,8 +620,8 @@ export function ChatWidget() {
               </button>
             </form>
             <div className="mt-2 flex items-center justify-between text-[10px] text-muted-foreground px-1">
-              <span>Powered by Gemini & RAG</span>
-              <span>100% Free · Real-time inference</span>
+              <span>Powered by Azure OpenAI (Australia East) & RAG</span>
+              <span>Australian Data Residency</span>
             </div>
           </div>
         </div>

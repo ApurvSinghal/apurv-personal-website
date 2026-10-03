@@ -30,7 +30,7 @@ export function Footer() {
         </div>
 
         <p className="mt-6 text-xs text-muted-foreground text-center sm:text-left">
-          Built with Next.js and Tailwind CSS. Deployed on Vercel.
+          Built with Next.js and Tailwind CSS. Hosted on Microsoft Azure.
         </p>
       </div>
     </footer>

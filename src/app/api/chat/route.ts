@@ -22,6 +22,9 @@ const checkChatRateLimit = createRateLimiter({
   maxRequests: 15,
 });
 
+const AZURE_OPENAI_ENDPOINT = process.env.AZURE_OPENAI_ENDPOINT?.replace(/\/$/, "");
+const AZURE_OPENAI_KEY = process.env.AZURE_OPENAI_KEY;
+const AZURE_OPENAI_DEPLOYMENT = process.env.AZURE_OPENAI_DEPLOYMENT || "gpt-5-mini";
 const GEMINI_MODEL = process.env.GEMINI_MODEL || "gemini-2.5-flash";
 
 // Fallback intelligent response generator if GEMINI_API_KEY is not yet configured
@@ -181,10 +184,85 @@ export async function POST(req: NextRequest) {
     }
 
     const { messages } = parseResult.data;
-    const apiKey = process.env.GEMINI_API_KEY;
+    const geminiApiKey = process.env.GEMINI_API_KEY;
 
-    // If no API key is provided, stream the fallback grounded response
-    if (!apiKey) {
+    // 1. Primary path: Azure OpenAI (Australia East)
+    if (AZURE_OPENAI_ENDPOINT && AZURE_OPENAI_KEY) {
+      try {
+        const aoaiRes = await fetch(
+          `${AZURE_OPENAI_ENDPOINT}/openai/deployments/${AZURE_OPENAI_DEPLOYMENT}/chat/completions?api-version=2024-08-01-preview`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "api-key": AZURE_OPENAI_KEY,
+            },
+            body: JSON.stringify({
+              messages: [
+                { role: "system", content: APURV_GROUND_TRUTH },
+                ...messages.map((m) => ({ role: m.role, content: m.content })),
+              ],
+              temperature: 0.3,
+              max_tokens: 800,
+              stream: true,
+            }),
+            signal: AbortSignal.timeout(30000),
+          },
+        );
+
+        if (aoaiRes.ok && aoaiRes.body) {
+          const reader = aoaiRes.body.getReader();
+          const decoder = new TextDecoder();
+          let buffer = "";
+
+          const stream = new ReadableStream({
+            async start(controller) {
+              while (true) {
+                const { done, value } = await reader.read();
+                if (done) {
+                  controller.close();
+                  return;
+                }
+                buffer += decoder.decode(value, { stream: true });
+                const lines = buffer.split("\n");
+                buffer = lines.pop() || "";
+
+                for (const line of lines) {
+                  const trimmed = line.trim();
+                  if (trimmed.startsWith("data: ")) {
+                    const dataStr = trimmed.slice(6).trim();
+                    if (!dataStr || dataStr === "[DONE]") continue;
+                    try {
+                      const parsed = JSON.parse(dataStr);
+                      const text = parsed?.choices?.[0]?.delta?.content;
+                      if (text) {
+                        controller.enqueue(new TextEncoder().encode(text));
+                      }
+                    } catch {
+                      // ignore parsing partial JSON chunks
+                    }
+                  }
+                }
+              }
+            },
+          });
+
+          return new Response(stream, {
+            headers: {
+              "Content-Type": "text/plain; charset=utf-8",
+              "Cache-Control": "no-cache, no-transform",
+            },
+          });
+        } else {
+          console.warn("[Azure OpenAI Error]", aoaiRes.status, await aoaiRes.text());
+        }
+      } catch (aoaiErr) {
+        console.warn("[Azure OpenAI Connection Error - falling back]", aoaiErr);
+      }
+    }
+
+    // 2. Secondary path: Google Gemini (if configured)
+    if (!geminiApiKey) {
       const lastUserMsg = messages[messages.length - 1].content;
       const fallbackText = generateMockResponse(lastUserMsg);
 
@@ -230,7 +308,7 @@ export async function POST(req: NextRequest) {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "x-goog-api-key": apiKey,
+          "x-goog-api-key": geminiApiKey,
         },
         body: JSON.stringify(geminiPayload),
         signal: AbortSignal.timeout(30000),
