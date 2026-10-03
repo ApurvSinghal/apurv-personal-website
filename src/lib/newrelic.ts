@@ -32,4 +32,21 @@ export async function recordServerError(
       // Fail silently if New Relic is unavailable or fails to record
     }
   }
+
+  if (
+    process.env.NEXT_RUNTIME === "nodejs" &&
+    process.env.APPLICATIONINSIGHTS_CONNECTION_STRING
+  ) {
+    try {
+      const appInsights = await import("applicationinsights");
+      if (appInsights.defaultClient) {
+        appInsights.defaultClient.trackException({
+          exception: error instanceof Error ? error : new Error(String(error)),
+          properties: customAttributes,
+        });
+      }
+    } catch {
+      // Fail silently if Application Insights fails to record
+    }
+  }
 }
