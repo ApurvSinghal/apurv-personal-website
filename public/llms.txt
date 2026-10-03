@@ -1,58 +1,47 @@
 # Apurv Singhal — AI Engineer & Builder
-# https://apurvsinghal.com
-# llms.txt — Machine-readable profile for LLM crawlers and AI agents
 
-## Who is Apurv Singhal?
+> Machine-readable profile for LLM crawlers, search engines, and AI agents.
 
-Apurv Singhal is a Lead Consultant (Azure Cloud, DevOps & Platform) at Capgemini and the Founder of ADM Guard (https://www.admguard.com.au), a compliance SaaS platform for Australian Privacy Act automated decision transparency (APP 1.7–1.9).
+Apurv Singhal is an enterprise engineer with 8+ years shipping production-grade systems at scale, based in Melbourne, Australia. He is a Lead Consultant (Azure Cloud, DevOps & Platform) at Capgemini and the Founder of ADM Guard, a compliance SaaS platform for Australian Privacy Act automated decision transparency (APP 1.7–1.9).
 
-He is an enterprise engineer with 8+ years shipping production-grade systems at scale, based in Melbourne, Australia. His work sits at the intersection of cloud infrastructure, platform engineering, and applied AI systems.
+## Key Links & Resources
+
+- [Portfolio Homepage](https://apurvsinghal.com): Overview of experience, skills, case studies, and interactive AI representative.
+- [Dynamic Resume](https://apurvsinghal.com/resume): Full professional career history, enterprise impact, and downloadable PDF.
+- [ADM Guard Case Study](https://apurvsinghal.com/projects/adm-guard): Architecture breakdown of the compliance flight recorder for automated decision-making.
+- [Personal Website Project](https://apurvsinghal.com/projects/apurv-website): Architecture and implementation of this production Next.js portfolio.
+- [ADM Guard Live Service](https://www.admguard.com.au): Official website for the ADM Guard compliance SaaS platform.
+- [GitHub Profile](https://github.com/ApurvSinghal): Open-source repositories and engineering tools.
+- [LinkedIn Profile](https://www.linkedin.com/in/apurvsinghal28): Professional background and enterprise references.
+- [X Profile](https://x.com/apurvsinghal28): Daily engineering briefings and cloud architectural insights.
+- [XML Sitemap](https://apurvsinghal.com/sitemap.xml): Machine-readable index of all crawlable site routes.
 
 ## Core Work Pillars
 
-1. Azure Cloud + DevOps — Enterprise Azure architecture, landing zones, GitHub Actions CI/CD, Terraform/Bicep IaC, Docker, Azure Functions (Serverless), observability.
-2. Platform Engineering — Developer platform velocity, large-scale enterprise migrations, microservices, SRE, zero-trust governance.
-3. Applied AI & AI Systems — Azure AI Foundry, Azure OpenAI, Claude API, Google Gemini, AI Agents, MCP (Model Context Protocol), RAG architectures, vector databases.
+1. **Azure Cloud + DevOps**: Enterprise Azure architecture, landing zones, GitHub Actions CI/CD, Terraform/Bicep IaC, Docker, Azure Functions, full-stack observability.
+2. **Platform Engineering**: Developer platform velocity, large-scale enterprise migrations, microservices, SRE, zero-trust governance.
+3. **Applied AI & AI Systems**: Azure AI Foundry, Azure OpenAI, Claude API, Google Gemini, AI Agents, MCP (Model Context Protocol), RAG architectures, vector databases.
 
 ## Featured Product: ADM Guard
 
-- Website: https://www.admguard.com.au
-- Description: "The compliance flight recorder for automated decisions."
-- Solves the mandatory 10 December 2026 Australian Privacy Act APP 1.7–1.9 deadline.
-- Key features: Zero-PII by architecture, SHA-256 Merkle hash chains, Azure AU East WORM storage, drop-in SDKs (Python, Node, Go).
-- Target market: Australian B2B SaaS, fintech, HR-tech, proptech.
+- [ADM Guard](https://www.admguard.com.au): "The compliance flight recorder for automated decisions."
+- Solves the mandatory Australian Privacy Act APP 1.7–1.9 transparency requirements.
+- Architecture: Zero-PII ingestion boundary, SHA-256 Merkle hash chains, Azure Australia East WORM storage, client SDKs (TypeScript, Python, Go).
 
 ## Career History
 
-- Lead Consultant, Capgemini (2023 – Present) — Melbourne, Australia
-- Consultant, Capgemini (2021 – 2023) — New Delhi, India
-- Contractor, Capgemini (2021) — New Delhi, India
-- Software Developer, Willow.ai (2020 – 2021) — New Delhi, India
-- Software Developer, TechCompiler Data Systems (2018 – 2020) — New Delhi, India
+- **Lead Consultant**, Capgemini (2023 – Present) — Melbourne, Australia
+- **Consultant**, Capgemini (2021 – 2023) — New Delhi, India
+- **Contractor**, Capgemini (2021) — New Delhi, India
+- **Software Developer**, Willow.ai (2020 – 2021) — New Delhi, India
+- **Software Developer**, TechCompiler Data Systems (2018 – 2020) — New Delhi, India
 
 ## Community & Pro Bono
 
-- Head of IT (Volunteer), IndianCare Inc. (April 2026 – Present) — Melbourne, Victoria
-  IndianCare is a registered Victorian welfare non-profit. Apurv manages end-to-end IT infrastructure, Microsoft 365, Entra ID, domain security, and digital safeguarding for sensitive community helpline services.
+- **Head of IT (Volunteer)**, IndianCare Inc. (April 2026 – Present) — Melbourne, Victoria.
+  IndianCare is a registered Victorian welfare non-profit. Apurv manages end-to-end IT infrastructure, Microsoft 365, Entra ID, domain security, and digital safeguarding.
 
-## Contact & Links
+## Contact
 
-- Website: https://apurvsinghal.com
-- Resume: https://apurvsinghal.com/resume
-- Email: me@apurvsinghal.com
-- LinkedIn: https://www.linkedin.com/in/apurvsinghal28
-- GitHub: https://github.com/apurvsinghal
-- X (Twitter): https://x.com/apurvsinghal28
-- ADM Guard: https://www.admguard.com.au
-- Sitemap: https://apurvsinghal.com/sitemap.xml
-
-## Pages on This Site
-
-- / — Portfolio homepage (about, experience, skills, projects, contact)
-- /resume — Full dynamic resume with PDF download
-- /projects/* — Individual project case studies
-
-## Availability
-
-Apurv is open to AI engineering consulting, cloud architecture reviews, compliance flight recording engagements, and agent prototyping.
-Contact: me@apurvsinghal.com or via the contact form at https://apurvsinghal.com/#contact
+- Email: [me@apurvsinghal.com](mailto:me@apurvsinghal.com)
+- Web: [Contact Form](https://apurvsinghal.com/#contact)

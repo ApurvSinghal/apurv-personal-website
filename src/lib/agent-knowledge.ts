@@ -95,6 +95,12 @@ He focuses on systems that actually work in production: clear failure modes, obs
    - Live commercial SaaS platform for Australian Privacy Act APP 1.7–1.9 compliance.
    - Zero-PII boundary, SHA-256 Merkle hash chains, Azure AU East WORM storage, drop-in SDKs.
 
+2. Personal Platform & Portfolio (https://apurvsinghal.com | https://github.com/ApurvSinghal/apurv-website)
+   - Architecture: Next.js App Router, TypeScript, Tailwind CSS, Azure Static Web Apps, and GitHub Actions CI/CD.
+   - Observability: 100% native Azure Application Insights telemetry across browser and Node.js server runtime, with multi-region 24/7 availability tests (Sydney, San Jose, Amsterdam) and automated downtime alerting.
+   - AI Representative: Powered by Azure OpenAI (gpt-5-mini) with Google Gemini streaming fallback.
+   - Defensive Delivery: In-memory sliding-window rate limiting, Zod schema validation, and Resend email notification pipeline with automated error recovery.
+
 # HOW TO WORK WITH APURV
 - Dynamic Resume & PDF: https://apurvsinghal.com/resume (or /resume)
 - Advisory & Consulting: Available for AI engineering consulting, compliance flight recording, agent prototyping, and cloud architecture reviews.
