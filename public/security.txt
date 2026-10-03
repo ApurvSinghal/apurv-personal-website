@@ -1,6 +1,6 @@
 Contact: mailto:apurv.singhal28@gmail.com
 Expires: 2027-10-03T00:00:00.000Z
 Preferred-Languages: en
-Canonical: https://www.apurvsinghal.com/.well-known/security.txt
-Policy: https://www.apurvsinghal.com
-Acknowledgments: https://www.apurvsinghal.com
+Canonical: https://apurvsinghal.com/.well-known/security.txt
+Policy: https://apurvsinghal.com
+Acknowledgments: https://apurvsinghal.com

@@ -10,7 +10,7 @@ export function generateMetadata(): Metadata {
   const years = getYearsOfExperience();
   const description = `Enterprise engineer going deep on AI. I build AI agents and automation for real businesses — backed by ${years} years shipping production systems on Azure.`;
   return {
-    metadataBase: new URL("https://www.apurvsinghal.com"),
+    metadataBase: new URL("https://apurvsinghal.com"),
     title: "Apurv Singhal — AI Engineer & Builder",
     description,
     keywords: [
@@ -25,12 +25,12 @@ export function generateMetadata(): Metadata {
       "Australia",
     ],
     alternates: {
-      canonical: "https://www.apurvsinghal.com",
+      canonical: "https://apurvsinghal.com",
     },
     openGraph: {
       title: "Apurv Singhal — AI Engineer & Builder",
       description,
-      url: "https://www.apurvsinghal.com",
+      url: "https://apurvsinghal.com",
       images: ["/opengraph-image"],
       siteName: "Apurv Singhal",
       locale: "en_AU",
@@ -70,9 +70,9 @@ export default function RootLayout({
     "@graph": [
       {
         "@type": "Person",
-        "@id": "https://www.apurvsinghal.com/#person",
+        "@id": "https://apurvsinghal.com/#person",
         name: "Apurv Singhal",
-        url: "https://www.apurvsinghal.com",
+        url: "https://apurvsinghal.com",
         sameAs: [
           "https://github.com/ApurvSinghal",
           "https://www.linkedin.com/in/apurvsinghal28",
@@ -91,18 +91,18 @@ export default function RootLayout({
           "AI Agents",
           "Model Context Protocol (MCP)",
         ],
-        image: "https://www.apurvsinghal.com/opengraph-image",
+        image: "https://apurvsinghal.com/opengraph-image",
         email: "mailto:me@apurvsinghal.com",
       },
       {
         "@type": "WebSite",
-        "@id": "https://www.apurvsinghal.com/#website",
+        "@id": "https://apurvsinghal.com/#website",
         name: "Apurv Singhal",
-        url: "https://www.apurvsinghal.com",
+        url: "https://apurvsinghal.com",
         description:
           "Enterprise engineer going deep on AI. Portfolio showcasing AI agents, Azure platform architecture, and production case studies.",
         publisher: {
-          "@id": "https://www.apurvsinghal.com/#person",
+          "@id": "https://apurvsinghal.com/#person",
         },
       },
     ],

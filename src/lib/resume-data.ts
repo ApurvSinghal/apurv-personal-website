@@ -61,7 +61,7 @@ export const RESUME_DATA: ResumeData = {
   location: "Melbourne, Victoria, Australia",
   workRights: "Full Australian Working Rights",
   email: "me@apurvsinghal.com",
-  website: "https://www.apurvsinghal.com",
+  website: "https://apurvsinghal.com",
   linkedin: "https://www.linkedin.com/in/apurvsinghal28",
   github: "https://github.com/ApurvSinghal",
   pillars: [

@@ -43,7 +43,7 @@ export async function generateMetadata({ params }: ProjectPageProps): Promise<Me
 
   const title = `${project.title} | Case Study`;
   const description = project.summary;
-  const projectUrl = `https://www.apurvsinghal.com/projects/${project.slug}`;
+  const projectUrl = `https://apurvsinghal.com/projects/${project.slug}`;
 
   return {
     title,
@@ -85,7 +85,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
     .slice(0, 3)
     .map(({ candidate }) => candidate);
 
-  const projectUrl = `https://www.apurvsinghal.com/projects/${project.slug}`;
+  const projectUrl = `https://apurvsinghal.com/projects/${project.slug}`;
   const pageId = `${projectUrl}#webpage`;
   const sourceCodeId = `${projectUrl}#software-source`;
   const breadcrumbsId = `${projectUrl}#breadcrumbs`;
@@ -100,7 +100,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
         description: project.summary,
         isPartOf: {
           "@type": "WebSite",
-          "@id": "https://www.apurvsinghal.com/#website",
+          "@id": "https://apurvsinghal.com/#website",
         },
       },
       {
@@ -117,9 +117,9 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
         },
         creator: {
           "@type": "Person",
-          "@id": "https://www.apurvsinghal.com/#person",
+          "@id": "https://apurvsinghal.com/#person",
           name: "Apurv Singhal",
-          url: "https://www.apurvsinghal.com",
+          url: "https://apurvsinghal.com",
         },
       },
       {
@@ -130,13 +130,13 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
             "@type": "ListItem",
             position: 1,
             name: "Home",
-            item: "https://www.apurvsinghal.com/",
+            item: "https://apurvsinghal.com/",
           },
           {
             "@type": "ListItem",
             position: 2,
             name: "Projects",
-            item: "https://www.apurvsinghal.com/#projects",
+            item: "https://apurvsinghal.com/#projects",
           },
           {
             "@type": "ListItem",

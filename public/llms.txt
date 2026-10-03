@@ -1,5 +1,5 @@
 # Apurv Singhal — AI Engineer & Builder
-# https://www.apurvsinghal.com
+# https://apurvsinghal.com
 # llms.txt — Machine-readable profile for LLM crawlers and AI agents
 
 ## Who is Apurv Singhal?
@@ -37,14 +37,14 @@ He is an enterprise engineer with 8+ years shipping production-grade systems at 
 
 ## Contact & Links
 
-- Website: https://www.apurvsinghal.com
-- Resume: https://www.apurvsinghal.com/resume
+- Website: https://apurvsinghal.com
+- Resume: https://apurvsinghal.com/resume
 - Email: me@apurvsinghal.com
 - LinkedIn: https://www.linkedin.com/in/apurvsinghal28
 - GitHub: https://github.com/ApurvSinghal
 - X (Twitter): https://x.com/apurvsinghal28
 - ADM Guard: https://www.admguard.com.au
-- Sitemap: https://www.apurvsinghal.com/sitemap.xml
+- Sitemap: https://apurvsinghal.com/sitemap.xml
 
 ## Pages on This Site
 
@@ -55,4 +55,4 @@ He is an enterprise engineer with 8+ years shipping production-grade systems at 
 ## Availability
 
 Apurv is open to AI engineering consulting, cloud architecture reviews, compliance flight recording engagements, and agent prototyping.
-Contact: me@apurvsinghal.com or via the contact form at https://www.apurvsinghal.com/#contact
+Contact: me@apurvsinghal.com or via the contact form at https://apurvsinghal.com/#contact

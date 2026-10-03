@@ -57,7 +57,7 @@ export const projects: Project[] = [
       "Built with Next.js App Router, TypeScript, and Tailwind CSS using reusable UI primitives and route-level SEO. The architecture includes a monitored contact pipeline, generated Open Graph assets, structured data, and a layered testing strategy to keep product quality high as the site evolves.",
     technologies: ["Next.js", "TypeScript", "Tailwind CSS", "Resend", "Azure Static Web Apps"],
     categories: ["Frontend", "Backend", "Cloud", "Observability"],
-    liveUrl: "https://www.apurvsinghal.com",
+    liveUrl: "https://apurvsinghal.com",
     githubUrl: "https://github.com/ApurvSinghal/apurv-personal-website",
     highlights: [
       "Implemented content-driven projects and dynamic case-study pages to improve storytelling and SEO coverage.",
