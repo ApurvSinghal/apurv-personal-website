@@ -1,7 +1,10 @@
-name: Deploy to Azure Static Web Apps
+name: CI & Deploy to Azure Static Web Apps
 
 on:
   push:
+    branches:
+      - main
+  pull_request:
     branches:
       - main
   workflow_dispatch:
@@ -10,16 +13,19 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 jobs:
-  build_and_deploy_job:
+  # ========================================================
+  # Stage 1: Build & Validate (Lint, Unit Tests, Build Check)
+  # ========================================================
+  build_and_validate:
+    name: Build & Validate
     runs-on: ubuntu-latest
-    name: Build and Deploy
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
-        with:
-          submodules: true
-          lfs: false
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
@@ -27,10 +33,71 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 22
-          cache: "pnpm"
+          node-version: 24
+          cache: pnpm
 
-      - name: Build & Deploy to Azure Static Web Apps
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Code lint
+        run: pnpm lint
+
+      - name: Run unit tests
+        run: pnpm test
+
+      - name: Production build validation
+        run: pnpm build
+        env:
+          RESEND_API_KEY: placeholder
+          RESEND_FROM_EMAIL: placeholder@example.com
+          CONTACT_NOTIFICATION_EMAIL: placeholder@example.com
+
+  # ========================================================
+  # Stage 2: Deploy to Production
+  # Gated on Stage 1; executes ONLY on main branch
+  # ========================================================
+  deploy:
+    name: Deploy to Production
+    needs: [build_and_validate]
+    if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+          lfs: false
+
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Sync App Settings to Azure Static Web Apps
+        uses: azure/CLI@v2
+        with:
+          inlineScript: |
+            az staticwebapp appsettings set \
+              --name swa-apurvsinghal \
+              --resource-group rg-apurvsinghal-prod \
+              --setting-names \
+                RESEND_API_KEY="${{ secrets.RESEND_API_KEY }}" \
+                RESEND_FROM_EMAIL="${{ secrets.RESEND_FROM_EMAIL }}" \
+                CONTACT_NOTIFICATION_EMAIL="${{ secrets.CONTACT_NOTIFICATION_EMAIL }}" \
+                AZURE_OPENAI_ENDPOINT="${{ secrets.AZURE_OPENAI_ENDPOINT }}" \
+                AZURE_OPENAI_KEY="${{ secrets.AZURE_OPENAI_KEY }}" \
+                AZURE_OPENAI_DEPLOYMENT="${{ secrets.AZURE_OPENAI_DEPLOYMENT }}"
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: Deploy to Azure Static Web Apps
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
         with:
@@ -40,3 +107,4 @@ jobs:
           app_location: "/"
           api_location: ""
           output_location: ""
+
