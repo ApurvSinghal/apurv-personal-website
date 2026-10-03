@@ -1,13 +1,13 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  serverExternalPackages: ["newrelic", "applicationinsights"],
+  serverExternalPackages: ["applicationinsights"],
   allowedDevOrigins: ["127.0.0.1"],
 
   async headers() {
     const csp = [
       "default-src 'self'",
-      "script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com https://js-agent.newrelic.com",
-      "connect-src 'self' https://cloudflareinsights.com https://*.nr-data.net",
+      "script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com https://js.monitor.azure.com",
+      "connect-src 'self' https://cloudflareinsights.com https://*.in.applicationinsights.azure.com https://*.livediagnostics.monitor.azure.com",
       `img-src 'self' data: blob:`,
       `style-src 'self' 'unsafe-inline'`,
       `font-src 'self'`,

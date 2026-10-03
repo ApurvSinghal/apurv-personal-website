@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Script from "next/script";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ChatWidget } from "@/components/chat/chat-widget";
-import { NewRelicSnippet } from "@/components/NewRelicSnippet";
+import { AppInsightsSnippet } from "@/components/AppInsightsSnippet";
 import { getYearsOfExperience } from "@/lib/utils";
 import "./globals.css";
 
@@ -111,7 +111,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`font-sans antialiased`}>
-        <NewRelicSnippet />
+        <AppInsightsSnippet />
         <a
           href="#main-content"
           className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-md focus:bg-background focus:px-4 focus:py-2 focus:text-foreground focus:shadow-lg"

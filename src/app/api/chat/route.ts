@@ -1,3 +1,4 @@
+import { recordServerError } from "@/lib/telemetry";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { APURV_GROUND_TRUTH } from "@/lib/agent-knowledge";
@@ -370,6 +371,7 @@ export async function POST(req: NextRequest) {
     });
   } catch (err) {
     console.error("[Chat Route Exception]", err);
+    await recordServerError(err, { endpoint: "/api/chat" });
     return NextResponse.json(
       { error: "Internal server error occurred." },
       { status: 500 },

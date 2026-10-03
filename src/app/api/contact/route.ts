@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 import { z } from "zod";
 import { getContactRateLimitDecision } from "@/lib/rate-limit";
-import { recordServerError } from "@/lib/newrelic";
+import { recordServerError } from "@/lib/telemetry";
 
 const contactSchema = z.object({
   name: z.string().trim().min(1).max(100),
