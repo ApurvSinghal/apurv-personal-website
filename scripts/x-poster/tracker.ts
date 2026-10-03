@@ -1,16 +1,24 @@
 import fs from "node:fs";
 import path from "node:path";
+import {
+  getXCredentialsFromEnv,
+  xApiGet,
+  type XClientCredentials,
+} from "./x-client.ts";
 
-export interface PostMetric {
-  id: string;
-  pillar: string;
-  postedAt: string;
-  text: string;
+export interface TweetMetrics {
   views: number;
   likes: number;
   retweets: number;
   replies: number;
   bookmarks: number;
+}
+
+export interface PostMetric extends TweetMetrics {
+  id: string;
+  pillar: string;
+  postedAt: string;
+  text: string;
   url: string;
 }
 
@@ -24,6 +32,7 @@ export interface AnalyticsSummary {
   totalBookmarks: number;
   avgViewsPerPost: number;
   dataAvailable: boolean;
+  source?: "api" | "scrape" | "none";
   note?: string;
   topPostByViews?: {
     id: string;
@@ -45,6 +54,56 @@ const ANALYTICS_PATH = path.join(ROOT_DIR, "content", "x-analytics.json");
 const USER_AGENT =
   "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36";
 
+const X_API_TWEETS_ENDPOINT = "https://api.x.com/2/tweets";
+const X_API_MAX_IDS_PER_REQUEST = 100;
+
+interface XApiTweet {
+  id: string;
+  public_metrics?: {
+    impression_count?: number;
+    like_count?: number;
+    retweet_count?: number;
+    reply_count?: number;
+    bookmark_count?: number;
+  };
+}
+
+export function parseTweetMetricsFromApi(
+  tweets: XApiTweet[] | undefined,
+): Map<string, TweetMetrics> {
+  const results = new Map<string, TweetMetrics>();
+  for (const tweet of tweets ?? []) {
+    const m = tweet.public_metrics ?? {};
+    results.set(String(tweet.id), {
+      views: m.impression_count ?? 0,
+      likes: m.like_count ?? 0,
+      retweets: m.retweet_count ?? 0,
+      replies: m.reply_count ?? 0,
+      bookmarks: m.bookmark_count ?? 0,
+    });
+  }
+  return results;
+}
+
+export async function fetchMetricsFromXApi(
+  ids: string[],
+  creds: XClientCredentials,
+): Promise<Map<string, TweetMetrics>> {
+  const results = new Map<string, TweetMetrics>();
+  for (let i = 0; i < ids.length; i += X_API_MAX_IDS_PER_REQUEST) {
+    const batch = ids.slice(i, i + X_API_MAX_IDS_PER_REQUEST);
+    const data = await xApiGet<{ data?: XApiTweet[] }>(
+      X_API_TWEETS_ENDPOINT,
+      { ids: batch.join(","), "tweet.fields": "public_metrics" },
+      creds,
+    );
+    for (const [id, m] of parseTweetMetricsFromApi(data.data).entries()) {
+      results.set(id, m);
+    }
+  }
+  return results;
+}
+
 // X serves logged-out requests a login wall with no embedded metrics.
 export function isLoginWall(html: string): boolean {
   return (
@@ -53,26 +112,10 @@ export function isLoginWall(html: string): boolean {
   );
 }
 
-export function parseTweetMetricsFromHtml(html: string): Map<
-  string,
-  {
-    views: number;
-    likes: number;
-    retweets: number;
-    replies: number;
-    bookmarks: number;
-  }
-> {
-  const results = new Map<
-    string,
-    {
-      views: number;
-      likes: number;
-      retweets: number;
-      replies: number;
-      bookmarks: number;
-    }
-  >();
+export function parseTweetMetricsFromHtml(
+  html: string,
+): Map<string, TweetMetrics> {
+  const results = new Map<string, TweetMetrics>();
 
   // Pattern for counts: "client:VHdlZXQ6([A-Za-z0-9+/=]+):counts":$R[\d+]=({[^}]+})
   const countsPattern =
@@ -189,37 +232,67 @@ export async function collectXAnalytics(
 
   console.log(`[tracker] Found ${validHistory.length} live post(s) to track.`);
 
-  const metricMap = new Map<
-    string,
-    {
-      views: number;
-      likes: number;
-      retweets: number;
-      replies: number;
-      bookmarks: number;
-    }
-  >();
-
-  // 1. First fetch profile timeline (covers most recent 5-10 tweets in 1 request)
+  const metricMap = new Map<string, TweetMetrics>();
   const parsedIds = new Set<string>();
   let sawLoginWall = false;
+  let dataSource: "api" | "scrape" | "none" = "none";
 
-  console.log("[tracker] Fetching profile timeline for @apurvsinghal28...");
-  const profileHtml = await fetchHtmlWithRetry("https://x.com/apurvsinghal28");
-  if (profileHtml) {
-    if (isLoginWall(profileHtml)) sawLoginWall = true;
-    const timelineMetrics = parseTweetMetricsFromHtml(profileHtml);
-    for (const [id, m] of timelineMetrics.entries()) {
-      metricMap.set(id, m);
-      parsedIds.add(id);
+  // 1. Preferred path: authenticated X API v2 public_metrics
+  const creds = getXCredentialsFromEnv();
+  if (creds && validHistory.length > 0) {
+    console.log("[tracker] Fetching public_metrics via X API v2...");
+    try {
+      const apiMetrics = await fetchMetricsFromXApi(
+        validHistory.map((h) => String(h.id)),
+        creds,
+      );
+      for (const [id, m] of apiMetrics.entries()) {
+        metricMap.set(id, m);
+        parsedIds.add(id);
+      }
+      if (apiMetrics.size > 0) dataSource = "api";
+      console.log(
+        `[tracker] X API returned metrics for ${apiMetrics.size} post(s).`,
+      );
+    } catch (err) {
+      console.warn(
+        "[tracker] X API request failed; falling back to public page scrape.",
+        err instanceof Error ? err.message : err,
+      );
     }
-    console.log(
-      `[tracker] Profile scan extracted metrics for ${timelineMetrics.size} post(s).`,
+  } else if (!creds) {
+    console.warn(
+      "[tracker] X credentials not set; falling back to public page scrape.",
     );
   }
 
-  // 2. Fetch any missing tweets individually
-  for (const item of validHistory) {
+  // 2. Fallback: scrape profile timeline (covers most recent 5-10 tweets in 1 request)
+  const missingAfterApi = validHistory.filter(
+    (h) => !metricMap.has(String(h.id)),
+  );
+  if (missingAfterApi.length > 0) {
+    console.log("[tracker] Fetching profile timeline for @apurvsinghal28...");
+    const profileHtml = await fetchHtmlWithRetry(
+      "https://x.com/apurvsinghal28",
+    );
+    if (profileHtml) {
+      if (isLoginWall(profileHtml)) sawLoginWall = true;
+      const timelineMetrics = parseTweetMetricsFromHtml(profileHtml);
+      for (const [id, m] of timelineMetrics.entries()) {
+        if (!metricMap.has(id)) {
+          metricMap.set(id, m);
+          parsedIds.add(id);
+          if (dataSource === "none") dataSource = "scrape";
+        }
+      }
+      console.log(
+        `[tracker] Profile scan extracted metrics for ${timelineMetrics.size} post(s).`,
+      );
+    }
+  }
+
+  // 3. Fallback: fetch any still-missing tweets individually
+  for (const item of missingAfterApi) {
     const id = String(item.id);
     if (!metricMap.has(id)) {
       console.log(`[tracker] Fetching status page for post ${id}...`);
@@ -228,26 +301,19 @@ export async function collectXAnalytics(
       );
       if (statusHtml) {
         if (isLoginWall(statusHtml)) sawLoginWall = true;
-        const statusMetrics = parseTweetMetricsFromHtml(statusHtml);
-        const parsed = statusMetrics.get(id);
-        if (parsed) parsedIds.add(id);
-        metricMap.set(
-          id,
-          parsed || {
-            views: 0,
-            likes: 0,
-            retweets: 0,
-            replies: 0,
-            bookmarks: 0,
-          },
-        );
+        const parsed = parseTweetMetricsFromHtml(statusHtml).get(id);
+        if (parsed) {
+          parsedIds.add(id);
+          metricMap.set(id, parsed);
+          if (dataSource === "none") dataSource = "scrape";
+        }
       }
       // Small pause to be gentle with rate limits
       await new Promise((r) => setTimeout(r, 800));
     }
   }
 
-  // No post parsed while posts exist = X blocked the scrape (login wall).
+  // No post parsed while posts exist = both API and scrape failed.
   const dataAvailable = validHistory.length === 0 || parsedIds.size > 0;
   if (!dataAvailable) {
     console.warn(
@@ -310,9 +376,10 @@ export async function collectXAnalytics(
       totalBookmarks,
       avgViewsPerPost,
       dataAvailable,
+      source: dataSource,
       note: dataAvailable
         ? undefined
-        : "X served a logged-out login wall; public metrics could not be scraped. These zeros are NOT real engagement data. Use the X API (Basic tier) or x.com Analytics for real numbers.",
+        : "Neither the X API nor the public page scrape returned metrics. These zeros are NOT real engagement data. Check X_API_* secrets and the X Developer app's read permission.",
       topPostByViews: topPost
         ? {
             id: topPost.id,
@@ -347,12 +414,12 @@ export function appendAnalyticsStepSummary(report: AnalyticsReport): void {
     if (!summary.dataAvailable) {
       let warn = `## ⚠️ X Analytics Unavailable\n\n`;
       warn += `${summary.note}\n\n`;
-      warn += `Tracked ${summary.totalPostsTracked} post(s), but X returned a logged-out login wall, so no real metrics could be read.\n`;
+      warn += `Tracked ${summary.totalPostsTracked} post(s), but no real metrics could be read.\n`;
       fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, warn, "utf-8");
       return;
     }
     let md = `## 📊 X Weekly Analytics & Engagement Report\n\n`;
-    md += `*Updated at: ${new Date(summary.trackedAt).toUTCString()}*\n\n`;
+    md += `*Updated at: ${new Date(summary.trackedAt).toUTCString()} · Source: ${summary.source ?? "unknown"}*\n\n`;
     md += `| Metric | Value |\n`;
     md += `| :--- | :--- |\n`;
     md += `| **Total Posts Tracked** | \`${summary.totalPostsTracked}\` |\n`;

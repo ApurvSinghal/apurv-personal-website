@@ -22,8 +22,12 @@ jobs:
           node-version: 24
 
       - name: Collect Live X Engagement Metrics
-        run: |
-          node --no-warnings scripts/x-poster/tracker.ts
+        run: node --no-warnings scripts/x-poster/tracker.ts
+        env:
+          X_API_KEY: ${{ secrets.X_API_KEY }}
+          X_API_SECRET: ${{ secrets.X_API_SECRET }}
+          X_ACCESS_TOKEN: ${{ secrets.X_ACCESS_TOKEN }}
+          X_ACCESS_TOKEN_SECRET: ${{ secrets.X_ACCESS_TOKEN_SECRET }}
 
       - name: Commit Updated Analytics
         run: |

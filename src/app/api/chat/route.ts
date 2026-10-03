@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { APURV_GROUND_TRUTH } from "@/lib/agent-knowledge";
+import { createRateLimiter } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
 
@@ -16,27 +17,12 @@ const chatRequestSchema = z.object({
     .max(20),
 });
 
-// Simple in-memory sliding window rate limiter
-const ipRateMap = new Map<string, { count: number; resetAt: number }>();
-const RATE_LIMIT_WINDOW = 60 * 1000; // 1 minute
-const MAX_REQUESTS_PER_WINDOW = 15;
+const checkChatRateLimit = createRateLimiter({
+  windowMs: 60 * 1000,
+  maxRequests: 15,
+});
 
-function checkRateLimit(ip: string): boolean {
-  const now = Date.now();
-  const record = ipRateMap.get(ip);
-
-  if (!record || now > record.resetAt) {
-    ipRateMap.set(ip, { count: 1, resetAt: now + RATE_LIMIT_WINDOW });
-    return true;
-  }
-
-  if (record.count >= MAX_REQUESTS_PER_WINDOW) {
-    return false;
-  }
-
-  record.count += 1;
-  return true;
-}
+const GEMINI_MODEL = process.env.GEMINI_MODEL || "gemini-2.5-flash";
 
 // Fallback intelligent response generator if GEMINI_API_KEY is not yet configured
 function generateMockResponse(query: string): string {
@@ -167,9 +153,11 @@ Feel free to ask me about:
 export async function POST(req: NextRequest) {
   try {
     const forwardedFor = req.headers.get("x-forwarded-for");
-    const ip = forwardedFor ? forwardedFor.split(",")[0].trim() : "127.0.0.1";
+    const ip = forwardedFor
+      ? forwardedFor.split(",")[0].trim()
+      : (req.headers.get("x-real-ip") ?? "unknown");
 
-    if (!checkRateLimit(ip)) {
+    if (checkChatRateLimit(ip).limited) {
       return NextResponse.json(
         {
           error:
@@ -220,7 +208,6 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    // Call Google Gemini 1.5/2.0 Flash REST API with streaming
     const geminiContents = messages.map((m) => ({
       role: m.role === "assistant" ? "model" : "user",
       parts: [{ text: m.content }],
@@ -238,11 +225,15 @@ export async function POST(req: NextRequest) {
     };
 
     const geminiRes = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:streamGenerateContent?key=${apiKey}&alt=sse`,
+      `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:streamGenerateContent?alt=sse`,
       {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "x-goog-api-key": apiKey,
+        },
         body: JSON.stringify(geminiPayload),
+        signal: AbortSignal.timeout(30000),
       },
     );
 
@@ -261,7 +252,7 @@ export async function POST(req: NextRequest) {
     let buffer = "";
 
     const stream = new ReadableStream({
-      async pull(controller) {
+      async start(controller) {
         while (true) {
           const { done, value } = await reader.read();
           if (done) {

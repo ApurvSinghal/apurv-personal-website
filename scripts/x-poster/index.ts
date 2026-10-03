@@ -89,7 +89,9 @@ export async function runXPoster(
   const isDryRun = args.includes("--dry-run") || process.env.DRY_RUN === "true";
   const forceTopicIndex = args.indexOf("--force-topic");
   const forceTopic =
-    forceTopicIndex !== -1 ? args[forceTopicIndex + 1] : undefined;
+    (forceTopicIndex !== -1 ? args[forceTopicIndex + 1] : undefined) ||
+    process.env.FORCE_TOPIC?.trim() ||
+    undefined;
 
   console.log("==========================================");
   console.log("🚀 APURV SINGHAL · X DAILY AUTOMATION BOT");

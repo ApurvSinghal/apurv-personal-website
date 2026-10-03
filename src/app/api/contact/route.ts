@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 import { z } from "zod";
 import { getContactRateLimitDecision } from "@/lib/rate-limit";
+import { recordServerError } from "@/lib/newrelic";
 
 const contactSchema = z.object({
   name: z.string().trim().min(1).max(100),
@@ -10,7 +11,6 @@ const contactSchema = z.object({
   website: z.string().trim().max(200).optional(),
   formStartedAt: z.number().int().positive().optional(),
 });
-
 
 function getClientIp(request: NextRequest) {
   const forwardedFor = request.headers.get("x-forwarded-for");
@@ -105,8 +105,8 @@ export async function POST(request: NextRequest) {
     }
 
     const resend = new Resend(resendApiKey);
-    const submittedAt = new Date().toLocaleString("en-US", {
-      timeZone: "Asia/Kolkata",
+    const submittedAt = new Date().toLocaleString("en-AU", {
+      timeZone: "Australia/Melbourne",
     });
 
     const escapedName = escapeHtml(name);
@@ -117,8 +117,10 @@ export async function POST(request: NextRequest) {
     );
     const safeNameForSubject = name.replace(/[\r\n]+/g, " ").trim();
 
+    // 1. Send owner notification email
+    let ownerSendResult: Awaited<ReturnType<typeof resend.emails.send>>;
     try {
-      await resend.emails.send({
+      ownerSendResult = await resend.emails.send({
         from: fromEmail,
         to: adminEmail,
         subject: `New contact form submission: ${safeNameForSubject}`,
@@ -132,10 +134,74 @@ export async function POST(request: NextRequest) {
             <p><strong>Submitted at:</strong> ${submittedAt}</p>
           `,
       });
-    } catch (error) {
+    } catch (sendError) {
+      ownerSendResult = {
+        data: null,
+        error: {
+          name: "application_error",
+          message:
+            sendError instanceof Error ? sendError.message : String(sendError),
+          statusCode: 500,
+        },
+        headers: null,
+      };
+    }
+
+    // If custom domain is unverified (403), attempt fallback to onboarding@resend.dev
+    if (
+      ownerSendResult?.error &&
+      fromEmail !== "onboarding@resend.dev" &&
+      (ownerSendResult.error.statusCode === 403 ||
+        ownerSendResult.error.message?.toLowerCase().includes("domain") ||
+        ownerSendResult.error.message?.toLowerCase().includes("verify"))
+    ) {
+      console.warn(
+        `Custom domain sender '${fromEmail}' rejected by Resend (${ownerSendResult.error.message}). Retrying with 'onboarding@resend.dev'...`,
+      );
+      try {
+        const fallbackResult = await resend.emails.send({
+          from: "onboarding@resend.dev",
+          to: adminEmail,
+          subject: `New contact form submission: ${safeNameForSubject}`,
+          replyTo: email,
+          text: `Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}\n\nSubmitted at: ${submittedAt}`,
+          html: `
+              <h2>New contact form submission</h2>
+              <p><strong>Name:</strong> ${escapedName}</p>
+              <p><strong>Email:</strong> ${escapedEmail}</p>
+              <p><strong>Message:</strong><br/>${escapedMessageWithBreaks}</p>
+              <p><strong>Submitted at:</strong> ${submittedAt}</p>
+            `,
+        });
+        if (!fallbackResult.error) {
+          ownerSendResult = fallbackResult;
+        } else {
+          console.error(
+            "Resend fallback sender also failed:",
+            fallbackResult.error,
+          );
+        }
+      } catch (fallbackError) {
+        console.error("Resend fallback sender threw:", fallbackError);
+      }
+    }
+
+    if (ownerSendResult?.error) {
+      const err = new Error(
+        `Resend owner notification failed: ${ownerSendResult.error.message} (${ownerSendResult.error.name})`,
+      );
       console.error("Resend owner notification failed", {
-        error: error instanceof Error ? error.message : String(error),
+        error: ownerSendResult.error.message,
+        name: ownerSendResult.error.name,
+        statusCode: ownerSendResult.error.statusCode,
       });
+
+      await recordServerError(err, {
+        resendErrorName: ownerSendResult.error.name,
+        resendErrorMessage: ownerSendResult.error.message,
+        recipient: adminEmail,
+      });
+
       return NextResponse.json(
         {
           error:
@@ -145,10 +211,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const emailDurationMs = getDurationMs(requestStartedAtMs);
-
     try {
-      await resend.emails.send({
+      const ackResult = await resend.emails.send({
         from: fromEmail,
         to: email,
         subject: `Thanks for reaching out, ${safeNameForSubject}`,
@@ -162,8 +226,17 @@ export async function POST(request: NextRequest) {
             <p>Best,<br/>Apurv Singhal</p>
           `,
       });
-    } catch (error) {
-      // Keep API success path intact even if acknowledgement email fails.
+
+      if (ackResult?.error) {
+        console.warn("Resend acknowledgement email failed", {
+          error: ackResult.error.message,
+          name: ackResult.error.name,
+        });
+      }
+    } catch (ackError) {
+      console.warn("Resend acknowledgement email threw", {
+        error: ackError instanceof Error ? ackError.message : String(ackError),
+      });
     }
 
     return NextResponse.json(
@@ -171,9 +244,11 @@ export async function POST(request: NextRequest) {
       { status: 200 },
     );
   } catch (error) {
+    const err = error instanceof Error ? error : new Error(String(error));
     console.error("Contact API unhandled error", {
-      error: error instanceof Error ? error.message : String(error),
+      error: err.message,
     });
+    await recordServerError(err);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 },

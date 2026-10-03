@@ -22,20 +22,28 @@ export function generateOAuth1Header(
   creds: XClientCredentials,
   customNonce?: string,
   customTimestamp?: string,
+  queryParams: Record<string, string> = {},
 ): string {
   const oauthParams: Record<string, string> = {
     oauth_consumer_key: creds.apiKey,
     oauth_nonce: customNonce || crypto.randomBytes(16).toString("hex"),
     oauth_signature_method: "HMAC-SHA1",
-    oauth_timestamp: customTimestamp || Math.floor(Date.now() / 1000).toString(),
+    oauth_timestamp:
+      customTimestamp || Math.floor(Date.now() / 1000).toString(),
     oauth_token: creds.accessToken,
     oauth_version: "1.0",
   };
 
-  // Sort parameters alphabetically by key
-  const sortedKeys = Object.keys(oauthParams).sort();
-  const paramString = sortedKeys
-    .map((key) => `${percentEncode(key)}=${percentEncode(oauthParams[key])}`)
+  // RFC 5849 §3.4.1.3: query params are part of the signature base, not the header.
+  const signatureParams: Record<string, string> = {
+    ...oauthParams,
+    ...queryParams,
+  };
+  const paramString = Object.keys(signatureParams)
+    .sort()
+    .map(
+      (key) => `${percentEncode(key)}=${percentEncode(signatureParams[key])}`,
+    )
     .join("&");
 
   // Create Signature Base String
@@ -63,6 +71,49 @@ export function generateOAuth1Header(
 export interface PostTweetResult {
   id: string;
   text: string;
+}
+
+export function getXCredentialsFromEnv(): XClientCredentials | null {
+  const creds: XClientCredentials = {
+    apiKey: process.env.X_API_KEY || "",
+    apiSecret: process.env.X_API_SECRET || "",
+    accessToken: process.env.X_ACCESS_TOKEN || "",
+    accessTokenSecret: process.env.X_ACCESS_TOKEN_SECRET || "",
+  };
+  return creds.apiKey &&
+    creds.apiSecret &&
+    creds.accessToken &&
+    creds.accessTokenSecret
+    ? creds
+    : null;
+}
+
+export async function xApiGet<T>(
+  endpoint: string,
+  queryParams: Record<string, string>,
+  creds: XClientCredentials,
+): Promise<T> {
+  const authHeader = generateOAuth1Header(
+    "GET",
+    endpoint,
+    creds,
+    undefined,
+    undefined,
+    queryParams,
+  );
+  const url = `${endpoint}?${new URLSearchParams(queryParams).toString()}`;
+
+  const res = await fetch(url, {
+    method: "GET",
+    headers: { Authorization: authHeader, Accept: "application/json" },
+    signal: AbortSignal.timeout(15000),
+  });
+
+  if (!res.ok) {
+    throw new Error(`X API error HTTP ${res.status}: ${await res.text()}`);
+  }
+
+  return (await res.json()) as T;
 }
 
 export async function postTweetToX(

@@ -45,7 +45,7 @@ jobs:
           [ -n "${{ secrets.X_API_KEY }}" ] && echo "| \`X_API_KEY\` | ✅ Configured | Live tweet publishing enabled |" >> $GITHUB_STEP_SUMMARY || echo "| \`X_API_KEY\` | ❌ Missing | Live tweet publishing disabled |" >> $GITHUB_STEP_SUMMARY
           [ -n "${{ secrets.GEMINI_API_KEY }}" ] && echo "| \`GEMINI_API_KEY\` | ✅ Configured | Gemini 2.5 / 3.x generation active |" >> $GITHUB_STEP_SUMMARY || echo "| \`GEMINI_API_KEY\` | ⚠️ Missing | Using curated fallback posts |" >> $GITHUB_STEP_SUMMARY
           [ -n "${{ secrets.RESEND_API_KEY }}" ] && echo "| \`RESEND_API_KEY\` | ✅ Configured | Email briefing delivery active |" >> $GITHUB_STEP_SUMMARY || echo "| \`RESEND_API_KEY\` | ⚠️ Missing | Briefing email will be skipped |" >> $GITHUB_STEP_SUMMARY
-          
+
           echo "=== SECRETS DIAGNOSTIC ==="
           [ -n "${{ secrets.X_API_KEY }}" ] && echo "✓ X_API_KEY: Configured" || echo "✗ X_API_KEY: Missing"
           [ -n "${{ secrets.GEMINI_API_KEY }}" ] && echo "✓ GEMINI_API_KEY: Configured" || echo "⚠ GEMINI_API_KEY: Missing"
@@ -53,16 +53,10 @@ jobs:
           echo "=========================="
 
       - name: Execute X Daily Poster
-        run: |
-          ARGS=""
-          if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
-            ARGS="$ARGS --dry-run"
-          fi
-          if [ -n "${{ github.event.inputs.custom_topic }}" ]; then
-            ARGS="$ARGS --force-topic \"${{ github.event.inputs.custom_topic }}\""
-          fi
-          node --no-warnings scripts/x-poster/index.ts $ARGS
+        run: node --no-warnings scripts/x-poster/index.ts
         env:
+          DRY_RUN: ${{ github.event.inputs.dry_run }}
+          FORCE_TOPIC: ${{ github.event.inputs.custom_topic }}
           X_API_KEY: ${{ secrets.X_API_KEY }}
           X_API_SECRET: ${{ secrets.X_API_SECRET }}
           X_ACCESS_TOKEN: ${{ secrets.X_ACCESS_TOKEN }}

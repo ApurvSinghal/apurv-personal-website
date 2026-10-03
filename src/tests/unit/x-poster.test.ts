@@ -17,7 +17,10 @@ import {
   buildBriefingEmailText,
   sendPostBriefingEmail,
 } from "../../../scripts/x-poster/notifier";
-import { parseTweetMetricsFromHtml } from "../../../scripts/x-poster/tracker";
+import {
+  parseTweetMetricsFromApi,
+  parseTweetMetricsFromHtml,
+} from "../../../scripts/x-poster/tracker";
 
 describe("X Poster Automation Engine", () => {
   describe("OAuth 1.0a Client", () => {
@@ -49,6 +52,34 @@ describe("X Poster Automation Engine", () => {
       expect(header).toContain('oauth_token="test_access_token"');
       expect(header).toContain('oauth_version="1.0"');
       expect(header).toContain("oauth_signature=");
+    });
+
+    it("includes query params in the signature but not the header", () => {
+      const creds = {
+        apiKey: "k",
+        apiSecret: "s",
+        accessToken: "t",
+        accessTokenSecret: "ts",
+      };
+      const withoutQuery = generateOAuth1Header(
+        "GET",
+        "https://api.x.com/2/tweets",
+        creds,
+        "nonce",
+        "1725580800",
+      );
+      const withQuery = generateOAuth1Header(
+        "GET",
+        "https://api.x.com/2/tweets",
+        creds,
+        "nonce",
+        "1725580800",
+        { ids: "1,2", "tweet.fields": "public_metrics" },
+      );
+
+      expect(withQuery).not.toContain("ids=");
+      expect(withQuery).not.toContain("tweet.fields");
+      expect(withQuery).not.toBe(withoutQuery);
     });
   });
 
@@ -324,6 +355,39 @@ describe("X Poster Automation Engine", () => {
   });
 
   describe("Analytics & Engagement Tracker", () => {
+    it("maps X API v2 public_metrics to tracker metrics", () => {
+      const metrics = parseTweetMetricsFromApi([
+        {
+          id: "2099299598552502410",
+          public_metrics: {
+            impression_count: 150,
+            like_count: 7,
+            retweet_count: 1,
+            reply_count: 2,
+            bookmark_count: 3,
+          },
+        },
+        { id: "2096824840376500643" },
+      ]);
+
+      expect(metrics.size).toBe(2);
+      expect(metrics.get("2099299598552502410")).toEqual({
+        views: 150,
+        likes: 7,
+        retweets: 1,
+        replies: 2,
+        bookmarks: 3,
+      });
+      expect(metrics.get("2096824840376500643")).toEqual({
+        views: 0,
+        likes: 0,
+        retweets: 0,
+        replies: 0,
+        bookmarks: 0,
+      });
+      expect(parseTweetMetricsFromApi(undefined).size).toBe(0);
+    });
+
     it("parses views, likes, retweets, replies, and bookmarks from Relay markup", () => {
       const sampleHtml = `
         "client:VHdlZXQ6MjA5OTI5OTU5ODU1MjUwMjQxMA==:counts":$R[10]={__id:"...",bookmark_count:3,favorite_count:7,reply_count:2,retweet_count:1}
