@@ -82,5 +82,12 @@
     "pillar": "Applied AI & Systems",
     "source": "queue",
     "postedAt": "2026-10-03T01:18:51.459Z"
+  },
+  {
+    "id": "2106562953109487730",
+    "text": "From December 2026, Australian law says you must show how an automated decision was made.\n\nA PDF policy won't survive an OAIC audit.\n\nYou need a tamper-evident log at the code layer.\n\nIs your AI actually audit-ready, or does it just look compliant?",
+    "pillar": "Founder & ADM Guard",
+    "source": "queue",
+    "postedAt": "2026-10-04T01:52:01.016Z"
   }
 ]

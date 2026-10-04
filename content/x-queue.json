@@ -1,11 +1,5 @@
 [
   {
-    "id": "q-4",
-    "topic": "Founder & ADM Guard",
-    "text": "From December 2026, Australian law says you must show how an automated decision was made.\n\nA PDF policy won't survive an OAIC audit.\n\nYou need a tamper-evident log at the code layer.\n\nIs your AI actually audit-ready, or does it just look compliant?",
-    "createdAt": "2026-09-14T12:03:00.000Z"
-  },
-  {
     "id": "q-5",
     "topic": "Enterprise Delivery & Governance",
     "text": "I've watched technically 'perfect' architectures die in enterprise rollouts.\n\nNot because the design was wrong.\n\nBecause nobody on the team wanted to use it.\n\nA simple system with 100% buy-in wins every time. Where have you seen this play out?",
